@@ -1,0 +1,84 @@
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated rimraf@2.7.1: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated lodash.isequal@4.5.0: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated fstream@1.0.12: This package is no longer supported.
+
+added 242 packages in 2s
+
+> lectorlab-red@1.1.1 check
+> node scripts/check-syntax.js
+
+Sintaxis JavaScript comprobada. Para verificar comportamiento: npm test y npm run test:e2e.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+
+> lectorlab-red@1.1.1 test
+> node --test tests/*.test.js
+
+✔ dos evidencias extensas distintas permiten calcular cierre y completitud (0.953167ms)
+✔ entradas vacías y breves no reciben puntos de completitud (0.754526ms)
+✔ la misma evidencia no cuenta dos veces pese a Unicode, mayúsculas y espacios (0.818971ms)
+✔ completitud no confunde emoji UTF-16 con dos caracteres de contenido (0.207645ms)
+✔ ignora puntajes, aciertos y criterios de evaluación enviados por cliente (0.207565ms)
+✔ normaliza tipos inválidos sin atribuir aciertos o completitud (0.120056ms)
+✔ preguntas incorrectas reducen la parte objetiva sin alterar la completitud (0.317425ms)
+✔ Importar app no abre puertos ni espera servicios, y config usa loopback (242.741089ms)
+✔ Health distingue proceso vivo de IA configurada; lectura no necesita clave (58.824336ms)
+✔ Tutor conserva prompt y cierre quinto turno con proveedor inyectado (12.712735ms)
+✔ Tutor rechaza mensaje/turno/historial inválidos antes de llamar IA (19.582374ms)
+✔ JSON malformado y cuerpo excesivo devuelven 400/413 en JSON (5.215214ms)
+✔ Limitador local cubre tutor y exportación y libera ventana expirada (6.508961ms)
+✔ Proveedor sin contenido devuelve 502; fallos 429/500 no filtran mensajes (6.871202ms)
+✔ XLSX real contiene tres hojas y recalcula sin confiar puntajes/correct del cliente (53.273259ms)
+✔ XLSX rechaza objetos fórmula/hipervínculo y campos mal tipados (17.343222ms)
+✔ XLSX escribe cadenas con prefijos de fórmula como texto, incluido Unicode (74.350975ms)
+✔ Adaptador de exportación fallido devuelve 500 JSON sin detalles internos (3.549503ms)
+✔ Adaptador OpenAI mantiene secretos fuera de input, store:false y contrato original (0.295383ms)
+✔ Override UUID conserva escritura y lectura de formato condicional extendido ExcelJS (7.866401ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 805.77388
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+
+> lectorlab-red@1.1.1 test:e2e
+> playwright test
+
+[WebServer] (node:5839) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:5850) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/recorrido.spec.js:56:1 › recorrido completo, foco al avanzar con teclado y Excel con tres hojas (9.7s)
+  ✓   2 [chromium] › tests/e2e/recorrido.spec.js:111:1 › un fallo IA conserva el texto y permite reintentar sin gastar un turno (6.0s)
+  ✓   3 [chromium] › tests/e2e/recorrido.spec.js:123:1 › solicitud pendiente bloquea doble envío y navegación hasta completarse (6.7s)
+  ✓   4 [chromium] › tests/e2e/recorrido.spec.js:141:1 › recargar con trabajo pendiente avisa y cancelar preserva el escrito (414ms)
+  ✓   5 [chromium] › tests/e2e/recorrido.spec.js:155:1 › Reiniciar permite cancelar o aceptar sin un segundo aviso beforeunload (7.8s)
+(node:6123) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [mobile] › tests/e2e/recorrido.spec.js:56:1 › recorrido completo, foco al avanzar con teclado y Excel con tres hojas (9.5s)
+  ✓   7 [mobile] › tests/e2e/recorrido.spec.js:111:1 › un fallo IA conserva el texto y permite reintentar sin gastar un turno (4.7s)
+  ✓   8 [mobile] › tests/e2e/recorrido.spec.js:123:1 › solicitud pendiente bloquea doble envío y navegación hasta completarse (7.2s)
+  ✓   9 [mobile] › tests/e2e/recorrido.spec.js:141:1 › recargar con trabajo pendiente avisa y cancelar preserva el escrito (374ms)
+  ✓  10 [mobile] › tests/e2e/recorrido.spec.js:155:1 › Reiniciar permite cancelar o aceptar sin un segundo aviso beforeunload (8.2s)
+
+  10 passed (1.0m)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice

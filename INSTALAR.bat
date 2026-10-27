@@ -5,7 +5,7 @@ echo ========================================
 echo   LectorLab - instalacion de dependencias
 echo ========================================
 echo.
-npm install
+call npm ci
 if errorlevel 1 (
   echo.
   echo Hubo un problema. Verifica que Node.js este instalado y que tengas internet.

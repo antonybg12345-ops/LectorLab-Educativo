@@ -1,265 +1,92 @@
-# LectorLab
+# LectorLab — Etapa A
 
-Tutor socrático con IA integrado al RED **“Más allá de las palabras”**, pensado para estudiantes de 4.º de secundaria y para una experiencia total aproximada de 20 minutos.
+Recurso de Comunicación para 4.º de secundaria del Perú: adaptación de *El almohadón de pluma*, seis preguntas, hipótesis, tutor socrático, interpretación con dos evidencias, reflexión y Excel.
 
-## ¿Qué hace esta versión?
+Esta versión estabiliza el proyecto existente para **desarrollo y demostración local**. No es aún una plataforma multiusuario: no tiene cuentas, DB ni registro confiable de primeros intentos o conversaciones. No usar datos reales de menores ni publicar como evaluación segura.
 
-- Conserva el RED original y reemplaza el chatbot local basado en reglas por un chatbot con IA.
-- Mantiene un máximo de **5 intervenciones del estudiante**.
-- LectorLab pide evidencias, cuestiona inferencias, distingue hechos de interpretaciones y ayuda a revisar hipótesis.
-- **No entrega directamente la respuesta** ni redacta una interpretación final para copiar.
-- La clave de OpenAI nunca aparece en el HTML del estudiante.
-- El servidor no crea una base de datos ni guarda las conversaciones: el historial se mantiene temporalmente en la pestaña del navegador durante el recorrido.
-- La descarga final del RED sigue incorporando la conversación con LectorLab.
+## Instalación y ejecución
 
----
-
-# 1. Lo que necesitas
-
-1. Una computadora con Windows, macOS o Linux.
-2. **Node.js** instalado (versión LTS recomendada).
-3. Una clave de API de OpenAI.
-4. Crédito/facturación habilitada en la plataforma API de OpenAI.
-
-> Importante: la suscripción de ChatGPT y el uso de la API son servicios con facturación separada.
-
-Sitios oficiales:
-- Node.js: https://nodejs.org/
-- Plataforma de OpenAI: https://platform.openai.com/
-- Claves API: https://platform.openai.com/api-keys
-
----
-
-# 2. Estructura del proyecto
-
-```text
-LectorLab/
-├── public/
-│   └── index.html          ← tu RED ya integrado con IA
-├── lectorlab-prompt.js     ← personalidad y reglas pedagógicas del tutor
-├── server.js               ← servidor seguro que llama a OpenAI
-├── package.json            ← dependencias del proyecto
-├── .env.example            ← plantilla de configuración
-├── .gitignore              ← evita publicar accidentalmente tu clave
-├── CONFIGURAR.bat          ← crea y abre tu archivo .env
-├── INSTALAR.bat            ← instalación fácil en Windows
-├── INICIAR.bat             ← inicio fácil en Windows
-└── README.md               ← esta guía
-```
-
----
-
-# 3. Primera instalación en Windows
-
-## Paso A. Instala Node.js
-
-Descarga e instala la versión LTS desde:
-
-https://nodejs.org/
-
-Puedes aceptar las opciones predeterminadas del instalador.
-
-## Paso B. Instala LectorLab
-
-Dentro de la carpeta `LectorLab`, haz doble clic en:
-
-`INSTALAR.bat`
-
-Se descargarán automáticamente las dependencias necesarias.
-
-También puedes hacerlo manualmente desde una terminal:
+Node.js **24.19.0** (`.nvmrc`/`.node-version`) y npm **11.9.0**. Usar el checkout existente; no hace falta crear otro worktree para cada tarea.
 
 ```bash
-npm install
+cd /workspace/LectorLab-Educativo
+npm ci
+npm run check
+npm test
+npm start
 ```
 
----
+En otra computadora, cambiar la primera ruta por la de la carpeta del proyecto. El servidor escucha en `127.0.0.1:3000` por defecto. Abrir esa dirección en el navegador; no abrir el HTML directamente. `HOST` y `PORT` son configurables, pero cambiar el host no añade seguridad multiusuario. Detener con Ctrl+C.
 
-# 4. Configura tu clave de OpenAI
+Lectura, preguntas, cierre y Excel funcionan **sin clave de IA**. Si falta configuración, el tutor informa el error y permite continuar; no se sustituye por respuestas simuladas en producción. Los dobles de IA viven únicamente en pruebas.
 
-1. Entra a https://platform.openai.com/api-keys
-2. Crea una clave API.
-3. En la carpeta `LectorLab`, haz doble clic en `CONFIGURAR.bat`.
-4. Se creará (si todavía no existe) el archivo `.env` y se abrirá en Bloc de notas.
-5. Coloca tu clave:
+### Tutor real opcional
 
-```env
-OPENAI_API_KEY=tu_clave_aqui
-OPENAI_MODEL=gpt-5.6-luna
-PORT=3000
-```
+Copiar `.env.example` a `.env` y configurar `OPENAI_API_KEY` **solo en servidor**. No subir `.env`, compartirlo con estudiantes ni poner credenciales en HTML/JS. La API tiene facturación separada de ChatGPT.
 
-## MUY IMPORTANTE
+`OPENAI_MODEL` conserva el valor del respaldo; su disponibilidad y compatibilidad no se comprobaron contra una cuenta real. No se hicieron llamadas a OpenAI para completar la Etapa A. El adaptador pide `store:false`, pero eso no demuestra retención nula del proveedor ni resuelve el tratamiento de menores.
 
-- No pegues esa clave dentro de `index.html`.
-- No envíes el archivo `.env` a estudiantes.
-- No publiques el archivo `.env` en Drive, GitHub ni una página web pública.
-- Los estudiantes solo deben acceder a la página; nunca necesitan conocer tu clave.
+`GET /api/health` informa que HTTP está vivo y si hay adaptador configurado; `ai.verified:false` aclara que no verifica credencial/modelo/conectividad. No prueba que el tutor real funcione.
 
----
+En Windows: `INSTALAR.bat` usa `call npm ci`; `CONFIGURAR.bat` crea `.env` si falta; `INICIAR.bat` inicia y permite abrir la dirección al estar listo, sin una espera arbitraria de dos segundos. Los BAT se revisaron, pero no se ejecutaron en Windows.
 
-# 5. Inicia LectorLab
-
-En Windows, haz doble clic en:
-
-`INICIAR.bat`
-
-Cuando aparezca algo similar a:
+## Estructura
 
 ```text
-📚 LectorLab listo en http://localhost:3000
+server.js                    arranque, configuración y cierre
+src/app.js                   Express sin abrir puertos ni llamar a IA
+src/config.js                puerto/host/modelo y configuración
+src/validation.js            listas permitidas, tipos y límites
+src/ai/openai.js             adaptador IA server-side inyectable
+src/reports/workbook.js      Excel: Resumen, Respuestas, LectorLab
+lectorlab-prompt.js          reglas y lectura originales del tutor
+public/index.html            siete etapas, contenido y fuentes
+public/styles.css            estilos extraídos sin rediseño
+public/js/app.js             estado y eventos
+public/js/api.js             llamadas con espera finita
+public/js/assessment.js      indicador compartido orientativo
+tests/*.test.js              reglas, HTTP real y XLSX real
+tests/e2e/                   escritorio y viewport móvil
+docs/baseline/               inventario y hash del respaldo
+docs/ETAPA_A.md              aceptación y límites pendientes
 ```
 
-abre en tu navegador:
+## Cambios y límites
 
-http://localhost:3000
+Se corrigió la función inexistente que impedía finalizar/descargar y se unificó el cálculo. El indicador abierto comprueba **completitud**, no calidad inferencial: extensión mínima, dos evidencias distintas y reflexión. Los mensajes aclaran que pertinencia y vínculo lógico requieren revisión docente; las bandas e insignias conservadas no certifican dominio.
 
-No abras `public/index.html` directamente con doble clic: para que la IA funcione, el RED debe abrirse a través del servidor.
+La descarga envía respuestas crudas. El servidor recalcula aciertos/completitud e ignora `score`, `correct`, `criteria` y niveles del cliente. Valida tipos para impedir objetos fórmula/hipervínculo en ExcelJS. Conserva las tres hojas y el diálogo. Las fechas de inicio/cierre del navegador son informativas y no verificadas; la generación tiene fecha UTC del servidor.
 
----
+**No prueba autoría ni primer intento.** Las claves siguen públicas para el feedback local. El alumno aún puede alterar respuestas/historial/turnos o recargar. B–D incorporarán identidad, versiones, DB, autorización y contadores persistidos. El limitador IP en memoria es protección local, no identidad ni cuota confiable de aula.
 
-# 6. Cómo probar que realmente usa IA
+El trabajo sigue solo en memoria de pestaña; hay aviso al salir/recargar y confirmación al reiniciar. No se añadió `localStorage` sensible. Descargar no conserva un borrador recuperable. Las imágenes externas del respaldo siguen presentes; las pruebas no dependen de ellas. Privacidad/licencia y alojamiento local de recursos se revisarán antes del piloto.
 
-Ve hasta la etapa **“Tutor socrático”** y escribe respuestas diferentes, por ejemplo:
-
-```text
-Creo que Jordán pudo influir en lo que le ocurrió a Alicia porque era muy frío con ella.
-```
-
-LectorLab debería cuestionar la relación causal y pedir evidencia.
-
-Luego prueba algo como:
-
-```text
-La pista que más me importa es que Alicia empeoraba después de las noches.
-```
-
-La respuesta debería cambiar y profundizar esa pista, no repetir una pregunta fija.
-
-También puedes intentar:
-
-```text
-Dime la respuesta correcta.
-```
-
-El tutor debe negarse a resolverla y redirigirte hacia una evidencia del texto.
-
----
-
-# 7. Cómo funciona el límite de 5 intervenciones
-
-El navegador lleva la cuenta de las respuestas del estudiante y, además, el servidor valida que `turn` esté entre 1 y 5.
-
-Después de la quinta intervención:
-
-- LectorLab realiza un cierre metacognitivo breve.
-- El cuadro de escritura se bloquea.
-- El estudiante continúa hacia la evaluación final.
-
-Esto evita que el chat se convierta en una actividad demasiado larga dentro de un RED de 20 minutos.
-
----
-
-# 8. Dónde modificar la personalidad del chatbot
-
-Abre:
-
-`lectorlab-prompt.js`
-
-Ahí están las reglas pedagógicas de LectorLab. Puedes cambiar su tono, dificultad, estrategias o texto de referencia sin tocar la conexión con la API.
-
-Conviene mantener estas reglas:
-
-- no dar respuestas finales;
-- pedir evidencia;
-- cuestionar el vínculo entre evidencia y conclusión;
-- una pregunta principal por intervención;
-- respuestas breves;
-- no solicitar datos personales;
-- máximo cinco intervenciones.
-
----
-
-# 9. Dónde cambiar el modelo
-
-En `.env`:
-
-```env
-OPENAI_MODEL=gpt-5.6-luna
-```
-
-El modelo está separado del código para que puedas cambiarlo sin reprogramar nada.
-
----
-
-# 10. Si aparece un error
-
-## “LectorLab todavía no tiene configurada su clave de API”
-
-Revisa que exista el archivo `.env` y que contenga `OPENAI_API_KEY=` seguido de tu clave.
-
-## “No se pudo conectar con LectorLab”
-
-Comprueba:
-
-1. que `INICIAR.bat` siga abierto;
-2. que tengas conexión a internet;
-3. que tu cuenta API tenga facturación/crédito disponible;
-4. que la clave sea válida.
-
-## `npm` no se reconoce como comando
-
-Node.js no está instalado correctamente o debes cerrar y volver a abrir la terminal después de instalarlo.
-
----
-
-# 11. Para usarlo con estudiantes por internet
-
-`localhost` solo funciona en tu propia computadora. Para que tus estudiantes accedan desde sus celulares o computadoras, necesitas publicar **todo el proyecto Node.js** en un servicio de alojamiento que admita variables de entorno.
-
-En el alojamiento deberás crear una variable secreta llamada:
-
-```text
-OPENAI_API_KEY
-```
-
-con tu clave como valor.
-
-Nunca conviertas la clave en una variable JavaScript visible en el navegador.
-
----
-
-# 12. Diseño pedagógico implementado
-
-La secuencia conversacional no obliga a LectorLab a hacer exactamente las mismas cinco preguntas. En cambio, utiliza una política adaptativa:
-
-1. identifica qué afirma el estudiante;
-2. detecta si aporta o no evidencia;
-3. pide justificar el vínculo entre pista e interpretación;
-4. introduce objeciones o explicaciones alternativas cuando el razonamiento ya está avanzado;
-5. conduce a una revisión metacognitiva antes de la producción final.
-
-De este modo, dos estudiantes pueden recibir preguntas distintas aunque estén leyendo el mismo cuento.
-
-
----
-
-# 13. Exportación de respuestas a Excel
-
-Esta versión reemplaza la descarga en Bloc de notas por un archivo **.xlsx**.
-
-Al terminar el RED y pulsar **“Descargar respuestas en Excel”**, el servidor genera el archivo en ese momento y lo entrega al navegador. **No se almacena una copia permanente en el servidor.**
-
-El Excel contiene tres hojas:
-
-1. **Resumen**: puntaje formativo, nivel lector, aciertos e información básica del recorrido.
-2. **Respuestas**: respuesta inicial, seis preguntas de primer intento, hipótesis, interpretación final, evidencias y reflexión.
-3. **LectorLab**: diálogo completo estudiante–tutor, organizado por turnos.
-
-Para habilitar esta función, `package.json` incluye la dependencia `exceljs`. Si actualizas desde una versión anterior, ejecuta nuevamente:
+## Pruebas
 
 ```bash
-npm install
+npm run check
+npm test
 ```
 
-o haz doble clic en `INSTALAR.bat`.
+Para E2E en una máquina de desarrollo:
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+En esta nube hay Chromium. Se validó con:
+
+```bash
+PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:e2e
+```
+
+En PowerShell puede configurarse `$env:PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` si se utiliza un navegador de sistema. Sin esa variable se usa el navegador de Playwright. Las pruebas levantan un servidor test-only en loopback:3101 con IA simulada; no usan ni leen claves reales. No ejecutar `scripts/e2e-server.js` para estudiantes. Viewport móvil no equivale a dispositivo físico ni auditoría completa de accesibilidad.
+
+`npm run test:all` encadena sintaxis, unitarias/HTTP y E2E. `npm audit` consulta avisos conocidos del registro. El override acotado `exceljs → uuid@11.1.1` corrige el aviso de la transitiva original sin bajar ExcelJS; se prueba también su uso de UUID en XLSX. Quedan dependencias transitivas obsoletas de ExcelJS para seguimiento; cero avisos conocidos no significa ausencia de todo riesgo.
+
+## Conservación y continuación
+
+El commit inicial conserva los doce archivos del ZIP sin cambios, con inventario/hash. Los `.txt` portátiles describen la versión histórica: seguir ahora este README y el lockfile, sin reemplazar masivamente archivos ni volver a resolver dependencias sin revisar.
+
+No se añadieron roles, grupos, DB, documentos, generación de preguntas ni Sheets. La siguiente etapa prevista es B: identidad, sesiones y grupos. No publicar para menores hasta completar controles y revisión institucional del plan de auditoría.
