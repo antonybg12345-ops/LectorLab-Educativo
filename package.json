@@ -1,22 +1,32 @@
 {
-  "name": "lectorlab-red",
-  "version": "1.1.1",
+  "name": "lectorlab",
+  "version": "2.0.0-preview.1",
   "private": true,
   "type": "module",
-  "description": "LectorLab: tutor socrático con IA para el RED Más allá de las palabras",
+  "description": "Plataforma de Comunicación: actividades revisadas, evidencias y tutor socrático",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
     "check": "node scripts/check-syntax.js",
-    "test": "node --test tests/*.test.js",
+    "test": "node --test --test-concurrency=2 tests/*.test.js",
     "test:e2e": "playwright test",
-    "test:all": "npm run check && npm test && npm run test:e2e"
+    "test:all": "npm run check && npm test && npm run test:e2e && npm run test:platform:e2e",
+    "start:legacy": "node scripts/legacy-server.js",
+    "test:platform:e2e": "playwright test --config playwright.platform.config.js"
   },
   "dependencies": {
+    "@electric-sql/pglite": "0.5.12",
     "dotenv": "^16.4.7",
     "exceljs": "^4.4.0",
     "express": "^5.1.0",
-    "openai": "^5.20.0"
+    "fflate": "0.8.3",
+    "google-auth-library": "11.3.1",
+    "mammoth": "1.13.0",
+    "multer": "2.5.0",
+    "openai": "^5.20.0",
+    "pdf-parse": "2.4.5",
+    "pg": "8.23.1",
+    "yauzl": "3.4.0"
   },
   "engines": {
     "node": ">=24.19.0 <25",

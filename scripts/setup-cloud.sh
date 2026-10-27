@@ -18,3 +18,4 @@ if [[ -z "${PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH:-}" ]] && command -v chromium >/
   export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="$(command -v chromium)"
 fi
 npm run test:e2e
+npm run test:platform:e2e

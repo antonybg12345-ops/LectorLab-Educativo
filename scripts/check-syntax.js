@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const excluded = new Set(['.git', 'node_modules', 'test-results', 'playwright-report', 'coverage']);
+const excluded = new Set(['.git', '.data', 'backups', 'node_modules', 'test-results', 'test-results-platform', 'playwright-report', 'coverage']);
 
 function check(directory) {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {

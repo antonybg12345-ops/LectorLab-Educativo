@@ -1,0 +1,72 @@
+
+> lectorlab@2.0.0-preview.1 test
+> node --test --test-concurrency=2 tests/*.test.js
+
+✔ dos evidencias extensas distintas permiten calcular cierre y completitud (1.150947ms)
+✔ entradas vacías y breves no reciben puntos de completitud (0.607019ms)
+✔ la misma evidencia no cuenta dos veces pese a Unicode, mayúsculas y espacios (0.666717ms)
+✔ completitud no confunde emoji UTF-16 con dos caracteres de contenido (0.190199ms)
+✔ ignora puntajes, aciertos y criterios de evaluación enviados por cliente (0.261854ms)
+✔ normaliza tipos inválidos sin atribuir aciertos o completitud (0.136159ms)
+✔ preguntas incorrectas reducen la parte objetiva sin alterar la completitud (0.19774ms)
+✔ Importar app no abre puertos ni espera servicios, y config usa loopback (250.376205ms)
+✔ Health distingue proceso vivo de IA configurada; lectura no necesita clave (75.74084ms)
+✔ Tutor conserva prompt y cierre quinto turno con proveedor inyectado (13.19278ms)
+✔ Tutor rechaza mensaje/turno/historial inválidos antes de llamar IA (22.760796ms)
+✔ JSON malformado y cuerpo excesivo devuelven 400/413 en JSON (5.604797ms)
+✔ Limitador local cubre tutor y exportación y libera ventana expirada (7.395161ms)
+✔ Proveedor sin contenido devuelve 502; fallos 429/500 no filtran mensajes (8.917322ms)
+✔ XLSX real contiene tres hojas y recalcula sin confiar puntajes/correct del cliente (68.952981ms)
+✔ XLSX rechaza objetos fórmula/hipervínculo y campos mal tipados (23.802152ms)
+✔ XLSX escribe cadenas con prefijos de fórmula como texto, incluido Unicode (134.439704ms)
+✔ Adaptador de exportación fallido devuelve 500 JSON sin detalles internos (4.560665ms)
+✔ Adaptador OpenAI mantiene secretos fuera de input, store:false y contrato original (0.863345ms)
+✔ Override UUID conserva escritura y lectura de formato condicional extendido ExcelJS (10.62069ms)
+▶ PostgreSQL local, configuración inicial única y sesiones reales con CSRF
+  ✔ instalación vacía no autentica; dos setups concurrentes solo crean un docente (435.767405ms)
+  ✔ identidad viene de sesión y no del cuerpo; tokens no se almacenan en claro (7.352328ms)
+  ✔ CSRF y origen bloquean escrituras aunque exista cookie (25.11705ms)
+  ✔ rol estudiante no abre rutas docentes y alumno requiere docente responsable (626.968041ms)
+  ✔ alta y matrícula comparten transacción y se revierten juntas (196.371056ms)
+  ✔ cierre revoca sesión de verdad; login rota cookie y sesión (447.263327ms)
+  ✔ sesión caducada o usuario deshabilitado no da acceso (421.229551ms)
+  ✔ intentos de contraseña incorrecta se limitan sin revelar existencia (1620.928602ms)
+✔ PostgreSQL local, configuración inicial única y sesiones reales con CSRF (5572.917282ms)
+✔ hash scrypt individual, contraseña inválida y setup deshabilitado (2386.198957ms)
+✔ persistencia PostgreSQL embebida conserva datos y rechaza abrir dos procesos sobre el mismo directorio (1412.366302ms)
+✔ extracciones concurrentes se limitan y liberan capacidad al terminar (2515.065803ms)
+✔ TXT UTF-8, DOCX y PDF textuales extraen texto real en workers sin HTML (659.389942ms)
+✔ extractor rechaza binarios disfrazados, tamaño, MIME, cifrado/daño y PDF sin texto (483.277222ms)
+✔ DOCX rechaza macros, recursos externos y bombas de compresión antes de extraer (305.897092ms)
+✔ generación exige cita exacta y vínculo, preserva offsets Unicode y solo admite tipos solicitados (1.26899ms)
+✔ adaptador IA solo pide JSON server-side, store:false y texto como datos sin herramientas (0.528255ms)
+✔ generación admite relación y completado con claves privadas consistentes, nunca citas faltantes (0.523347ms)
+✔ carga privada, revisión del texto y generación permanecen borrador y aisladas por docente (813.494036ms)
+✔ documentos requieren autenticación y CSRF sin bloquear rutas ajenas al router (218.317756ms)
+✔ evidencia se ancla por puntos de código y nunca aparece en DTO del alumno (1424.673002ms)
+✔ publicación exige revisión y versiones publicadas no se editan; generación detecta cambio de texto (12.460606ms)
+✔ dos guardados concurrentes no sobrescriben el primer intento ni una revisión anterior (24.88473ms)
+✔ entrega concurrente es idempotente y crea un único evento de sincronización (26.707061ms)
+✔ docente y estudiante ajenos no acceden, y la rúbrica humana sustenta las insignias (32.227372ms)
+✔ reserva del tutor serializa carreras, deduplica y conserva contexto específico sin claves (22.945968ms)
+✔ fallo técnico no consume turno y respuesta resolutiva detectada se sustituye por pregunta (19.362384ms)
+✔ Plataforma HTTP: autoría revisada → asignación → respuestas persistidas → tutor → entrega → devolución y Excel (2457.378476ms)
+✔ Plataforma HTTP: TXT extraído y generación con proveedor inyectado permanecen borradores hasta revisión docente (1746.884768ms)
+✔ Excel autorizado conserva vínculo del razonamiento, tres hojas y texto sin fórmulas (1555.922393ms)
+✔ Google ausente no pierde la entrega ni la cola y no permite conexión estudiantil (49.32706ms)
+✔ Sheets reconcilia reintento por ID tras timeout, sin compartir destino entre docentes (46.178543ms)
+✔ minimización de IA oculta correo, DNI y teléfono sin borrar evidencia guardada (0.738653ms)
+✔ un puerto ocupado devuelve error claro y cierra PostgreSQL sin TypeError ni proceso colgado (2204.258351ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 54
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13843.668478
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice

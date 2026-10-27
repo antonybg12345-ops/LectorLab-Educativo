@@ -14,5 +14,5 @@ if errorlevel 1 (
 )
 echo.
 echo Instalacion completada.
-echo Ahora ejecuta CONFIGURAR.bat y luego INICIAR.bat
+echo Ahora ejecuta INICIAR.bat. CONFIGURAR.bat es opcional para habilitar IA.
 pause

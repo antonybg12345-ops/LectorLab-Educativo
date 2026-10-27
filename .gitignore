@@ -9,3 +9,7 @@ test-results/
 coverage/
 *.xlsx
 *.log
+.data/
+*.process-lock
+*.credentials.json
+backups/

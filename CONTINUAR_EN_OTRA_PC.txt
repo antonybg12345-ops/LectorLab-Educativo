@@ -1,3 +1,8 @@
+DOCUMENTO HISTÓRICO — LECTORLAB 1.1
+Para la primera versión 2.0 sigue docs/PRIMEROS_PASOS.md y README.md.
+No apliques los reemplazos ni la configuración antigua de este archivo a la versión 2.0.
+Se conserva a continuación por procedencia del respaldo.
+
 LECTORLAB — CONTINUAR EN OTRA COMPUTADORA
 =========================================
 

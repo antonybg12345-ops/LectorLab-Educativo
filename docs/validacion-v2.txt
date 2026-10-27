@@ -1,0 +1,143 @@
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated rimraf@2.7.1: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated lodash.isequal@4.5.0: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated fstream@1.0.12: This package is no longer supported.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 302 packages in 3s
+
+> lectorlab@2.0.0-preview.1 check
+> node scripts/check-syntax.js
+
+Sintaxis JavaScript comprobada. Para verificar comportamiento: npm test y npm run test:e2e.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+
+> lectorlab@2.0.0-preview.1 test
+> node --test --test-concurrency=2 tests/*.test.js
+
+✔ dos evidencias extensas distintas permiten calcular cierre y completitud (0.999455ms)
+✔ entradas vacías y breves no reciben puntos de completitud (0.77784ms)
+✔ la misma evidencia no cuenta dos veces pese a Unicode, mayúsculas y espacios (0.851118ms)
+✔ completitud no confunde emoji UTF-16 con dos caracteres de contenido (0.205521ms)
+✔ ignora puntajes, aciertos y criterios de evaluación enviados por cliente (0.208536ms)
+✔ normaliza tipos inválidos sin atribuir aciertos o completitud (0.157902ms)
+✔ preguntas incorrectas reducen la parte objetiva sin alterar la completitud (0.248184ms)
+✔ Importar app no abre puertos ni espera servicios, y config usa loopback (271.782061ms)
+✔ Health distingue proceso vivo de IA configurada; lectura no necesita clave (65.665293ms)
+✔ Tutor conserva prompt y cierre quinto turno con proveedor inyectado (13.597762ms)
+✔ Tutor rechaza mensaje/turno/historial inválidos antes de llamar IA (24.679547ms)
+✔ JSON malformado y cuerpo excesivo devuelven 400/413 en JSON (6.250893ms)
+✔ Limitador local cubre tutor y exportación y libera ventana expirada (7.327241ms)
+✔ Proveedor sin contenido devuelve 502; fallos 429/500 no filtran mensajes (7.873762ms)
+✔ XLSX real contiene tres hojas y recalcula sin confiar puntajes/correct del cliente (55.121238ms)
+✔ XLSX rechaza objetos fórmula/hipervínculo y campos mal tipados (17.529154ms)
+✔ XLSX escribe cadenas con prefijos de fórmula como texto, incluido Unicode (82.783676ms)
+✔ Adaptador de exportación fallido devuelve 500 JSON sin detalles internos (4.50968ms)
+✔ Adaptador OpenAI mantiene secretos fuera de input, store:false y contrato original (0.665756ms)
+✔ Override UUID conserva escritura y lectura de formato condicional extendido ExcelJS (9.623676ms)
+▶ PostgreSQL local, configuración inicial única y sesiones reales con CSRF
+  ✔ instalación vacía no autentica; dos setups concurrentes solo crean un docente (343.960116ms)
+  ✔ identidad viene de sesión y no del cuerpo; tokens no se almacenan en claro (44.77997ms)
+  ✔ CSRF y origen bloquean escrituras aunque exista cookie (42.514459ms)
+  ✔ rol estudiante no abre rutas docentes y alumno requiere docente responsable (672.688897ms)
+  ✔ alta y matrícula comparten transacción y se revierten juntas (206.084905ms)
+  ✔ cierre revoca sesión de verdad; login rota cookie y sesión (423.203505ms)
+  ✔ sesión caducada o usuario deshabilitado no da acceso (475.320483ms)
+  ✔ intentos de contraseña incorrecta se limitan sin revelar existencia (1685.573866ms)
+✔ PostgreSQL local, configuración inicial única y sesiones reales con CSRF (5686.078662ms)
+✔ hash scrypt individual, contraseña inválida y setup deshabilitado (2391.31857ms)
+✔ persistencia PostgreSQL embebida conserva datos y rechaza abrir dos procesos sobre el mismo directorio (1376.296456ms)
+✔ extracciones concurrentes se limitan y liberan capacidad al terminar (2846.989336ms)
+✔ TXT UTF-8, DOCX y PDF textuales extraen texto real en workers sin HTML (719.630926ms)
+✔ extractor rechaza binarios disfrazados, tamaño, MIME, cifrado/daño y PDF sin texto (542.129448ms)
+✔ DOCX rechaza macros, recursos externos y bombas de compresión antes de extraer (309.332643ms)
+✔ generación exige cita exacta y vínculo, preserva offsets Unicode y solo admite tipos solicitados (1.371831ms)
+✔ adaptador IA solo pide JSON server-side, store:false y texto como datos sin herramientas (0.627069ms)
+✔ generación admite relación y completado con claves privadas consistentes, nunca citas faltantes (0.537568ms)
+✔ carga privada, revisión del texto y generación permanecen borrador y aisladas por docente (816.334155ms)
+✔ documentos requieren autenticación y CSRF sin bloquear rutas ajenas al router (206.904699ms)
+✔ evidencia se ancla por puntos de código y nunca aparece en DTO del alumno (1401.65813ms)
+✔ publicación exige revisión y versiones publicadas no se editan; generación detecta cambio de texto (12.270577ms)
+✔ dos guardados concurrentes no sobrescriben el primer intento ni una revisión anterior (25.056621ms)
+✔ entrega concurrente es idempotente y crea un único evento de sincronización (25.945615ms)
+✔ docente y estudiante ajenos no acceden, y la rúbrica humana sustenta las insignias (29.27127ms)
+✔ reserva del tutor serializa carreras, deduplica y conserva contexto específico sin claves (21.669577ms)
+✔ fallo técnico no consume turno y respuesta resolutiva detectada se sustituye por pregunta (19.420459ms)
+✔ Plataforma HTTP: autoría revisada → asignación → respuestas persistidas → tutor → entrega → devolución y Excel (2630.773812ms)
+✔ Plataforma HTTP: TXT extraído y generación con proveedor inyectado permanecen borradores hasta revisión docente (1476.095346ms)
+✔ Excel autorizado conserva vínculo del razonamiento, tres hojas y texto sin fórmulas (1503.037476ms)
+✔ Google ausente no pierde la entrega ni la cola y no permite conexión estudiantil (49.134308ms)
+✔ Sheets reconcilia reintento por ID tras timeout, sin compartir destino entre docentes (48.873405ms)
+✔ minimización de IA oculta correo, DNI y teléfono sin borrar evidencia guardada (0.741137ms)
+ℹ tests 53
+ℹ suites 0
+ℹ pass 53
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12572.104335
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+
+> lectorlab@2.0.0-preview.1 test:e2e
+> playwright test
+
+[WebServer] (node:18508) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:18519) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/recorrido.spec.js:56:1 › recorrido completo, foco al avanzar con teclado y Excel con tres hojas (8.7s)
+  ✓   2 [chromium] › tests/e2e/recorrido.spec.js:111:1 › un fallo IA conserva el texto y permite reintentar sin gastar un turno (6.0s)
+  ✓   3 [chromium] › tests/e2e/recorrido.spec.js:123:1 › solicitud pendiente bloquea doble envío y navegación hasta completarse (6.6s)
+  ✓   4 [chromium] › tests/e2e/recorrido.spec.js:141:1 › recargar con trabajo pendiente avisa y cancelar preserva el escrito (384ms)
+  ✓   5 [chromium] › tests/e2e/recorrido.spec.js:155:1 › Reiniciar permite cancelar o aceptar sin un segundo aviso beforeunload (7.8s)
+(node:18970) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [mobile] › tests/e2e/recorrido.spec.js:56:1 › recorrido completo, foco al avanzar con teclado y Excel con tres hojas (9.3s)
+  ✓   7 [mobile] › tests/e2e/recorrido.spec.js:111:1 › un fallo IA conserva el texto y permite reintentar sin gastar un turno (6.4s)
+  ✓   8 [mobile] › tests/e2e/recorrido.spec.js:123:1 › solicitud pendiente bloquea doble envío y navegación hasta completarse (7.1s)
+  ✓   9 [mobile] › tests/e2e/recorrido.spec.js:141:1 › recargar con trabajo pendiente avisa y cancelar preserva el escrito (377ms)
+  ✓  10 [mobile] › tests/e2e/recorrido.spec.js:155:1 › Reiniciar permite cancelar o aceptar sin un segundo aviso beforeunload (8.3s)
+
+  10 passed (1.1m)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+
+> lectorlab@2.0.0-preview.1 test:platform:e2e
+> playwright test --config playwright.platform.config.js
+
+[WebServer] (node:19294) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:19306) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [platform-desktop] › tests/platform-e2e/plataforma.spec.js:50:1 › docente y estudiante completan publicación revisada, trabajo guardado, tutor, entrega y devolución (7.1s)
+  ✓  2 [platform-desktop] › tests/platform-e2e/plataforma.spec.js:155:1 › un TXT y las propuestas de tres tipos permanecen borradores hasta la revisión explícita (1.2s)
+(node:19485) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [platform-mobile] › tests/platform-e2e/plataforma.spec.js:50:1 › docente y estudiante completan publicación revisada, trabajo guardado, tutor, entrega y devolución (6.9s)
+  ✓  4 [platform-mobile] › tests/platform-e2e/plataforma.spec.js:155:1 › un TXT y las propuestas de tres tipos permanecen borradores hasta la revisión explícita (1.2s)
+
+  4 passed (20.1s)
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice

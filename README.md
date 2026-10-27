@@ -1,92 +1,63 @@
-# LectorLab — Etapa A
+# LectorLab 2.0 — primera versión
 
-Recurso de Comunicación para 4.º de secundaria del Perú: adaptación de *El almohadón de pluma*, seis preguntas, hipótesis, tutor socrático, interpretación con dos evidencias, reflexión y Excel.
+Plataforma de Comunicación para secundaria peruana, construida sobre LectorLab existente. Conserva *Más allá de las palabras* y su recorrido de siete etapas; añade acceso docente/estudiante, grupos, actividades con revisión, trabajo persistente y resultados desde servidor.
 
-Esta versión estabiliza el proyecto existente para **desarrollo y demostración local**. No es aún una plataforma multiusuario: no tiene cuentas, DB ni registro confiable de primeros intentos o conversaciones. No usar datos reales de menores ni publicar como evaluación segura.
+**Para empezar sin revisar código:** [guía de primeros pasos](docs/PRIMEROS_PASOS.md).
 
-## Instalación y ejecución
+## Arranque
 
-Node.js **24.19.0** (`.nvmrc`/`.node-version`) y npm **11.9.0**. Usar el checkout existente; no hace falta crear otro worktree para cada tarea.
+Node **24.19.0** y npm **11.9.0**. Desde esta carpeta:
 
 ```bash
-cd /workspace/LectorLab-Educativo
 npm ci
-npm run check
-npm test
 npm start
 ```
 
-En otra computadora, cambiar la primera ruta por la de la carpeta del proyecto. El servidor escucha en `127.0.0.1:3000` por defecto. Abrir esa dirección en el navegador; no abrir el HTML directamente. `HOST` y `PORT` son configurables, pero cambiar el host no añade seguridad multiusuario. Detener con Ctrl+C.
+Abrir la dirección local indicada por el servidor, normalmente `http://127.0.0.1:3000`. En Windows: `INSTALAR.bat`, después `INICIAR.bat`. No abrir el HTML directamente. La primera pantalla crea tu acceso docente, con contraseña propia de al menos 10 caracteres. No hay cuentas ni claves predeterminadas. No requiere configurar IA para comenzar.
 
-Lectura, preguntas, cierre y Excel funcionan **sin clave de IA**. Si falta configuración, el tutor informa el error y permite continuar; no se sustituye por respuestas simuladas en producción. Los dobles de IA viven únicamente en pruebas.
+## Qué funciona
 
-### Tutor real opcional
+- Espacios docente y estudiante; sesiones de servidor, roles, CSRF, contraseñas scrypt y permisos por propietario/grupo.
+- Grupos y accesos individuales con alias; publicación de versión revisada y asignación.
+- RED original, lector con párrafos, seis preguntas de primer intento registrado, hipótesis, dos evidencias, vínculo razonado y reflexión.
+- Guardado y recuperación al recargar; entrega y tiempos de servidor; respuestas objetivas calculadas desde claves privadas. Producciones abiertas pendientes de revisión docente, sin nota por longitud.
+- Rúbrica y devolución docente; insignias privadas confirmadas por revisión, sin rankings ni acusaciones automáticas.
+- Carga privada de TXT UTF-8, DOCX y PDF **textuales** (hasta 2 MB); revisión del texto extraído.
+- Autoría manual; adaptador IA para generar inferencia, relación y completado con evidencia literal validada. Nada se publica automáticamente.
+- Tutor situado en el texto asignado, historial auténtico, cinco intervenciones controladas en servidor e idempotencia. Sin proveedor, guía fija claramente marcada como **sin IA**.
+- Excel individual y consolidado, tres hojas, obtenido desde registros persistidos.
+- Cola persistente y conexión opcional a Sheets con destino por docente, escritura RAW y reconciliación por ID. Sin credencial explícita se muestra no configurado y Excel sigue funcionando.
 
-Copiar `.env.example` a `.env` y configurar `OPENAI_API_KEY` **solo en servidor**. No subir `.env`, compartirlo con estudiantes ni poner credenciales en HTML/JS. La API tiene facturación separada de ChatGPT.
+## Datos y configuración
 
-`OPENAI_MODEL` conserva el valor del respaldo; su disponibilidad y compatibilidad no se comprobaron contra una cuenta real. No se hicieron llamadas a OpenAI para completar la Etapa A. El adaptador pide `store:false`, pero eso no demuestra retención nula del proveedor ni resuelve el tratamiento de menores.
+PostgreSQL embebido **PGlite** guarda en `.data/postgres` sin instalar un servicio separado. Una sola instancia abre esa carpeta; no borrarla ni incluirla en Git/ZIP. Para respaldarla, detener LectorLab y copiar la carpeta privada completa a un destino protegido. Nunca copiar una DB abierta. Restaurar con el proceso detenido y conservar una copia anterior. La persistencia y reapertura están probadas; no hay backup automático ni política institucional de borrado aplicada.
 
-`GET /api/health` informa que HTTP está vivo y si hay adaptador configurado; `ai.verified:false` aclara que no verifica credencial/modelo/conectividad. No prueba que el tutor real funcione.
+`DATABASE_URL` permite usar PostgreSQL externo con el adaptador `pg`, pero esa conexión externa no fue probada en esta entrega. No ejecutar varias instancias sobre PGlite. Usar el checkout existente; no hacen falta worktrees adicionales.
 
-En Windows: `INSTALAR.bat` usa `call npm ci`; `CONFIGURAR.bat` crea `.env` si falta; `INICIAR.bat` inicia y permite abrir la dirección al estar listo, sin una espera arbitraria de dos segundos. Los BAT se revisaron, pero no se ejecutaron en Windows.
+`.env.example` documenta opciones. Crear `.env` solo si se necesitan; no poner credenciales en HTML/JS ni subirlas a Git.
 
-## Estructura
+IA real requiere **ambos** `OPENAI_API_KEY` y `OPENAI_MODEL`, con un modelo disponible en tu cuenta. No se consumió API real en las pruebas. Se usa `store:false`, sin afirmar retención nula del proveedor. Se minimizan identificadores y se enmascaran algunos datos personales por patrón; eso no reconoce todos los nombres o datos indirectos. Verificar modelos, costos, contratos y calidad pedagógica antes de habilitar IA con estudiantes.
 
-```text
-server.js                    arranque, configuración y cierre
-src/app.js                   Express sin abrir puertos ni llamar a IA
-src/config.js                puerto/host/modelo y configuración
-src/validation.js            listas permitidas, tipos y límites
-src/ai/openai.js             adaptador IA server-side inyectable
-src/reports/workbook.js      Excel: Resumen, Respuestas, LectorLab
-lectorlab-prompt.js          reglas y lectura originales del tutor
-public/index.html            siete etapas, contenido y fuentes
-public/styles.css            estilos extraídos sin rediseño
-public/js/app.js             estado y eventos
-public/js/api.js             llamadas con espera finita
-public/js/assessment.js      indicador compartido orientativo
-tests/*.test.js              reglas, HTTP real y XLSX real
-tests/e2e/                   escritorio y viewport móvil
-docs/baseline/               inventario y hash del respaldo
-docs/ETAPA_A.md              aceptación y límites pendientes
-```
-
-## Cambios y límites
-
-Se corrigió la función inexistente que impedía finalizar/descargar y se unificó el cálculo. El indicador abierto comprueba **completitud**, no calidad inferencial: extensión mínima, dos evidencias distintas y reflexión. Los mensajes aclaran que pertinencia y vínculo lógico requieren revisión docente; las bandas e insignias conservadas no certifican dominio.
-
-La descarga envía respuestas crudas. El servidor recalcula aciertos/completitud e ignora `score`, `correct`, `criteria` y niveles del cliente. Valida tipos para impedir objetos fórmula/hipervínculo en ExcelJS. Conserva las tres hojas y el diálogo. Las fechas de inicio/cierre del navegador son informativas y no verificadas; la generación tiene fecha UTC del servidor.
-
-**No prueba autoría ni primer intento.** Las claves siguen públicas para el feedback local. El alumno aún puede alterar respuestas/historial/turnos o recargar. B–D incorporarán identidad, versiones, DB, autorización y contadores persistidos. El limitador IP en memoria es protección local, no identidad ni cuota confiable de aula.
-
-El trabajo sigue solo en memoria de pestaña; hay aviso al salir/recargar y confirmación al reiniciar. No se añadió `localStorage` sensible. Descargar no conserva un borrador recuperable. Las imágenes externas del respaldo siguen presentes; las pruebas no dependen de ellas. Privacidad/licencia y alojamiento local de recursos se revisarán antes del piloto.
+Sheets requiere un archivo de credencial de servicio **exclusivo del proyecto**, referenciado por `LECTORLAB_GOOGLE_CREDENTIALS_FILE`. Compartir con esa cuenta únicamente la hoja elegida. No se adopta la credencial ambiental de la máquina. El docente configura el ID en su interfaz; nunca introduce claves en el navegador. La conexión real a Google no está verificada sin esa configuración. Esta primera versión sincroniza mediante acción docente; Google no es la base de datos ni origen de calificaciones.
 
 ## Pruebas
 
 ```bash
 npm run check
 npm test
-```
-
-Para E2E en una máquina de desarrollo:
-
-```bash
 npx playwright install chromium
 npm run test:e2e
+npm run test:platform:e2e
 ```
 
-En esta nube hay Chromium. Se validó con:
+En esta nube ya hay Chromium: usar `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium` para las suites de navegador. `bash scripts/setup-cloud.sh` instala con lockfile y ejecuta todas las suites; usa un navegador instalado o la ruta explícita. Las pruebas usan cuentas ficticias, PostgreSQL embebido real, parsers y XLSX reales; los servicios externos son dobles **solo en tests**.
 
-```bash
-PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:e2e
-```
+La Etapa A se conserva en `src/app.js` y `public/index.html`, con su suite de regresión. `npm run start:legacy` permite consultar esa demo en loopback:3001, sin adaptador IA y sin autoridad académica. Sus rutas públicas no se montan en la plataforma autenticada; las claves de esa demo no están disponibles a estudiantes de la plataforma.
 
-En PowerShell puede configurarse `$env:PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` si se utiliza un navegador de sistema. Sin esa variable se usa el navegador de Playwright. Las pruebas levantan un servidor test-only en loopback:3101 con IA simulada; no usan ni leen claves reales. No ejecutar `scripts/e2e-server.js` para estudiantes. Viewport móvil no equivale a dispositivo físico ni auditoría completa de accesibilidad.
+## Límites de esta entrega
 
-`npm run test:all` encadena sintaxis, unitarias/HTTP y E2E. `npm audit` consulta avisos conocidos del registro. El override acotado `exceljs → uuid@11.1.1` corrige el aviso de la transitiva original sin bajar ExcelJS; se prueba también su uso de UUID en XLSX. Quedan dependencias transitivas obsoletas de ExcelJS para seguimiento; cero avisos conocidos no significa ausencia de todo riesgo.
+Es una primera versión para probar con datos ficticios, **sin despliegue público**. No incluye OCR, antivirus externo, recuperación por correo, altas de docentes adicionales desde interfaz, multiinstitución, revisión legal ni backups/borrado automáticos. Los originales subidos se descartan tras extraer: se conserva texto canónico privado y hash, no el archivo original. Offsets de citas son puntos de código Unicode del texto revisado, no coordenadas del PDF.
 
-## Conservación y continuación
+La calidad real del modelo y la política de no dar respuestas requieren evaluación pedagógica; un prompt y filtros finitos no son garantía absoluta. Antes de menores reales: responsable institucional, base/autorizaciones, avisos, conservación, transferencias, HTTPS y operación revisados. Cookies `Secure` al usar `NODE_ENV=production`; `TRUST_PROXY=1` solo detrás de un proxy conocido. El alta inicial se deshabilita fuera de loopback.
 
-El commit inicial conserva los doce archivos del ZIP sin cambios, con inventario/hash. Los `.txt` portátiles describen la versión histórica: seguir ahora este README y el lockfile, sin reemplazar masivamente archivos ni volver a resolver dependencias sin revisar.
-
-No se añadieron roles, grupos, DB, documentos, generación de preguntas ni Sheets. La siguiente etapa prevista es B: identidad, sesiones y grupos. No publicar para menores hasta completar controles y revisión institucional del plan de auditoría.
+El respaldo original y el punto de retorno Etapa A están registrados en Git; [arquitectura y estado de esta versión](docs/VERSION_2_PREVIEW.md). No se ha subido código a GitHub ni probado restauración en otra tarea de nube.
