@@ -1,0 +1,62 @@
+[
+  {
+    "path": ".env.example",
+    "bytes": 235,
+    "sha256": "2478e937ca4e557e369b401fdfda55abc302b2b86f7b5fc269d5996cc8177134"
+  },
+  {
+    "path": ".gitignore",
+    "bytes": 44,
+    "sha256": "47ad7d8557fcdd82063c92da452c4ab8425b234c2185e20709b39f0646d7d0be"
+  },
+  {
+    "path": "ACTUALIZAR_A_EXCEL.txt",
+    "bytes": 991,
+    "sha256": "7b28c6384c3dfed250b5f159a43617f3bb98585772e767612bd37c2a3071fd3c"
+  },
+  {
+    "path": "CONFIGURAR.bat",
+    "bytes": 261,
+    "sha256": "3d7d27e94fb45fbf9c850e4925fd7da0d37e0c1587774cca53cbd5af3a19a6e4"
+  },
+  {
+    "path": "CONTINUAR_EN_OTRA_PC.txt",
+    "bytes": 2036,
+    "sha256": "6dba370e8f38a017a771cfa8b98a6f0e2196c263f98671817d248a96201fce9b"
+  },
+  {
+    "path": "INICIAR.bat",
+    "bytes": 256,
+    "sha256": "0bb88d28637bdde8eebd088ee2fc0c8565b585a66920a3da6458b14c50993e22"
+  },
+  {
+    "path": "INSTALAR.bat",
+    "bytes": 433,
+    "sha256": "bfee76d9d898e7b2de5d9492b9816eea02ce57669f27ff076cdd4cf044276361"
+  },
+  {
+    "path": "README.md",
+    "bytes": 7874,
+    "sha256": "febddd281d5635b20f2a4d0a6ad7c15c72683542770a169f8cd64f1344396178"
+  },
+  {
+    "path": "lectorlab-prompt.js",
+    "bytes": 5134,
+    "sha256": "7ddf923fbfafe6bdc09435b831873f50e3536990a79f489165a5a9670240fda8"
+  },
+  {
+    "path": "package.json",
+    "bytes": 471,
+    "sha256": "fa87a539fb67e724bcea46a0e8bb021d4ae0390f414a539f2af6dab724355fa6"
+  },
+  {
+    "path": "public/index.html",
+    "bytes": 45453,
+    "sha256": "6363c7f49efa2a9f885093895ec9faf0695dc2ab3561b9dbae4c97a6447f2e91"
+  },
+  {
+    "path": "server.js",
+    "bytes": 12444,
+    "sha256": "3f5c336bae66fb646061bd79d19d4a8b43148467e207f897ec26d3fdb2396649"
+  }
+]

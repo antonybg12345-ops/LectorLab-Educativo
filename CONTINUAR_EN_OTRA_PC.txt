@@ -1,0 +1,44 @@
+LECTORLAB — CONTINUAR EN OTRA COMPUTADORA
+=========================================
+
+ESTADO ACTUAL
+- RED web de 20 minutos: "Más allá de las palabras".
+- Texto base: adaptación pedagógica de "El almohadón de pluma".
+- 6 preguntas objetivas de primer intento.
+- Retroalimentación formativa.
+- Méritos lectores: Inicio / En proceso / Logro esperado / Destacado.
+- LectorLab conectado a OpenAI mediante servidor Node.js.
+- Máximo 5 intervenciones.
+- Exportación individual a Excel (.xlsx) incluida.
+- La clave API NO está incluida en este respaldo.
+
+PARA ABRIRLO EN OTRA PC
+1. Descomprime este ZIP.
+2. Instala Node.js LTS si esa PC no lo tiene.
+3. Abre la carpeta LectorLab.
+4. Ejecuta INSTALAR.bat (solo la primera vez en esa PC).
+5. Ejecuta CONFIGURAR.bat.
+6. En el archivo .env coloca tu propia clave:
+   OPENAI_API_KEY=TU_CLAVE
+   OPENAI_MODEL=gpt-5.6-luna
+   PORT=3000
+7. Guarda el .env.
+8. Ejecuta INICIAR.bat.
+9. Abre http://localhost:3000
+
+IMPORTANTE
+- Nunca subas ni compartas el archivo .env.
+- No pongas la API key dentro de index.html.
+- Si usas una computadora prestada, al terminar borra el archivo .env y vacía la Papelera.
+
+PENDIENTES ACORDADOS
+1. Mejorar LectorLab para que, ante una respuesta incoherente o ambigua, no invente sentido y pida reformulación.
+2. Mantener el 5.º turno como cierre metacognitivo sin abrir una sexta pregunta.
+3. Añadir explícitamente el sustento de Teoría de la Autodeterminación (SDT): autonomía, competencia y relación.
+4. Implementar, si se decide, un registro central para que las respuestas de todos los estudiantes se acumulen y el docente descargue un Excel consolidado.
+5. Publicar el proyecto en internet (p. ej. Render) para que funcione sin mantener encendida la PC personal.
+
+CUADRO SDT TRABAJADO
+- Unidad 1: recorrido, progreso, preguntas de reto y feedback -> autonomía + competencia.
+- Unidad 2: LectorLab, evaluación e insignias -> relación + competencia + autonomía.
+- La gamificación se usa para visualizar progreso, no para rankings competitivos.

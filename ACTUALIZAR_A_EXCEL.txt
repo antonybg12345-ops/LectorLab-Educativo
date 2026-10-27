@@ -1,0 +1,18 @@
+LECTORLAB - ACTUALIZACIÓN DE DESCARGA A EXCEL
+
+1. Cierra la ventana donde está ejecutándose INICIAR.bat.
+2. Haz una copia de seguridad de tu carpeta LectorLab actual.
+3. Extrae estos archivos DIRECTAMENTE dentro de tu carpeta LectorLab actual.
+4. Cuando Windows pregunte si deseas reemplazar server.js, package.json, README.md y public/index.html, acepta.
+5. NO borres ni reemplaces tu archivo .env. Esta actualización no lo incluye.
+6. Ejecuta INSTALAR.bat otra vez. Esto instalará la nueva dependencia "exceljs".
+7. Ejecuta INICIAR.bat.
+8. Abre http://localhost:3000 y completa el RED.
+9. Al final, pulsa "Descargar respuestas en Excel".
+
+El archivo Excel contendrá:
+- Resumen: puntaje, nivel lector, mérito y datos del recorrido.
+- Respuestas: respuestas abiertas y preguntas de primer intento.
+- LectorLab: conversación completa estudiante-tutor.
+
+Las respuestas NO se guardan permanentemente en el servidor: el Excel se genera al pulsar el botón y se descarga en el navegador.
