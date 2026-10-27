@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="es-PE"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>LectorLab 2.0 · Demo docente y estudiante</title><style>:root{--ink:#1f2530;--muted:#657084;--paper:#f8f4ec;--wine:#6d3045;--gold:#b27f38;--sage:#3c6859;--line:#ded7cf;--blue:#365d76;--soft:#f3e9ec;--danger:#9b3336}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}button,input,textarea,select{font:inherit}button,a,input,textarea,select{touch-action:manipulation}button{cursor:pointer}button:disabled{cursor:wait;opacity:.55}a{color:var(--wine)}h1,h2,h3{line-height:1.18}h1,h2{font-family:Georgia,serif;font-weight:500}h1{font-size:clamp(2rem,5vw,3.3rem);margin:.3rem 0 1rem}h2{font-size:1.75rem}h3{font-size:1.05rem}p{margin:.6rem 0 1rem}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:3px}h1:focus,h2:focus,main:focus{outline:none}.skip{position:absolute;left:8px;top:-100px;background:white;padding:10px;z-index:100}.skip:focus{top:8px}.site-header{max-width:1280px;margin:auto;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid var(--line)}.brand{color:var(--wine);text-decoration:none;display:flex;align-items:center;gap:12px;font-size:1.4rem;font-weight:800;line-height:1.2}.brand small{display:block;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-top:5px;color:var(--muted)}.brand-mark{width:42px;height:48px;border:1px solid var(--wine);border-radius:5px 16px 5px 5px;display:grid;place-items:center;font-family:Georgia,serif;font-size:1.8rem}.account{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.account span{font-size:.9rem;color:var(--muted)}#view{max-width:1220px;margin:auto;padding:32px 28px;min-height:60vh}.site-footer{max-width:1164px;margin:25px auto 0;padding:24px 0 35px;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted)}.site-footer p{max-width:820px}.eyebrow{font-size:.78rem;color:var(--wine);text-transform:uppercase;letter-spacing:.12em;font-weight:800}.intro{max-width:760px;color:var(--muted)}.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:24px;margin:18px 0}.panel.compact{margin:10px 0;padding:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}.triple{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.nav{display:flex;gap:8px;margin:24px 0;flex-wrap:wrap}.nav button[aria-current="page"]{background:var(--wine);color:white;border-color:var(--wine)}.btn{border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink);padding:10px 16px;min-height:44px;font-weight:650;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}.btn.primary{background:var(--wine);border-color:var(--wine);color:white}.btn.green{background:var(--sage);border-color:var(--sage);color:white}.btn.danger{border-color:var(--danger);color:var(--danger)}.btn.small{font-size:.86rem;min-height:38px;padding:6px 10px}.actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:18px 0 0}.row{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}.stack>*+*{margin-top:12px}label.field{display:block;font-weight:650;margin:14px 0 5px}input:not([type=checkbox]):not([type=radio]),textarea,select{width:100%;padding:10px 12px;color:var(--ink);background:white;border:1px solid #c8ccd2;border-radius:7px;min-height:44px}textarea{min-height:100px;resize:vertical}textarea.long{min-height:240px}textarea.code{font-family:monospace;font-size:.85rem}input[type=checkbox]{width:20px;height:20px;vertical-align:middle;flex-shrink:0}.check{display:flex;align-items:start;gap:10px;margin:16px 0}.check input{margin-top:3px}.muted,.small{color:var(--muted);font-size:.89rem}.status{padding:10px 12px;border-left:3px solid var(--sage);background:#eef5f1;margin:12px 0;overflow-wrap:anywhere}.status:empty{display:none}.status.error{border-color:var(--danger);background:#fff0f0;color:#7d292c}.note{border-left:3px solid var(--gold);padding:12px 16px;background:#fbf5e8;margin:16px 0;color:#6b5130}.pill{display:inline-block;padding:3px 10px;font-size:.77rem;border-radius:20px;background:var(--soft);color:var(--wine);font-weight:700}.pill.published,.pill.reviewed{background:#eaf4ee;color:#325b45}.list{list-style:none;margin:0;padding:0}.list>li{padding:16px 0;border-top:1px solid var(--line)}.list>li:first-child{border:0}.list h3{margin:0 0 4px}.empty{padding:22px;background:#faf9f6;border:1px dashed #d7d1c7;border-radius:8px;color:var(--muted)}.auth{max-width:520px;margin:18px auto}.auth .panel{padding:30px}.metrics{display:flex;flex-wrap:wrap;gap:16px}.metric{background:white;border:1px solid var(--line);padding:18px;border-radius:12px;min-width:150px}.metric strong{display:block;color:var(--wine);font-size:1.7rem}.review-card{border:1px solid var(--line);padding:18px;border-radius:10px;margin:12px 0}.review-card blockquote{margin:12px 0;padding:10px 14px;border-left:3px solid var(--gold);background:#faf7f0}.review-card ul{padding-left:22px}.review-card dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.9rem}.review-card dt{font-weight:700}.review-card dd{margin:0;overflow-wrap:anywhere}.reading-layout{display:grid;grid-template-columns:minmax(280px,.9fr) minmax(320px,1.1fr);gap:24px;align-items:start}.reading-panel{position:sticky;top:18px;background:#fffcf7;border:1px solid #e3d7c8;border-radius:14px;padding:20px;max-height:76vh;overflow:auto}.reading-panel h2{font-size:1.4rem;margin-top:0}.reading-text{font-family:Georgia,serif;font-size:1.05rem;line-height:1.9}.reading-text p{position:relative;padding-left:27px;white-space:pre-wrap}.para-num{font:600 .7rem system-ui;color:var(--muted);position:absolute;left:0;top:7px}.reading-panel details>summary{font-weight:750;cursor:pointer}.question{border-top:1px solid var(--line);padding:18px 0}.question:first-child{border:0}.question h3{font-size:1.02rem;line-height:1.55}.choice{display:block;width:100%;text-align:left;background:white;border:1px solid #cbd0d7;border-radius:8px;padding:12px;margin:8px 0;color:var(--ink)}.choice.selected{border:2px solid var(--wine);background:var(--soft)}.choice:disabled{cursor:default;opacity:.8}.choice.correct{border-color:var(--sage);background:#eef6f1}.feedback{font-size:.9rem;padding:9px 12px;background:#edf3f6;border-radius:6px}.steps{display:flex;gap:6px;margin:18px 0 25px;flex-wrap:wrap}.step-dot{border:1px solid var(--line);background:white;border-radius:7px;padding:8px 11px;min-height:42px;color:var(--muted);font-size:.8rem}.step-dot[aria-current=step]{background:var(--wine);color:white;border-color:var(--wine)}.save-status{font-size:.85rem;color:var(--sage);min-height:24px}.chat-log{max-height:340px;overflow:auto;background:#f8fafb;padding:12px;border:1px solid var(--line);border-radius:8px}.chat-message{padding:10px 13px;margin:8px 0;background:#eaf0f4;border-radius:9px;white-space:pre-wrap;font-size:.94rem}.chat-message.user{margin-left:18px;background:var(--soft)}.chat-message strong{display:block;font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}.badges{display:flex;gap:10px;flex-wrap:wrap}.badge{padding:10px 14px;border:1px solid #d7bc84;background:#fff8e6;border-radius:9px;color:#715221}.rubric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:.88rem}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-size:.78rem;text-transform:uppercase}td .btn{white-space:nowrap}.filebox{padding:16px;border:1px dashed #bcb1a2;border-radius:9px}.hidden{display:none!important}.preview-text{max-height:300px;overflow:auto;white-space:pre-wrap;border:1px solid var(--line);padding:14px;background:#fcfaf6}.sources{font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);margin-top:20px;padding-top:15px}.sources a{overflow-wrap:anywhere}.inline-radio{display:flex;gap:8px;align-items:center}.question-actions{display:flex;justify-content:flex-end;margin-top:8px}
+@media(max-width:850px){.reading-layout{grid-template-columns:1fr}.reading-panel{position:static;max-height:none}.reading-panel details:not([open]) .reading-text{display:none}.grid,.triple{grid-template-columns:1fr}.site-header{padding:16px 20px}#view{padding:24px 18px}.site-footer{margin-left:18px;margin-right:18px}.panel{padding:18px}.site-header{align-items:flex-start}.brand{font-size:1.2rem}.account{max-width:165px;justify-content:flex-end}.steps{gap:5px}.step-dot{font-size:.76rem;padding:7px 8px}.rubric-grid{grid-template-columns:1fr}.reading-panel{padding:16px}}@media(prefers-reduced-motion:no-preference){button{transition:background .15s,border-color .15s}}@media print{.site-header,.site-footer,.nav,.actions,button{display:none!important}.panel{border:0}.reading-panel{max-height:none;position:static}}
+
+.demo-top{background:#eee2d2;border-bottom:1px solid #cfb996;padding:14px max(18px,calc((100vw - 1164px)/2));font-size:.92rem}.demo-top p{margin:6px 0}.demo-top details{margin-top:8px}.demo-top summary{cursor:pointer;font-weight:650}.demo-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.demo-toolbar [aria-pressed=true]{background:var(--wine);color:white;border-color:var(--wine)}.demo-guide{border-left:3px solid var(--sage);padding-left:14px;margin:12px 0}.demo-top ol{padding-left:24px}#demo-persona{font-size:.8rem;color:var(--muted);max-width:190px}button:disabled{cursor:default}
+</style></head><body>
+<a class="skip" href="#view">Ir al contenido</a>
+<aside class="demo-top" aria-label="Información de la demostración">
+<strong>LectorLab 2.0 · Demostración de las interfaces nuevas</strong>
+<p>Pantallas de la plataforma con datos ficticios en esta pestaña. Sin instalación ni conexión. El selector permite representar ambos roles; no es un inicio de sesión.</p>
+<div class="demo-toolbar" role="group" aria-label="Elegir vista de demostración"><button class="btn" data-demo-role="teacher" data-testid="demo-teacher" aria-pressed="true">Vista docente</button><button class="btn" data-demo-role="student" data-testid="demo-student" aria-pressed="false">Vista estudiante</button><button class="btn" id="demo-tour" data-testid="demo-tour">Cargar ejemplo para exponer</button><button class="btn small" id="demo-reset" data-testid="demo-reset">Reiniciar ejemplo</button></div>
+<p class="small">«Cargar ejemplo para exponer» completa el recorrido de Explorador 01 con respuestas ficticias preparadas. Podrás ensayar la entrega, la revisión docente y la devolución; no son respuestas de una persona ni de IA.</p>
+<details><summary>Cómo presentarlo en cinco minutos y qué cambió</summary>
+<ol class="demo-guide"><li>Docente → <strong>Actividades</strong>: abre el borrador, revisa preguntas, citas y justificación; marca la revisión y publica.</li><li>Docente → <strong>Asignaciones</strong>: elige el grupo y la versión publicada. En <strong>Grupos</strong> puedes ver alias ficticios.</li><li>Cambia a <strong>Vista estudiante</strong>, abre una lectura y responde alternativas, completado, relaciones y pregunta inferencial. El texto permanece a la vista.</li><li>En <strong>Mi interpretación</strong>, escribe dos evidencias distintas y explica el vínculo; entrega.</li><li>Vuelve a <strong>Vista docente → Resultados</strong>: revisa la producción de Explorador 01, valora con rúbrica y escribe una devolución. Regresa al estudiante para consultar su devolución.</li></ol>
+<p>Para una presentación más breve puedes revisar directamente la producción ficticia ya entregada en Resultados. Esa muestra pertenece a otro alias; permite ensayar la rúbrica. Para ver una devolución en la vista estudiante, entrega y revisa el recorrido de Explorador 01.</p>
+<p><strong>Frente al primer HTML:</strong> espacios docente y estudiante, grupos, biblioteca de actividades, preguntas de varios tipos, revisión de citas, publicación, asignaciones, entregas y rúbrica. La lectura de ejemplo también es nueva.</p>
+<p><strong>Alcance:</strong> no crea cuentas reales, no guarda datos al recargar y no protege claves en un archivo descargado. No envía información, no llama a IA ni a Google, ni extrae PDF/DOCX. La descarga es CSV local. La plataforma con servidor implementa estos servicios según su configuración; este archivo permite presentar sus pantallas y ensayar el proceso.</p>
+</details></aside>
+<header class="site-header"><a class="brand" id="demo-brand" href="#view"><span class="brand-mark" aria-hidden="true">L</span><span>LectorLab <small>2.0 · Comunicación</small></span></a><div id="demo-persona" aria-live="polite"></div></header>
+<main id="view" tabindex="-1"><p role="status">Preparando la demostración…</p></main>
+<footer class="site-footer"><strong>Leer, sostener, revisar.</strong><p>Demostración con alias y texto ficticios. Todo se conserva únicamente en la memoria de esta pestaña. Al recargar o cerrar se reinicia. No introduzcas datos personales ni contraseñas reales.</p><p>Las respuestas abiertas se valoran con revisión humana. No hay rankings públicos ni acusaciones automáticas de fraude.</p></footer>
+<noscript>Activa JavaScript para recorrer esta demostración.</noscript>
+<script>(() => {
+'use strict';
+const DEMO_SEED = {"title":"El agua de la acequia · Evidencias y decisiones","readingText":"En Santa Lucía, el grupo de cuarto de secundaria encontró menos agua en la acequia que alimentaba el huerto escolar. En el chat del aula apareció una acusación: «La familia que cultiva junto al puente debe estar desviando el agua». Nadie había observado un desvío.\n\nMaría propuso recorrer la acequia antes de repetir el mensaje. A la altura del puente, el agua avanzaba con normalidad. Veinte metros después, unas ramas y una bolsa formaban un tapón. Al retirarlo, el agua volvió a correr hacia el huerto, aunque todavía llegaba en poca cantidad.\n\nEl registro del comité de riego mostraba que esa semana había llovido menos que en las dos anteriores. «Encontramos una obstrucción, pero aún debemos comparar el caudal de varios días», señaló el encargado. La familia señalada participó en la limpieza junto con el aula.\n\nMaría escribió un nuevo mensaje: «La limpieza mejoró el paso del agua. Eso apoya que el tapón era parte del problema; no demuestra que alguien lo colocara a propósito. La menor lluvia podría explicar otra parte y necesitamos más registros». El grupo acordó publicar la corrección y medir el caudal durante una semana.","instructions":"Distingue hechos, inferencias y límites de una explicación. Construye una interpretación con citas y explica por qué la evidencia permite sostenerla o revisarla.","source":{"author":"Texto original de ejemplo para esta demostración","title":"Santa Lucía es una comunidad ficticia"},"questions":[{"id":"agua-hecho","type":"mcq","prompt":"¿Cuál de estas afirmaciones es un hecho observado en la lectura?","options":[{"id":"a","text":"La familia colocó el tapón deliberadamente."},{"id":"b","text":"Al retirar las ramas y la bolsa, el agua volvió a correr hacia el huerto."},{"id":"c","text":"La lluvia explica por sí sola todo el problema."}],"correctAnswer":"b","feedback":{"correct":"Relacionaste tu selección con una observación explícita.","a":"Vuelve a distinguir la acusación de lo que el grupo observó.","c":"Revisa qué parte de la explicación sigue necesitando registros."},"evidence":[{"quote":"Al retirarlo, el agua volvió a correr hacia el huerto, aunque todavía llegaba en poca cantidad.","start":451,"end":546,"reason":"La mejora se observa directamente; no prueba intención ni una causa única."}]},{"id":"agua-completar","type":"completion","prompt":"Completa con una palabra del segundo párrafo: las ramas y la bolsa formaban un ________.","acceptedAnswers":["tapón","tapon"],"evidence":[{"quote":"Veinte metros después, unas ramas y una bolsa formaban un tapón.","start":386,"end":450,"reason":"La información literal ayuda a identificar el indicio material antes de inferir causas."}]},{"id":"agua-relacion","type":"matching","prompt":"Relaciona cada elemento con el papel que cumple en el razonamiento.","left":[{"id":"mejora","text":"El agua vuelve a correr después de la limpieza"},{"id":"lluvia","text":"La menor lluvia de esa semana"}],"right":[{"id":"observacion","text":"Observación que apoya una causa parcial"},{"id":"hipotesis","text":"Factor adicional que requiere contrastar registros"}],"correctAnswer":{"mejora":"observacion","lluvia":"hipotesis"},"evidence":[{"quote":"La menor lluvia podría explicar otra parte y necesitamos más registros","start":988,"end":1058,"reason":"Distingue la mejora observada de una explicación adicional todavía por contrastar."}]},{"id":"agua-inferencia","type":"inferential","prompt":"¿Por qué la corrección de María es más razonable que la acusación inicial? Cita un fragmento y explica qué permite concluir y qué sigue siendo incierto.","rubric":"Relaciona una cita pertinente con una interpretación, reconoce los límites de la evidencia y revisa la atribución de intencionalidad.","evidence":[{"quote":"Eso apoya que el tapón era parte del problema; no demuestra que alguien lo colocara a propósito.","start":891,"end":987,"reason":"La cita distingue una causa parcial sustentada de una intención no demostrada."}]}]};
+let sequence = 0;
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(attrs || {})) {
+    if (key === 'on') for (const [event, handler] of Object.entries(value)) node.addEventListener(event, handler);
+    else if (key === 'class') node.className = value;
+    else if (key === 'text') node.textContent = value;
+    else if (key === 'value') node.value = value ?? '';
+    else if (key === 'checked' || key === 'disabled' || key === 'required' || key === 'selected' || key === 'open') node[key] = Boolean(value);
+    else if (value !== null && value !== undefined && value !== false) node.setAttribute(key, value === true ? '' : String(value));
+  }
+  for (const child of children.flat(Infinity)) if (child !== null && child !== undefined && child !== false) node.append(child instanceof Node ? child : document.createTextNode(String(child)));
+  return node;
+}
+function button(label, handler, { primary = false, testid, ...attrs } = {}) {
+  return el('button', { type: 'button', class: `btn${primary ? ' primary' : ''}`, ...(testid ? { 'data-testid': testid } : {}), ...attrs, on: { click: handler } }, label);
+}
+function field(label, { tag = 'input', testid, ...attrs } = {}) {
+  const id = attrs.id || `field-${++sequence}`;
+  const input = el(tag, { id, ...(tag === 'input' ? { type: 'text' } : {}), ...attrs, ...(testid ? { 'data-testid': testid } : {}) });
+  return { input, node: el('div', {}, el('label', { class: 'field', for: id }, label), input) };
+}
+function status() { return el('p', { class: 'status', role: 'status', 'aria-live': 'polite' }); }
+function message(node, text, error = false) { node.textContent = text || ''; node.className = `status${error ? ' error' : ''}`; }
+function heading(title, eyebrow) { return [eyebrow && el('div', { class: 'eyebrow' }, eyebrow), el('h1', { tabindex: '-1' }, title)]; }
+function show(container, ...nodes) { container.replaceChildren(...nodes.flat(Infinity).filter(Boolean)); container.querySelector('h1,h2')?.focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'instant' }); }
+function empty(text) { return el('p', { class: 'empty' }, text); }
+function list(data, name) { if (Array.isArray(data)) return data; return data?.[name] || []; }
+function fmt(value) { if (!value) return '—'; const date = new Date(value); return Number.isNaN(date.getTime()) ? '—' : new Intl.DateTimeFormat('es-PE', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Lima' }).format(date); }
+function pill(value) { return el('span', { class: `pill ${value}` }, ({ draft: 'Borrador', published: 'Publicada', submitted: 'Por revisar', in_progress: 'En curso', reviewed: 'Revisada' })[value] || value); }
+async function busy(node, fn) { const previous = node.disabled; node.disabled = true; try { return await fn(); } finally { node.disabled = previous; } }
+
+/*
+ * Adaptador EXCLUSIVO para la presentación HTML sin instalación.
+ * Simula los contratos de las vistas de LectorLab 2.0 con datos ficticios en RAM.
+ * No es una API segura, una sesión, una base de datos ni un registro académico.
+ * Todo el contenido de este documento es inspeccionable por quien lo abra.
+ */
+let demoRole = 'teacher';
+let demoSequence = 0;
+let demoState;
+const demoStudentId = 'demo-student';
+const demoCopy = value => structuredClone(value);
+const demoNow = () => new Date().toISOString();
+const demoId = prefix => `${prefix}-${++demoSequence}`;
+const demoFail = (message, status = 400) => {
+  const error = new Error(message); error.status = status; throw error;
+};
+const demoTeacherOnly = () => {
+  if (demoRole !== 'teacher') demoFail('Cambia a la vista docente de demostración para esta acción.', 403);
+};
+
+function demoReset() {
+  demoSequence = 100;
+  const published = { ...demoCopy(DEMO_SEED), id: 'demo-published', status: 'published', version: 1, createdAt: demoNow() };
+  const draft = { ...demoCopy(DEMO_SEED), id: 'demo-draft', title: `${DEMO_SEED.title} · Borrador`, status: 'draft', version: 2, createdAt: demoNow() };
+  const quote1 = DEMO_SEED.questions?.[0]?.evidence?.[0]?.quote || '';
+  const quote2 = DEMO_SEED.questions?.find(q => q.evidence?.[0]?.quote !== quote1)?.evidence?.[0]?.quote || quote1;
+  const sampleDraft = {
+    initial: 'Al principio acepté la explicación más comentada sin pedir evidencias.',
+    hypothesis: 'Mi primera hipótesis debía contrastarse con los detalles de la lectura.',
+    posture: 'Una explicación necesita conectar observaciones y considerar otras causas posibles.',
+    evidence1: quote1,
+    evidence2: quote2,
+    reasoning: 'Estas dos citas permiten comparar una primera impresión con información adicional. Todavía debo explicar con más precisión qué relación hay entre los indicios y mi conclusión.',
+    reflection: 'Pasé de una primera impresión a distinguir las observaciones de las explicaciones posibles.',
+    finalThought: 'Antes de aceptar una explicación, debo volver al texto y buscar qué la sostiene y qué la limita.',
+  };
+  const sampleAnswers = Object.fromEntries((DEMO_SEED.questions || []).map(question => [question.id,
+    question.type === 'inferential' ? 'Es necesario contrastar la explicación inicial con otra observación del texto y justificar el vínculo.' :
+      question.type === 'completion' ? question.acceptedAnswers?.[0] || '' : demoCopy(question.correctAnswer ?? '')]));
+  demoState = {
+    groups: [{ id: 'demo-group', name: '4.º A · Grupo de demostración', grade: '4.º de secundaria' }],
+    students: [{ id: demoStudentId, username: 'lector.demo', name: 'Explorador 01', role: 'student', groupIds: ['demo-group'] }],
+    activities: [published, draft],
+    assignments: [{ id: 'demo-assignment', groupId: 'demo-group', activityId: published.id }],
+    attempts: [{ id: 'demo-example', assignmentId: 'demo-assignment', studentId: 'demo-example-student', studentName: 'Producción de ejemplo · datos ficticios', activityId: published.id, status: 'submitted', draft: sampleDraft, answers: sampleAnswers, revision: 1, startedAt: demoNow(), submittedAt: demoNow() }],
+    assessments: {},
+  };
+  demoScore(demoState.attempts[0]);
+}
+
+function demoPrepareTour() {
+  if (!demoState) demoReset();
+  const assignment = demoFind(demoState.assignments, 'demo-assignment', 'Asignación de ejemplo');
+  const activity = demoFind(demoState.activities, assignment.activityId, 'Actividad de ejemplo');
+  const student = demoFind(demoState.students, demoStudentId, 'Estudiante ficticio');
+  const evidences = (DEMO_SEED.questions || []).flatMap(question => question.evidence || []);
+  const evidence1 = evidences.find(item => item.quote.startsWith('Al retirarlo,'))?.quote || evidences[0]?.quote;
+  const evidence2 = (DEMO_SEED.questions || []).find(question => question.type === 'inferential')?.evidence?.find(item => item.quote !== evidence1)?.quote
+    || evidences.find(item => item.quote !== evidence1)?.quote;
+  if (!evidence1 || !evidence2 || !activity.readingText.includes(evidence1) || !activity.readingText.includes(evidence2)) demoFail('El recorrido preparado necesita dos citas distintas del texto de ejemplo.');
+  const interpretation = 'La corrección de María es más razonable porque relaciona una mejora observada con una causa parcial y reconoce los límites de la evidencia. No presenta una sospecha sobre la familia como si fuera un hecho demostrado.';
+  const reasoning = `La primera cita, «${evidence1}», muestra que limpiar la obstrucción mejoró el paso del agua, pero que el problema no desapareció por completo. La segunda, «${evidence2}», distingue ese efecto observado de una intención que nadie comprobó. Por eso el tapón es una causa parcial sustentada; acusar a la familia o atribuir todo a la menor lluvia excedería lo que permiten concluir estos indicios.`;
+  const answers = Object.fromEntries(activity.questions.map(question => [question.id,
+    question.type === 'inferential' ? `${interpretation} ${reasoning}` :
+      question.type === 'completion' ? question.acceptedAnswers[0] : demoCopy(question.correctAnswer)]));
+  const attempt = {
+    id: 'demo-tour', assignmentId: assignment.id, studentId: demoStudentId,
+    studentName: student.name, activityId: activity.id, status: 'in_progress',
+    draft: {
+      initial: 'En este ejemplo ficticio, al leer el primer mensaje pensé que la familia había desviado el agua. Había aceptado la acusación sin observar un desvío.',
+      hypothesis: 'Mi hipótesis inicial atribuía el menor caudal a una acción de la familia. Debía contrastarla con las observaciones del recorrido y los registros de lluvia.',
+      posture: interpretation,
+      evidence1,
+      evidence2,
+      reasoning,
+      reflection: 'Cambié mi idea cuando observé que retirar el tapón mejoró el paso del agua y que nadie había visto un desvío. Ahora distingo una causa parcial observada de una intención no demostrada, y considero la menor lluvia como una explicación adicional todavía por contrastar.',
+      finalThought: 'Una explicación razonable debe conectar citas pertinentes con una conclusión, reconocer qué sigue siendo incierto y corregirse cuando aparece evidencia nueva. Una acusación compartida muchas veces no se convierte por eso en una prueba.',
+    },
+    answers, revision: 1, startedAt: demoNow(),
+  };
+  const replaced = demoState.attempts.filter(item => item.assignmentId === assignment.id && item.studentId === demoStudentId);
+  for (const previous of replaced) delete demoState.assessments[previous.id];
+  delete demoState.assessments[attempt.id];
+  demoState.attempts = demoState.attempts.filter(item => !(item.assignmentId === assignment.id && item.studentId === demoStudentId));
+  demoState.attempts.push(attempt);
+  return attempt.id;
+}
+
+function demoSetRole(role) {
+  if (!['teacher', 'student'].includes(role)) demoFail('Vista de demostración desconocida.');
+  demoRole = role;
+}
+
+function demoFind(rows, id, label) {
+  return rows.find(row => row.id === id) || demoFail(`${label} no disponible en esta demostración.`, 404);
+}
+
+function demoAssignmentRow(assignment) {
+  const activity = demoFind(demoState.activities, assignment.activityId, 'Actividad');
+  const group = demoFind(demoState.groups, assignment.groupId, 'Grupo');
+  const attempt = demoState.attempts.find(item => item.assignmentId === assignment.id && item.studentId === demoStudentId);
+  return { ...assignment, activityTitle: activity.title, groupName: group.name, ...(demoRole === 'student' && attempt ? { attemptId: attempt.id, status: attempt.status } : {}) };
+}
+
+function demoPublicActivity(activity) {
+  const result = demoCopy(activity);
+  result.questions = result.questions.map(({ id, type, prompt, options, left, right }) => ({ id, type, prompt, ...(options ? { options } : {}), ...(left ? { left, right } : {}) }));
+  return result;
+}
+
+function demoNormalize(value) {
+  return String(value).normalize('NFD').replace(/\p{M}/gu, '').trim().toLocaleLowerCase('es');
+}
+
+function demoIsCorrect(question, value) {
+  if (question.type === 'mcq') return value === question.correctAnswer;
+  if (question.type === 'completion') return (question.acceptedAnswers || []).some(answer => demoNormalize(answer) === demoNormalize(value));
+  if (question.type === 'matching') return value && typeof value === 'object' && Object.entries(question.correctAnswer || {}).every(([key, answer]) => value[key] === answer);
+  return false;
+}
+
+function demoScore(attempt) {
+  const activity = demoFind(demoState.activities, attempt.activityId, 'Actividad');
+  const objective = activity.questions.filter(question => question.type !== 'inferential');
+  attempt.maxObjective = objective.length;
+  attempt.objectiveScore = objective.filter(question => demoIsCorrect(question, attempt.answers[question.id])).length;
+}
+
+function demoAttemptData(id) {
+  const attempt = demoFind(demoState.attempts, id, 'Recorrido');
+  if (demoRole === 'student' && attempt.studentId !== demoStudentId) demoFail('Elige tu propio recorrido de demostración.', 403);
+  const activity = demoFind(demoState.activities, attempt.activityId, 'Actividad');
+  const feedback = {};
+  for (const question of activity.questions) {
+    if (!(question.id in attempt.answers) || question.type === 'inferential') continue;
+    const correct = demoIsCorrect(question, attempt.answers[question.id]);
+    feedback[question.id] = { correct, text: 'Selección registrada en esta pestaña. Vuelve al texto para explicar tu razonamiento; el registro de esta demo no es una calificación académica.' };
+  }
+  const visibleAttempt = demoCopy(attempt);
+  if (attempt.status === 'in_progress' && demoRole === 'student') delete visibleAttempt.objectiveScore;
+  return {
+    attempt: visibleAttempt,
+    activity: demoRole === 'teacher' ? demoCopy(activity) : demoPublicActivity(activity),
+    assessment: demoCopy(demoState.assessments[id] || null),
+    tutor: { available: false, configured: false, maxTurns: 5, completedCount: 0, messages: [], unresolved: [] },
+    feedback,
+  };
+}
+
+function demoCheckPublication(activity) {
+  if (!activity.questions.length) demoFail('Añade al menos una pregunta antes de publicar la demostración.');
+  if (!activity.title?.trim() || !activity.readingText?.trim()) demoFail('Completa título y lectura.');
+  const characters = [...activity.readingText];
+  const ids = new Set();
+  for (const question of activity.questions) {
+    if (!question.id || ids.has(question.id) || !question.prompt?.trim()) demoFail('Cada pregunta necesita un ID único y un enunciado.');
+    ids.add(question.id);
+    if (!['mcq', 'matching', 'completion', 'inferential'].includes(question.type)) demoFail('Tipo de pregunta no disponible en la demo.');
+    if (!question.evidence?.length) demoFail('Cada pregunta necesita evidencia literal y justificación.');
+    for (const evidence of question.evidence) {
+      if (!evidence.quote || !evidence.reason?.trim() || characters.slice(evidence.start, evidence.end).join('') !== evidence.quote) demoFail('Una evidencia no coincide con la lectura o no explica su vínculo. Revisa la cita antes de publicar.');
+    }
+    if (question.type === 'mcq' && !question.options?.some(option => option.id === question.correctAnswer)) demoFail('Revisa las opciones y la clave de la pregunta de alternativas.');
+    if (question.type === 'completion' && !question.acceptedAnswers?.length) demoFail('El completado necesita al menos una respuesta aceptada.');
+    if (question.type === 'matching' && !(question.left?.length && question.right?.length && question.correctAnswer)) demoFail('La relación necesita elementos y una clave.');
+  }
+}
+
+async function api(path, { method = 'GET', body } = {}) {
+  if (!demoState) demoReset();
+  const input = body && !(body instanceof FormData) ? demoCopy(body) : body;
+  let match;
+  if (path.startsWith('/documents')) demoFail('La extracción de PDF, DOCX y TXT está disponible en la plataforma con servidor, no en esta demo HTML. No se ha leído ni enviado tu archivo.');
+  if (path.includes('/generate')) demoFail('La generación con IA requiere el servidor y un proveedor configurado. Esta demo no genera preguntas ni simula respuestas de IA.');
+  if (path.includes('/tutor')) demoFail('Esta demo no está conectada a IA. Usa la guía socrática fija de la actividad.');
+  if (path === '/integrations/sheets' && method === 'GET') {
+    demoTeacherOnly(); return { configured: false, pendingCount: 0, error: 'La sincronización externa no se ejecuta desde esta demostración sin servidor.' };
+  }
+  if (path.startsWith('/integrations/sheets')) demoFail('Google Sheets no está conectado a esta demo.');
+
+  if (path === '/groups') {
+    demoTeacherOnly();
+    if (method === 'GET') return { groups: demoCopy(demoState.groups) };
+    if (method === 'POST') {
+      if (!input.name?.trim() || !input.grade?.trim()) demoFail('Completa nombre y grado del grupo.');
+      const group = { id: demoId('group'), name: input.name.trim(), grade: input.grade.trim() };
+      demoState.groups.push(group); return { group: demoCopy(group) };
+    }
+  }
+  if ((match = path.match(/^\/groups\/([^/]+)\/students$/))) {
+    demoTeacherOnly(); const group = demoFind(demoState.groups, match[1], 'Grupo');
+    if (method === 'GET') return { students: demoCopy(demoState.students.filter(student => student.groupIds.includes(group.id))) };
+    if (method === 'POST') {
+      if (!input.username?.trim() || !input.name?.trim()) demoFail('Completa el usuario ficticio y el alias.');
+      if (demoState.students.some(student => student.username === input.username.trim())) demoFail('Ese usuario ficticio ya existe en esta pestaña.');
+      // Contraseña descartada intencionalmente: aquí no se crean credenciales.
+      const student = { id: demoId('student'), username: input.username.trim(), name: input.name.trim(), role: 'student', groupIds: [group.id] };
+      demoState.students.push(student); return { student: demoCopy(student) };
+    }
+  }
+
+  if (path === '/activities') {
+    demoTeacherOnly();
+    if (method === 'GET') return { activities: demoCopy(demoState.activities) };
+    if (method === 'POST') {
+      if (!input.title?.trim() || !input.readingText?.trim()) demoFail('Completa título y lectura.');
+      const activity = { id: demoId('activity'), title: input.title.trim(), readingText: input.readingText.normalize('NFC'), instructions: input.instructions || '', questions: input.questions || [], status: 'draft', version: 1, source: { author: 'Texto añadido a la demostración' } };
+      demoState.activities.push(activity); return { activity: demoCopy(activity) };
+    }
+  }
+  if (path === '/activities/seed' && method === 'POST') {
+    demoTeacherOnly(); const activity = { ...demoCopy(DEMO_SEED), id: demoId('activity'), status: 'draft', version: 1 };
+    demoState.activities.push(activity); return { activity: demoCopy(activity) };
+  }
+  if ((match = path.match(/^\/activities\/([^/]+)(?:\/(publish|clone))?$/))) {
+    demoTeacherOnly(); const activity = demoFind(demoState.activities, match[1], 'Actividad');
+    if (method === 'GET' && !match[2]) return { activity: demoCopy(activity) };
+    if (method === 'PATCH' && !match[2]) {
+      if (activity.status !== 'draft') demoFail('La versión publicada se conserva. Crea una nueva versión para editar.');
+      for (const key of ['title', 'readingText', 'instructions', 'questions']) if (input[key] !== undefined) activity[key] = demoCopy(input[key]);
+      return { activity: demoCopy(activity) };
+    }
+    if (method === 'POST' && match[2] === 'publish') {
+      if (activity.status !== 'draft') demoFail('Esta versión ya está publicada.');
+      if (input.reviewed !== true) demoFail('La publicación requiere tu confirmación explícita de revisión.');
+      demoCheckPublication(activity); activity.status = 'published'; return { activity: demoCopy(activity) };
+    }
+    if (method === 'POST' && match[2] === 'clone') {
+      const cloned = { ...demoCopy(activity), id: demoId('activity'), status: 'draft', version: (activity.version || 1) + 1 };
+      demoState.activities.push(cloned); return { activity: demoCopy(cloned) };
+    }
+  }
+
+  if (path === '/assignments') {
+    if (method === 'GET') {
+      const student = demoState.students.find(item => item.id === demoStudentId);
+      const assignments = demoState.assignments.filter(item => demoRole === 'teacher' || student.groupIds.includes(item.groupId));
+      return { assignments: demoCopy(assignments.map(demoAssignmentRow)) };
+    }
+    if (method === 'POST') {
+      demoTeacherOnly(); const activity = demoFind(demoState.activities, input.activityId, 'Actividad');
+      demoFind(demoState.groups, input.groupId, 'Grupo');
+      if (activity.status !== 'published') demoFail('Publica una versión revisada antes de asignarla.');
+      if (demoState.assignments.some(item => item.activityId === activity.id && item.groupId === input.groupId)) demoFail('Esta versión ya está asignada al grupo de demostración.');
+      const assignment = { id: demoId('assignment'), activityId: activity.id, groupId: input.groupId };
+      demoState.assignments.push(assignment); return { assignment: demoAssignmentRow(assignment) };
+    }
+  }
+  if ((match = path.match(/^\/assignments\/([^/]+)\/attempt$/)) && method === 'POST') {
+    if (demoRole !== 'student') demoFail('Cambia a la vista estudiante para comenzar una lectura.', 403);
+    const assignment = demoFind(demoState.assignments, match[1], 'Asignación');
+    const student = demoState.students.find(item => item.id === demoStudentId);
+    if (!student.groupIds.includes(assignment.groupId)) demoFail('Esta actividad no pertenece al grupo de la vista estudiante.', 403);
+    let attempt = demoState.attempts.find(item => item.assignmentId === assignment.id && item.studentId === demoStudentId);
+    if (!attempt) {
+      attempt = { id: demoId('attempt'), assignmentId: assignment.id, studentId: demoStudentId, studentName: student.name, activityId: assignment.activityId, status: 'in_progress', draft: {}, answers: {}, revision: 0, startedAt: demoNow() };
+      demoState.attempts.push(attempt);
+    }
+    return { attempt: demoCopy(attempt) };
+  }
+
+  if (path === '/results' && method === 'GET') {
+    demoTeacherOnly();
+    return { results: demoState.attempts.map(attempt => {
+      const assignment = demoFind(demoState.assignments, attempt.assignmentId, 'Asignación');
+      const row = demoAssignmentRow(assignment);
+      return { id: attempt.id, attemptId: attempt.id, studentName: attempt.studentName, activityTitle: row.activityTitle, groupName: row.groupName, status: attempt.status, objectiveScore: attempt.status === 'in_progress' ? null : attempt.objectiveScore, maxObjective: attempt.maxObjective };
+    }) };
+  }
+  if ((match = path.match(/^\/attempts\/([^/]+)(?:\/(submit|review))?$/))) {
+    const attempt = demoFind(demoState.attempts, match[1], 'Recorrido');
+    if (demoRole === 'student' && attempt.studentId !== demoStudentId) demoFail('Elige tu propio recorrido de demostración.', 403);
+    if (method === 'GET' && !match[2]) return demoAttemptData(attempt.id);
+    if (method === 'PATCH' && !match[2]) {
+      if (demoRole !== 'student') demoFail('La edición corresponde a la vista estudiante.', 403);
+      if (attempt.status !== 'in_progress') demoFail('Este recorrido ya fue entregado.');
+      const activity = demoFind(demoState.activities, attempt.activityId, 'Actividad');
+      const updates = input.answers || {};
+      for (const [questionId, value] of Object.entries(updates)) {
+        const question = activity.questions.find(item => item.id === questionId) || demoFail('Pregunta desconocida.');
+        if (question.type !== 'inferential' && questionId in attempt.answers && JSON.stringify(attempt.answers[questionId]) !== JSON.stringify(value)) demoFail('La primera respuesta objetiva se conserva en este recorrido de demostración.');
+      }
+      attempt.draft = { ...attempt.draft, ...demoCopy(input.draft || {}) };
+      attempt.answers = { ...attempt.answers, ...demoCopy(updates) };
+      attempt.revision++; return demoAttemptData(attempt.id);
+    }
+    if (method === 'POST' && match[2] === 'submit') {
+      if (demoRole !== 'student') demoFail('La entrega corresponde a la vista estudiante.', 403);
+      if (attempt.status !== 'in_progress') return demoAttemptData(attempt.id);
+      for (const key of ['posture', 'evidence1', 'evidence2', 'reasoning', 'reflection']) if (!String(attempt.draft[key] || '').trim()) demoFail('Completa interpretación, dos evidencias, vínculo y reflexión antes de entregar.');
+      const normalizeEvidence = value => String(value).normalize('NFC').trim().replace(/\s+/gu, ' ').toLocaleLowerCase('es-PE');
+      if (normalizeEvidence(attempt.draft.evidence1) === normalizeEvidence(attempt.draft.evidence2)) demoFail('Propón dos evidencias distintas para la revisión docente.');
+      const activity = demoFind(demoState.activities, attempt.activityId, 'Actividad');
+      if (activity.questions.some(question => attempt.answers[question.id] === undefined)) demoFail('Registra todas las respuestas de la actividad antes de entregar.');
+      demoScore(attempt); attempt.status = 'submitted'; attempt.submittedAt = demoNow(); return demoAttemptData(attempt.id);
+    }
+    if (method === 'POST' && match[2] === 'review') {
+      demoTeacherOnly();
+      if (attempt.status === 'in_progress') demoFail('Espera la entrega antes de valorar.');
+      if (!input.feedback?.trim()) demoFail('Escribe una orientación para continuar aprendiendo.');
+      for (const key of ['inference', 'evidence', 'link', 'revision']) if (!Number.isInteger(input.rubric?.[key]) || input.rubric[key] < 0 || input.rubric[key] > 3) demoFail('Valora cada criterio entre 0 y 3.');
+      const badgeNames = { inference: 'Inferencia sustentada', evidence: 'Evidencia pertinente', link: 'Vínculo explicado', revision: 'Revisión de hipótesis' };
+      const badges = Object.entries(input.rubric).filter(([, value]) => value >= 2).map(([key]) => badgeNames[key]);
+      demoState.assessments[attempt.id] = { rubric: demoCopy(input.rubric), feedback: input.feedback.trim(), badges, reviewedAt: demoNow() };
+      attempt.status = 'reviewed'; return demoAttemptData(attempt.id);
+    }
+  }
+  demoFail('Esta acción requiere la plataforma con servidor y no se ejecuta desde la demo HTML.', 404);
+}
+
+function demoCsvCell(value) {
+  const raw = value && typeof value === 'object' ? JSON.stringify(value) : String(value ?? '');
+  // Neutraliza fórmulas al abrir el CSV con aplicaciones de hojas de cálculo.
+  const safe = /^[\s\uFEFF]*[=+@\-]/u.test(raw) || /^[\t\r\n]/u.test(raw) ? `'${raw}` : raw;
+  return `"${safe.replaceAll('"', '""')}"`;
+}
+
+async function download(path, filename = 'LectorLab_demo.csv') {
+  if (!demoState) demoReset();
+  const rows = [['LectorLab 2.0', 'Demostración con datos ficticios; registros solo en esta pestaña. No es un reporte académico.'], ['Estudiante', 'Actividad', 'Estado', 'Campo', 'Contenido']];
+  let attempts;
+  let match = path.match(/^\/attempts\/([^/]+)\/export\.xlsx$/);
+  if (match) {
+    demoAttemptData(match[1]); attempts = [demoFind(demoState.attempts, match[1], 'Recorrido')];
+  } else if ((match = path.match(/^\/groups\/([^/]+)\/export\.xlsx$/))) {
+    demoTeacherOnly(); demoFind(demoState.groups, match[1], 'Grupo');
+    const assignmentIds = new Set(demoState.assignments.filter(item => item.groupId === match[1]).map(item => item.id));
+    attempts = demoState.attempts.filter(item => assignmentIds.has(item.assignmentId));
+  } else demoFail('La exportación solicitada no está disponible en la demostración.');
+  for (const attempt of attempts) {
+    const activity = demoFind(demoState.activities, attempt.activityId, 'Actividad');
+    const prefix = [attempt.studentName, activity.title, attempt.status];
+    for (const [key, value] of Object.entries(attempt.draft)) rows.push([...prefix, key, value]);
+    for (const question of activity.questions) rows.push([...prefix, question.prompt, attempt.answers[question.id] ?? 'Sin respuesta']);
+    const assessment = demoState.assessments[attempt.id];
+    if (assessment) {
+      rows.push([...prefix, 'Devolución docente', assessment.feedback]);
+      for (const [criterion, value] of Object.entries(assessment.rubric)) rows.push([...prefix, `Rúbrica: ${criterion}`, value]);
+    }
+  }
+  const blob = new Blob(['\uFEFF' + rows.map(row => row.map(demoCsvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a'); link.href = objectUrl; link.download = filename.replace(/\.xlsx$/i, '.csv');
+  document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(objectUrl), 2000);
+}
+
+demoReset();
+
+
+
+const rubricNames = { inference: 'Inferencia sustentada', evidence: 'Pertinencia de la evidencia', link: 'Vínculo entre cita e interpretación', revision: 'Revisión de la hipótesis' };
+const typeNames = { mcq: 'Alternativas', inferential: 'Inferencial abierta', matching: 'Relación de elementos', completion: 'Completado' };
+
+async function renderTeacher(view, user) {
+  let section = 'Inicio';
+  function page(title, intro, ...content) {
+    const nav = el('nav', { class: 'nav', 'aria-label': 'Espacio docente' },
+      ...[['Inicio', dashboard, 'nav-home'], ['Grupos', groups, 'nav-groups'], ['Actividades', activities, 'nav-activities'], ['Asignaciones', assignments, 'nav-assignments'], ['Resultados', results, 'nav-results'], ['Google Sheets', sheets, 'nav-sheets']]
+        .map(([name, fn, testid]) => button(name, () => run(fn), { testid, 'aria-current': section === name ? 'page' : undefined })));
+    show(view, ...heading(title, 'Espacio docente'), intro && el('p', { class: 'intro' }, intro), nav, content);
+  }
+  async function run(fn) {
+    try { await fn(); } catch (error) {
+      const note = status(); message(note, error.message, true);
+      page('No se pudo completar la operación', '', note, button('Volver al inicio', () => run(dashboard)));
+    }
+  }
+  async function action(note, control, fn) {
+    await busy(control, async () => { try { await fn(); } catch (error) { message(note, error.message, true); } });
+  }
+
+  async function dashboard() {
+    section = 'Inicio';
+    const [groupData, activityData, resultData] = await Promise.all([api('/groups'), api('/activities'), api('/results')]);
+    const groupRows = list(groupData, 'groups'), activityRows = list(activityData, 'activities'), resultRows = list(resultData, 'results');
+    page(`Bienvenido, ${user.name || user.username}.`, 'Un espacio para que la lectura se convierta en una interpretación propia, sostenida con evidencias.',
+      el('div', { class: 'metrics' }, ...[[groupRows.length, 'grupos'], [activityRows.length, 'actividades'], [resultRows.filter(row => row.status === 'submitted').length, 'producciones por revisar']].map(([value, title]) => el('div', { class: 'metric' }, el('strong', {}, value), title))),
+      el('section', { class: 'panel' }, el('h2', {}, 'Tu primer recorrido'), el('ol', {}, el('li', {}, 'Crea un grupo y accesos individuales con alias.'), el('li', {}, 'Prepara una lectura y revisa cada pregunta, su clave y su evidencia.'), el('li', {}, 'Publica la versión revisada y asígnala al grupo.'), el('li', {}, 'Revisa las interpretaciones y devuelve una orientación concreta.')), el('div', { class: 'actions' }, button('Organizar grupos', () => run(groups), { primary: true }), button('Preparar actividades', () => run(activities)))),
+      el('aside', { class: 'note' }, 'Esta primera versión se prueba con datos ficticios. No utiliza detectores de IA ni emite acusaciones de fraude. La valoración de las respuestas abiertas corresponde al docente.'));
+  }
+
+  async function groups() {
+    section = 'Grupos';
+    const rows = list(await api('/groups'), 'groups');
+    const name = field('Nombre del grupo', { required: true, maxlength: 120, testid: 'group-name', placeholder: '4.º A · Comunicación' });
+    const grade = field('Grado y sección', { required: true, maxlength: 80, testid: 'group-grade', placeholder: '4.º de secundaria' });
+    const note = status();
+    const submit = el('button', { type: 'submit', class: 'btn primary', 'data-testid': 'create-group' }, 'Crear grupo');
+    const form = el('form', { on: { submit: async event => { event.preventDefault(); await action(note, submit, async () => { await api('/groups', { method: 'POST', body: { name: name.input.value.trim(), grade: grade.input.value.trim() } }); await groups(); }); } } }, name.node, grade.node, note, el('div', { class: 'actions' }, submit));
+    const groupList = rows.length ? el('ul', { class: 'list' }, rows.map(group => el('li', {}, el('h3', {}, group.name), el('p', { class: 'small' }, group.grade || ''), button('Abrir grupo', () => run(() => groupDetail(group)), { testid: `open-group-${group.id}` })))) : empty('Todavía no hay grupos. Crea el primero aquí.');
+    page('Grupos y accesos', 'La plataforma usa accesos individuales. Aquí puedes ensayar altas ficticias: no se crean cuentas reales ni se conservan contraseñas.',
+      el('div', { class: 'grid' }, el('section', { class: 'panel' }, el('h2', {}, 'Tus grupos'), groupList), el('section', { class: 'panel' }, el('h2', {}, 'Nuevo grupo'), form)));
+  }
+
+  async function groupDetail(group) {
+    section = 'Grupos';
+    const students = list(await api(`/groups/${group.id}/students`), 'students');
+    const username = field('Usuario del estudiante', { required: true, maxlength: 40, autocomplete: 'off', testid: 'student-username', placeholder: 'lector01' });
+    const name = field('Alias para mostrar', { required: true, maxlength: 80, autocomplete: 'off', testid: 'student-name', placeholder: 'Explorador 01' });
+    const password = field('Contraseña individual', { required: true, type: 'password', minlength: 10, maxlength: 128, autocomplete: 'new-password', testid: 'student-password' });
+    const note = status();
+    const submit = el('button', { type: 'submit', class: 'btn primary', 'data-testid': 'create-student' }, 'Crear acceso del estudiante');
+    const reveal = button('Mostrar contraseña', event => { const visible = password.input.type === 'password'; password.input.type = visible ? 'text' : 'password'; event.currentTarget.textContent = visible ? 'Ocultar contraseña' : 'Mostrar contraseña'; }, { class: 'btn small' });
+    const form = el('form', { on: { submit: async event => { event.preventDefault(); await action(note, submit, async () => { await api(`/groups/${group.id}/students`, { method: 'POST', body: { username: username.input.value.trim(), name: name.input.value.trim(), password: password.input.value } }); password.input.value = ''; await groupDetail(group); }); } } }, username.node, name.node, password.node, el('div', { class: 'actions' }, reveal), el('p', { class: 'small' }, 'Ensayo con alias ficticios. Esta demo descarta la contraseña; no uses una contraseña real.'), note, el('div', { class: 'actions' }, submit));
+    const exportNote = status();
+    page(group.name, group.grade,
+      button('← Todos los grupos', () => run(groups)),
+      el('div', { class: 'grid' }, el('section', { class: 'panel' }, el('h2', {}, 'Estudiantes'), students.length ? el('ul', { class: 'list' }, students.map(student => el('li', {}, el('strong', {}, student.name || student.username), el('div', { class: 'small' }, `Usuario: ${student.username}`)))) : empty('El grupo aún no tiene estudiantes.'), exportNote, button('Descargar CSV de demo del grupo', event => action(exportNote, event.currentTarget, () => download(`/groups/${group.id}/export.xlsx`, 'LectorLab_grupo.xlsx')))), el('section', { class: 'panel' }, el('h2', {}, 'Nuevo acceso'), form)));
+  }
+
+  async function activities() {
+    section = 'Actividades';
+    const rows = list(await api('/activities'), 'activities');
+    const note = status();
+    const seed = button('Copiar actividad de ejemplo', event => action(note, event.currentTarget, async () => { const data = await api('/activities/seed', { method: 'POST', body: {} }); await activityEditor(data.activity || data); }), { primary: true, testid: 'seed-activity' });
+    const title = field('Título de la actividad', { required: true, maxlength: 160, testid: 'activity-title' });
+    const reading = field('Texto de la lectura', { tag: 'textarea', class: 'long', required: true, maxlength: 80000, testid: 'activity-reading' });
+    const createNote = status();
+    const create = el('button', { type: 'submit', class: 'btn primary', 'data-testid': 'create-activity' }, 'Crear borrador');
+    const createForm = el('form', { on: { submit: async event => { event.preventDefault(); await action(createNote, create, async () => { const data = await api('/activities', { method: 'POST', body: { title: title.input.value.trim(), readingText: reading.input.value.normalize('NFC'), instructions: 'Lee, construye una interpretación y sostenla con evidencias.', questions: [] } }); await activityEditor(data.activity || data); }); } } }, title.node, reading.node, createNote, el('div', { class: 'actions' }, create));
+    page('Biblioteca de actividades', 'La IA propone; tú revisas. Ninguna pregunta se publica automáticamente.',
+      el('section', { class: 'panel' }, el('div', { class: 'row' }, el('h2', {}, 'Tus actividades'), seed), note,
+        rows.length ? el('ul', { class: 'list' }, rows.map(activity => el('li', {}, el('div', { class: 'row' }, el('div', {}, el('h3', {}, activity.title), pill(activity.status), el('span', { class: 'small' }, ` · Versión ${activity.version || 1}`)), button(activity.status === 'published' ? 'Ver versión' : 'Revisar borrador', () => run(async () => { const data = await api(`/activities/${activity.id}`); await activityEditor(data.activity || data); }), { testid: `open-activity-${activity.id}` }))))) : empty('Comienza con el ejemplo o prepara tu propia lectura ficticia.')),
+      el('div', { class: 'grid' }, el('section', { class: 'panel' }, el('h2', {}, 'Desde tu texto'), createForm), el('section', { class: 'panel' }, el('h2', {}, 'Desde un documento'), documentForm())));
+  }
+
+  function documentForm() {
+    const file = field('Documento PDF, DOCX o TXT', { type: 'file', accept: '.pdf,.docx,.txt', required: true, testid: 'document-file', disabled: true });
+    const note = status();
+    const submit = el('button', { type: 'submit', class: 'btn', 'data-testid': 'upload-document', disabled: true }, 'Extracción disponible con servidor');
+    return el('form', { class: 'filebox', on: { submit: async event => { event.preventDefault(); await action(note, submit, async () => {
+      const selected = file.input.files[0]; if (!selected) throw new Error('Selecciona un documento.');
+      if (selected.size > 2 * 1024 * 1024) throw new Error('El archivo debe pesar como máximo 2 MB.');
+      const body = new FormData(); body.append('file', selected);
+      const result = await api('/documents', { method: 'POST', body });
+      await documentReview(result.document || result);
+    }); } } }, file.node, el('p', { class: 'small' }, 'La carga y extracción se realizan en la plataforma con servidor. Este HTML no lee ni envía archivos: usa el ejemplo o pega un texto ficticio en el formulario de al lado.'), note, el('div', { class: 'actions' }, submit));
+  }
+
+  async function documentReview(document) {
+    if (!document.textContent && !document.text_content) { const data = await api(`/documents/${document.id}`); document = data.document || data; }
+    const title = field('Título para la actividad', { required: true, maxlength: 160, value: (document.filename || 'Nueva lectura').replace(/\.[^.]+$/, ''), testid: 'document-title' });
+    const text = field('Texto extraído: corrige antes de continuar', { tag: 'textarea', class: 'long', value: document.textContent || document.text_content || '', required: true, maxlength: 80000, testid: 'document-text' });
+    const reviewed = el('input', { type: 'checkbox', required: true, id: 'document-reviewed', 'data-testid': 'document-reviewed' });
+    const note = status(), submit = el('button', { type: 'submit', class: 'btn primary', 'data-testid': 'document-create-activity' }, 'Crear borrador con este texto');
+    const form = el('form', { on: { submit: async event => { event.preventDefault(); await action(note, submit, async () => { const data = await api(`/documents/${document.id}/activity`, { method: 'POST', body: { title: title.input.value.trim(), reviewedText: text.input.value.normalize('NFC') } }); await activityEditor(data.activity || data); }); } } }, title.node, text.node, el('label', { class: 'check', for: reviewed.id }, reviewed, 'Revisé el texto, su orden de lectura y el permiso de uso.'), note, submit);
+    page('Revisar la extracción', 'Los errores del documento no deben convertirse en preguntas incorrectas. Esta revisión crea un texto de actividad nuevo.', el('section', { class: 'panel' }, form));
+  }
+
+  async function activityEditor(activity) {
+    section = 'Actividades';
+    const locked = activity.status === 'published';
+    let questions = structuredClone(activity.questions || activity.content?.questions || []);
+    const title = field('Título de la actividad', { required: true, maxlength: 160, value: activity.title, disabled: locked, testid: 'edit-activity-title' });
+    const reading = field('Texto específico de esta actividad', { tag: 'textarea', class: 'long', value: activity.readingText || activity.reading_text, required: true, maxlength: 80000, disabled: locked, testid: 'edit-activity-reading' });
+    const instructions = field('Propósito e instrucciones', { tag: 'textarea', value: activity.instructions || '', maxlength: 4000, disabled: locked });
+    const note = status(), reviewed = el('input', { type: 'checkbox', id: 'publish-reviewed', disabled: locked, 'data-testid': 'publish-reviewed' });
+    for (const input of [title.input, reading.input, instructions.input]) input.addEventListener('input', () => { reviewed.checked = false; });
+    const cards = el('div', { 'data-testid': 'question-review-list' });
+    function renderCards() {
+      cards.replaceChildren(...(questions.length ? questions.map((question, index) => {
+        const evidence = question.evidence || [];
+        return el('article', { class: 'review-card' }, el('div', { class: 'eyebrow' }, `Pregunta ${index + 1} · ${typeNames[question.type] || question.type}`), el('h3', {}, question.prompt),
+          question.options?.length && el('ul', {}, question.options.map(option => el('li', {}, `${option.id}. ${option.text}`))),
+          question.left?.length && el('p', { class: 'small' }, 'Elementos: ', question.left.map(item => item.text).join(' · '), ' ↔ ', (question.right || []).map(item => item.text).join(' · ')),
+          el('dl', {}, el('dt', {}, 'Clave o criterio privado'), el('dd', {}, typeof question.correctAnswer === 'object' ? JSON.stringify(question.correctAnswer) : question.correctAnswer || question.rubric || (question.acceptedAnswers || []).join(' / ') || 'Revisión docente de la argumentación')),
+          evidence.length ? evidence.map(item => el('div', {}, el('blockquote', {}, item.quote), el('p', { class: 'small' }, item.reason || 'Falta explicar el vínculo de esta evidencia.'))) : el('p', { class: 'status error' }, 'Sin evidencia: completa una cita y su justificación antes de publicar.'),
+          !locked && el('div', { class: 'question-actions' }, button('Quitar pregunta', () => { questions.splice(index, 1); reviewed.checked = false; renderCards(); }, { class: 'btn small danger' })));
+      }) : [empty('Este borrador aún no tiene preguntas. Añade una o solicita propuestas a la IA configurada.')]));
+    }
+    renderCards();
+    async function save() {
+      const data = await api(`/activities/${activity.id}`, { method: 'PATCH', body: { title: title.input.value.trim(), readingText: reading.input.value.normalize('NFC'), instructions: instructions.input.value.trim(), questions } });
+      activity = data.activity || data;
+      return activity;
+    }
+    const actions = el('div', { class: 'actions' });
+    if (!locked) {
+      actions.append(button('Guardar borrador', event => action(note, event.currentTarget, async () => { await save(); message(note, 'Borrador guardado. Todavía no es visible para estudiantes.'); }), { testid: 'save-activity' }), button('Publicar versión revisada', event => action(note, event.currentTarget, async () => {
+        if (!reviewed.checked) throw new Error('Revisa las preguntas y marca la confirmación antes de publicar.');
+        await save(); const data = await api(`/activities/${activity.id}/publish`, { method: 'POST', body: { reviewed: true } }); await activityEditor(data.activity || data);
+      }), { primary: true, testid: 'publish-activity' }));
+    } else {
+      actions.append(button('Crear nueva versión para editar', event => action(note, event.currentTarget, async () => { const data = await api(`/activities/${activity.id}/clone`, { method: 'POST', body: {} }); await activityEditor(data.activity || data); }), { primary: true, testid: 'clone-activity' }));
+    }
+    const content = [el('section', { class: 'panel' }, el('div', { class: 'row' }, pill(activity.status), el('span', { class: 'small' }, `Versión ${activity.version || 1}`)), title.node, reading.node, instructions.node), el('section', { class: 'panel' }, el('h2', {}, 'Revisión de preguntas y evidencias'), el('p', { class: 'small' }, 'Comprueba el enunciado, la clave o rúbrica, la cita exacta y por qué sostiene la inferencia. La plataforma con servidor reserva las claves al docente. Este HTML demostrativo contiene datos de ejemplo y no protege claves ni identidad.'), cards)];
+    if (!locked) {
+      const prompt = field('Pregunta inferencial', { required: true, maxlength: 1200, tag: 'textarea', testid: 'manual-question' });
+      const quote = field('Cita literal que sustenta la pregunta', { required: true, maxlength: 2000, tag: 'textarea', testid: 'manual-evidence' });
+      const reason = field('Explica el vínculo entre la cita y la inferencia', { required: true, maxlength: 2000, tag: 'textarea', testid: 'manual-reason' });
+      const addNote = status(), add = el('button', { type: 'submit', class: 'btn', 'data-testid': 'add-question' }, 'Añadir pregunta al borrador');
+      const addForm = el('form', { on: { submit: async event => { event.preventDefault();
+        const text = reading.input.value.normalize('NFC'), selected = quote.input.value.normalize('NFC').trim(), startUtf16 = text.indexOf(selected);
+        if (!selected || startUtf16 < 0) return message(addNote, 'La cita debe existir literalmente en el texto de esta versión.', true);
+        const start = [...text.slice(0, startUtf16)].length;
+        questions.push({ id: demoQuestionId(), type: 'inferential', prompt: prompt.input.value.trim(), rubric: 'Sustenta una interpretación con evidencia pertinente y explica el vínculo lógico.', evidence: [{ quote: selected, start, end: start + [...selected].length, reason: reason.input.value.trim() }] });
+        reviewed.checked = false; renderCards(); prompt.input.value = ''; quote.input.value = ''; reason.input.value = ''; message(addNote, 'Pregunta añadida. Guarda el borrador para conservarla.');
+      } } }, prompt.node, quote.node, reason.node, addNote, add);
+      const generatedReview = el('input', { type: 'checkbox', id: 'generation-reviewed', 'data-testid': 'generation-reviewed' });
+      const generateNote = status();
+      const generate = button('Proponer 3 preguntas con IA', event => action(generateNote, event.currentTarget, async () => {
+        if (!generatedReview.checked) throw new Error('Confirma que revisaste el texto antes de generar preguntas.');
+        await save(); const data = await api(`/activities/${activity.id}/generate`, { method: 'POST', body: { count: 3, types: ['inferential', 'matching', 'completion'], textReviewed: true } }); await activityEditor(data.activity || data);
+      }), { testid: 'generate-questions', disabled: true });
+      content.push(el('div', { class: 'grid' }, el('section', { class: 'panel' }, el('h2', {}, 'Añadir una pregunta propia'), addForm), el('section', { class: 'panel' }, el('h2', {}, 'Propuestas de IA'), el('p', { class: 'small' }, 'Genera borradores de inferencia, relación y completado. Requiere proveedor configurado en el servidor; esta demo no genera preguntas.'), el('label', { class: 'check', for: generatedReview.id }, generatedReview, 'Revisé el texto y su permiso de uso.'), generateNote, generate)));
+      const advanced = field('Preguntas en JSON (edición avanzada)', { tag: 'textarea', class: 'long code', value: JSON.stringify(questions, null, 2) });
+      content.push(el('details', { class: 'panel' }, el('summary', {}, 'Edición avanzada de tipos, opciones y claves'), el('p', { class: 'small' }, 'Para relación usa left/right y correctAnswer como mapa; para completado usa acceptedAnswers. Todos los tipos requieren evidencia literal y justificación. No edites una versión ya publicada.'), advanced.node, button('Aplicar JSON al borrador', () => { try { const parsed = JSON.parse(advanced.input.value); if (!Array.isArray(parsed)) throw new Error('Se requiere una lista de preguntas.'); questions = parsed; reviewed.checked = false; renderCards(); message(note, 'Cambios aplicados localmente; guarda el borrador.'); } catch (error) { message(note, error.message, true); } })));
+    }
+    page(locked ? 'Versión publicada' : 'Preparar y revisar actividad', locked ? 'Esta versión es inmutable. Una edición nueva conserva los intentos y resultados anteriores.' : 'Primero revisa el texto; después, cada pregunta. Publicar requiere una decisión docente explícita.',
+      button('← Biblioteca', () => run(activities)), content,
+      el('section', { class: 'panel' }, !locked && el('label', { class: 'check', for: reviewed.id }, reviewed, 'Revisé texto, preguntas, claves, evidencias, pertinencia y dificultad. Apruebo esta versión para asignarla.'), note, actions));
+  }
+
+  async function assignments() {
+    section = 'Asignaciones';
+    const [groupData, activityData, assignmentData] = await Promise.all([api('/groups'), api('/activities'), api('/assignments')]);
+    const groupRows = list(groupData, 'groups'), activityRows = list(activityData, 'activities').filter(row => row.status === 'published'), rows = list(assignmentData, 'assignments');
+    const group = field('Grupo', { tag: 'select', required: true, testid: 'assignment-group' });
+    group.input.append(el('option', { value: '' }, 'Selecciona un grupo'), ...groupRows.map(row => el('option', { value: row.id }, row.name)));
+    const activity = field('Actividad publicada', { tag: 'select', required: true, testid: 'assignment-activity' });
+    activity.input.append(el('option', { value: '' }, 'Selecciona una versión'), ...activityRows.map(row => el('option', { value: row.id }, `${row.title} · v${row.version || 1}`)));
+    const note = status(), submit = el('button', { type: 'submit', class: 'btn primary', 'data-testid': 'create-assignment' }, 'Asignar al grupo');
+    const form = el('form', { on: { submit: async event => { event.preventDefault(); await action(note, submit, async () => { await api('/assignments', { method: 'POST', body: { groupId: group.input.value, activityId: activity.input.value } }); await assignments(); }); } } }, group.node, activity.node, note, el('div', { class: 'actions' }, submit));
+    page('Asignar una versión revisada', 'Solo se pueden asignar actividades publicadas. Cambiar después un borrador no altera lo que ya recibió el grupo.',
+      el('div', { class: 'grid' }, el('section', { class: 'panel' }, el('h2', {}, 'Nueva asignación'), !groupRows.length && empty('Crea un grupo primero.'), !activityRows.length && empty('Publica al menos una actividad revisada.'), form), el('section', { class: 'panel' }, el('h2', {}, 'Asignaciones actuales'), rows.length ? el('ul', { class: 'list' }, rows.map(row => el('li', {}, el('strong', {}, row.activityTitle || row.activity?.title || activityRows.find(item => item.id === row.activityId)?.title || 'Actividad'), el('div', { class: 'small' }, row.groupName || row.group?.name || groupRows.find(item => item.id === row.groupId)?.name || 'Grupo')))) : empty('Aún no has asignado actividades.'))));
+  }
+
+  async function results() {
+    section = 'Resultados';
+    const rows = list(await api('/results'), 'results');
+    page('Leer el razonamiento de tus estudiantes', 'Los aciertos objetivos son una parte del registro. Las interpretaciones, evidencias y revisiones necesitan tu valoración.',
+      el('section', { class: 'panel' }, rows.length ? el('div', { class: 'table-wrap' }, el('table', {}, el('thead', {}, el('tr', {}, ...['Estudiante', 'Actividad y grupo', 'Estado', 'Parte objetiva', 'Acción'].map(text => el('th', { scope: 'col' }, text)))), el('tbody', {}, rows.map(row => el('tr', {}, el('td', {}, row.studentName || 'Estudiante'), el('td', {}, row.activityTitle, el('div', { class: 'small' }, row.groupName)), el('td', {}, pill(row.status)), el('td', {}, row.objectiveScore == null ? 'Sin entrega' : `${row.objectiveScore}/${row.maxObjective || 0}`), el('td', {}, button('Ver y retroalimentar', () => run(() => resultDetail(row.attemptId || row.id)), { testid: `open-result-${row.attemptId || row.id}`, class: 'btn small' }))))))) : empty('Las producciones aparecerán cuando los estudiantes comiencen sus actividades.')));
+  }
+
+  async function resultDetail(id) {
+    section = 'Resultados';
+    const data = await api(`/attempts/${id}`), { attempt, activity, assessment } = data;
+    const draft = attempt.draft || {}, note = status();
+    const rubric = Object.entries(rubricNames).map(([key, label]) => {
+      const control = field(label, { tag: 'select', testid: `rubric-${key}` });
+      control.input.append(...[[0, '0 · Por desarrollar'], [1, '1 · En exploración'], [2, '2 · Sustentado'], [3, '3 · Profundizado']].map(([value, text]) => el('option', { value, selected: Number(assessment?.rubric?.[key] ?? 0) === value }, text)));
+      return { key, ...control };
+    });
+    const feedback = field('Orientación para seguir aprendiendo', { tag: 'textarea', required: true, maxlength: 4000, value: assessment?.feedback || '', testid: 'review-feedback', placeholder: 'Señala una fortaleza y un paso concreto para mejorar el vínculo entre cita e interpretación.' });
+    const save = el('button', { type: 'submit', class: 'btn primary', 'data-testid': 'save-review', disabled: attempt.status === 'in_progress' }, 'Guardar devolución docente');
+    const reviewForm = el('form', { on: { submit: async event => { event.preventDefault(); await action(note, save, async () => { await api(`/attempts/${id}/review`, { method: 'POST', body: { rubric: Object.fromEntries(rubric.map(item => [item.key, Number(item.input.value)])), feedback: feedback.input.value.trim() } }); await resultDetail(id); }); } } }, el('div', { class: 'rubric-grid' }, rubric.map(item => item.node)), el('p', { class: 'small' }, '0: aún no hay sustento; 1: pista o idea parcial; 2: relación pertinente y explicada; 3: sustento consistente con alternativas o revisión profunda. No evalúes por extensión o velocidad.'), feedback.node, note, el('div', { class: 'actions' }, save));
+    const evidencePanel = el('section', { class: 'panel' }, el('h2', {}, 'Producción y proceso'), ...[['initial', 'Idea inicial'], ['hypothesis', 'Hipótesis'], ['posture', 'Interpretación'], ['evidence1', 'Evidencia 1'], ['evidence2', 'Evidencia 2'], ['reasoning', 'Vínculo entre citas e interpretación'], ['reflection', 'Qué cambió'], ['finalThought', 'Reflexión final']].map(([key, label]) => el('div', { class: 'review-card' }, el('h3', {}, label), el('p', {}, draft[key] || 'Sin registro'))),
+      el('h3', {}, 'Respuestas a las preguntas'), ...(activity.questions || []).map(question => el('div', { class: 'review-card' }, el('strong', {}, question.prompt), el('p', {}, typeof attempt.answers?.[question.id] === 'object' ? JSON.stringify(attempt.answers[question.id]) : attempt.answers?.[question.id] || 'Sin respuesta'))),
+      el('h3', {}, 'Diálogo socrático'), ...(data.tutor?.messages?.length ? data.tutor.messages.map(item => el('div', { class: `chat-message ${item.role}` }, el('strong', {}, item.role === 'user' ? 'Estudiante' : 'LectorLab'), item.content)) : [empty('No se registró diálogo con IA.')]),
+      el('details', {}, el('summary', {}, 'Consultar lectura de esta versión'), el('div', { class: 'preview-text' }, activity.readingText)));
+    page(activity.title, `Estado: ${attempt.status === 'in_progress' ? 'En curso' : attempt.status === 'reviewed' ? 'Revisado' : 'Entregado'} · Entrega: ${fmt(attempt.submittedAt)}`,
+      el('div', { class: 'actions' }, button('← Resultados', () => run(results)), button('Descargar CSV de demo individual', event => action(note, event.currentTarget, () => download(`/attempts/${id}/export.xlsx`, 'LectorLab_individual.xlsx')))),
+      el('div', { class: 'grid' }, evidencePanel, el('section', { class: 'panel' }, el('h2', {}, 'Devolución docente'), attempt.status === 'in_progress' && el('p', { class: 'note' }, 'La actividad sigue en curso. Espera la entrega para valorar.'), reviewForm, el('p', { class: 'small' }, 'Una respuesta que necesita aclaración invita a conversar. Esta plataforma no decide fraude ni aplica sanciones automáticas.'))));
+  }
+
+  async function sheets() {
+    section = 'Google Sheets';
+    let connection;
+    try { connection = await api('/integrations/sheets'); } catch (error) { connection = { configured: false, error: error.message }; }
+    const sheet = field('ID de la hoja autorizada', { required: true, value: connection.spreadsheetId || '', maxlength: 160, testid: 'sheets-id', placeholder: 'ID del archivo, sin URL' });
+    const note = status(), connect = el('button', { type: 'submit', class: 'btn primary', disabled: !connection.configured }, 'Guardar destino autorizado');
+    const form = el('form', { on: { submit: async event => { event.preventDefault(); await action(note, connect, async () => { await api('/integrations/sheets', { method: 'PUT', body: { spreadsheetId: sheet.input.value.trim() } }); await sheets(); }); } } }, sheet.node, note, el('div', { class: 'actions' }, connect, button('Sincronizar pendientes', event => action(note, event.currentTarget, async () => { const data = await api('/integrations/sheets/sync', { method: 'POST', body: {} }); message(note, data.message || 'Sincronización procesada. Los errores de Google no afectan las entregas guardadas.'); }), { disabled: !connection.configured || !connection.spreadsheetId, testid: 'sheets-sync' })));
+    page('Resultados en Google Sheets', 'Destino opcional. El registro principal sigue en LectorLab; las entregas no dependen de Google.', el('section', { class: 'panel' }, el('h2', {}, connection.configured ? 'Conexión disponible en el servidor' : 'Google aún no está configurado'), !connection.configured && el('p', { class: 'note' }, 'Esta demo no se conecta a Google. Puedes descargar un CSV local; la plataforma con servidor ofrece Excel y conexión opcional a Sheets.'), el('p', { class: 'small' }, 'Comparte únicamente la hoja autorizada con la cuenta de servicio configurada. Se exportan alias, actividad y resultados necesarios; no el diálogo completo. Revocar el permiso en Google detiene el acceso sin borrar entregas.'), connection.pendingCount != null && el('p', {}, `Registros pendientes: ${connection.pendingCount}`), connection.error && el('p', { class: 'status error' }, connection.error), form));
+  }
+
+  await run(dashboard);
+}
+
+
+
+const phaseNames = ['Activación', 'Lectura', 'Comprender', 'Inferir', 'Evaluar', 'Tutor socrático', 'Mi interpretación'];
+
+async function renderStudent(view, user) {
+  let disposeAttempt = null;
+  async function dashboard() {
+    disposeAttempt?.(); disposeAttempt = null;
+
+    const rows = list(await api('/assignments'), 'assignments');
+    const entries = rows.map(assignment => {
+      const details = el('div', {}, el('h3', {}, assignment.activityTitle || 'Actividad de lectura'),
+        el('p', { class: 'small' }, assignment.groupName || ''), assignment.status && pill(assignment.status));
+      const label = ['submitted', 'reviewed'].includes(assignment.status) ? 'Ver mi recorrido' : assignment.attemptId ? 'Continuar lectura' : 'Comenzar lectura';
+      const open = button(label, async event => {
+        await busy(event.currentTarget, async () => {
+          try {
+            const data = await api(`/assignments/${assignment.id}/attempt`, { method: 'POST', body: {} });
+            await openAttempt(data.attempt.id);
+          } catch (error) { window.alert(error.message); }
+        });
+      }, { primary: true, testid: `open-assignment-${assignment.id}` });
+      return el('li', {}, el('div', { class: 'row' }, details, open));
+    });
+    show(view, ...heading(`Tu espacio de lectura, ${user.name || user.username}.`, 'Espacio estudiante'),
+      el('p', { class: 'intro' }, 'Lee a tu ritmo, plantea una idea y vuelve al texto para sostenerla. En esta demo tus respuestas se conservan solo en la memoria de esta pestaña. Se borran al recargar o cerrar.'),
+      el('section', { class: 'panel' }, el('h2', {}, 'Actividades de tu grupo'), entries.length ? el('ul', { class: 'list' }, entries) : empty('Todavía no tienes actividades asignadas. Tu docente te indicará cuándo comenzar.')),
+      el('aside', { class: 'note' }, 'Las interpretaciones se revisan con tu docente. No se premia escribir más rápido ni enviar más mensajes. Tu progreso es privado.'));
+  }
+
+  async function openAttempt(id) {
+    if (!id) throw new Error('No se pudo identificar el recorrido. Vuelve a tus actividades e inténtalo otra vez.');
+    disposeAttempt?.();
+    let data = await api(`/attempts/${id}`);
+    let { attempt, activity } = data;
+    let draft = { ...attempt.draft }, answers = { ...attempt.answers };
+    let step = Math.max(0, Math.min(6, demoOpenStep));
+    if (attempt.status !== 'in_progress') step = 6;
+    let version = 0, savedVersion = 0, activeSaves = 0, saveTimer, queue = Promise.resolve(), disposed = false, tutorPending = false, lastTutorRequest = null;
+    const note = status(), saveStatus = el('p', { class: 'save-status', role: 'status', 'aria-live': 'polite', 'data-testid': 'save-status' }, 'Conservado en esta pestaña');
+    const phaseBody = el('section', { class: 'panel', id: 'phase-body' });
+    const navigation = el('nav', { class: 'steps', 'aria-label': 'Etapas del recorrido' });
+    const progress = el('progress', { max: 7, value: step + 1, 'aria-label': 'Progreso del recorrido', style: 'width:100%;accent-color:var(--wine)' });
+    const readOnly = () => attempt.status !== 'in_progress';
+    function updateSaveStatus(failed = false) {
+      saveStatus.textContent = failed ? 'Cambios sin guardar. Reintenta antes de salir.' : activeSaves ? 'Guardando…' : savedVersion < version ? 'Cambios sin guardar…' : 'Conservado en esta pestaña';
+      saveStatus.style.color = failed ? 'var(--danger)' : 'var(--sage)';
+    }
+    const beforeUnload = event => { if (activeSaves || savedVersion < version) { event.preventDefault(); event.returnValue = ''; } };
+    window.addEventListener('beforeunload', beforeUnload);
+    disposeAttempt = () => { disposed = true; clearTimeout(saveTimer); window.removeEventListener('beforeunload', beforeUnload); if (window.lectorlabBeforeLeave === beforeLeave) delete window.lectorlabBeforeLeave; if (window.lectorlabDispose === disposeAttempt) delete window.lectorlabDispose; };
+    async function beforeLeave() {
+      if (tutorPending) { message(note, 'Espera a que termine la solicitud del tutor antes de salir de la actividad.', true); return false; }
+      try { await flush(); return true; } catch { return window.confirm('Hay cambios que no pudieron guardarse. ¿Salir y descartar esos cambios de esta pestaña?'); }
+    }
+    window.lectorlabBeforeLeave = beforeLeave;
+    window.lectorlabDispose = disposeAttempt;
+    function setDirty() { version++; updateSaveStatus(); clearTimeout(saveTimer); saveTimer = setTimeout(() => { flush().catch(() => {}); }, 500); }
+    function applyResponse(result) {
+      const updated = result.attempt || result;
+      if (updated.id) { attempt = { ...attempt, ...updated }; answers = { ...answers, ...(updated.answers || {}) }; }
+      if (result.feedback) data.feedback = result.feedback;
+    }
+    async function saveBody(body, targetVersion = version) {
+      activeSaves++; updateSaveStatus();
+      const job = queue.catch(() => {}).then(async () => {
+        const result = await api(`/attempts/${id}`, { method: 'PATCH', body }); applyResponse(result);
+        savedVersion = Math.max(savedVersion, targetVersion); return result;
+      });
+      queue = job;
+      try { const result = await job; message(note, ''); return result; }
+      catch (error) { message(note, error.message, true); throw error; }
+      finally { activeSaves--; updateSaveStatus(savedVersion < version && activeSaves === 0); }
+    }
+    async function flush() {
+      clearTimeout(saveTimer);
+      if (readOnly()) return;
+      if (savedVersion >= version) return queue;
+      const openAnswers = Object.fromEntries((activity.questions || []).filter(question => question.type === 'inferential' && typeof answers[question.id] === 'string').map(question => [question.id, answers[question.id]]));
+      return saveBody({ draft: { ...draft }, ...(Object.keys(openAnswers).length ? { answers: openAnswers } : {}) }, version);
+    }
+    async function answer(question, value) {
+      if (readOnly() || tutorPending) return;
+      try {
+        await flush();
+        const result = await saveBody({ answers: { [question.id]: value } });
+        applyResponse(result);
+        const fresh = await api(`/attempts/${id}`); data.feedback = fresh.feedback; attempt = fresh.attempt; answers = { ...attempt.answers }; renderPhase(false);
+      } catch { /* Preserve unsent text and show the message above. */ }
+    }
+    function draftField(key, label, options = {}) {
+      const control = field(label, { tag: 'textarea', maxlength: 4000, ...options, value: draft[key] || '', disabled: readOnly(), testid: key });
+      control.input.addEventListener('input', () => { draft[key] = control.input.value; setDirty(); });
+      return control.node;
+    }
+    async function move(next) {
+      if (tutorPending) return;
+      try { await flush(); step = Math.max(0, Math.min(6, next)); renderPhase(); } catch { /* Stay with unsaved work. */ }
+    }
+    const readingText = el('div', { class: 'reading-text', 'data-testid': 'reading-text' }, ...String(activity.readingText || '').split(/\n\s*\n/).filter(Boolean).map((paragraph, index) => el('p', {}, el('span', { class: 'para-num', 'aria-label': `Párrafo ${index + 1}` }, index + 1), paragraph)));
+    function citeSelected(key) {
+      const selection = window.getSelection();
+      if (!selection?.rangeCount || !readingText.contains(selection.anchorNode) || !readingText.contains(selection.focusNode) || !selection.toString().trim()) return message(note, 'Selecciona primero un fragmento dentro de la lectura.', true);
+      draft[key] = selection.toString().trim(); setDirty();
+      if (step === 6) renderPhase(false);
+      message(note, `Fragmento añadido como ${key === 'evidence1' ? 'evidencia 1' : 'evidencia 2'}. Explica por qué sostiene tu interpretación.`);
+    }
+    const readingPanel = el('aside', { class: 'reading-panel' }, el('details', { open: true }, el('summary', {}, 'Texto de esta actividad · consultar y citar'), el('h2', {}, activity.title), readingText,
+      !readOnly() && el('div', { class: 'actions' }, button('Citar selección como evidencia 1', () => citeSelected('evidence1'), { class: 'btn small' }), button('Citar selección como evidencia 2', () => citeSelected('evidence2'), { class: 'btn small' }))),
+      el('p', { class: 'small' }, 'La cita ayuda a volver al texto. Su pertinencia y tu explicación se revisan con el docente.'),
+      el('div', { class: 'sources' }, 'Lectura de la versión asignada. ', activity.source?.author && `${activity.source.author}. `, activity.source?.title || '', activity.source?.url && el('a', { href: safeSource(activity.source.url), target: '_blank', rel: 'noopener noreferrer' }, 'Consultar fuente'),
+        String(activity.title).includes('Más allá') && el('p', {}, 'Adaptación pedagógica de El almohadón de pluma, de Horacio Quiroga. Competencia: lee diversos tipos de textos escritos en lengua materna.')));
+    function renderQuestion(question, index) {
+      const value = answers[question.id], hasAnswer = value !== undefined && value !== null && value !== '';
+      const feedback = data.feedback?.[question.id];
+      const card = el('article', { class: 'question', 'data-question': question.id }, el('div', { class: 'eyebrow' }, `Pregunta ${index + 1}`), el('h3', {}, question.prompt));
+      if (question.type === 'mcq') {
+        for (const option of question.options || []) {
+          const selected = value === option.id;
+          const label = /^[a-z]\.\s/iu.test(option.text) ? option.text : `${option.id.toUpperCase()}. ${option.text}`;
+          card.append(button(label, async event => { await busy(event.currentTarget, () => answer(question, option.id)); }, {
+            class: `choice${selected ? ' selected' : ''}${selected && feedback?.correct === true ? ' correct' : ''}`,
+            testid: `question-${question.id}-answer-option-${option.id}`, disabled: hasAnswer || readOnly() || tutorPending,
+            'aria-pressed': selected ? 'true' : 'false',
+          }));
+        }
+        if (hasAnswer) card.append(el('p', { class: 'small' }, 'Primera respuesta guardada. Puedes revisar tu razonamiento sin sustituirla.'));
+      } else if (question.type === 'matching') {
+        const selections = [];
+        for (const left of question.left || []) {
+          const select = field(left.text, { tag: 'select', disabled: hasAnswer || readOnly(), testid: `question-${question.id}-match-${left.id}` });
+          select.input.append(el('option', { value: '' }, 'Selecciona una relación'), ...(question.right || []).map(right => el('option', { value: right.id, selected: value?.[left.id] === right.id }, right.text)));
+          selections.push({ id: left.id, input: select.input }); card.append(select.node);
+        }
+        if (!hasAnswer && !readOnly()) card.append(button('Registrar relaciones', async event => { if (selections.some(item => !item.input.value)) return message(note, 'Completa todas las relaciones antes de registrarlas.', true); await busy(event.currentTarget, () => answer(question, Object.fromEntries(selections.map(item => [item.id, item.input.value])))); }, { testid: `question-${question.id}-register` }));
+        card.append(el('p', { class: 'small' }, 'Las relaciones se registran juntas como primer intento. No se guardan selecciones parciales.'));
+      } else if (question.type === 'completion') {
+        const completion = field('Tu completado', { value: value || '', maxlength: 500, disabled: hasAnswer || readOnly(), testid: `question-${question.id}-answer` });
+        card.append(completion.node);
+        if (!hasAnswer && !readOnly()) card.append(button('Registrar completado', async event => { if (!completion.input.value.trim()) return message(note, 'Escribe tu completado antes de registrarlo.', true); await busy(event.currentTarget, () => answer(question, completion.input.value.trim())); }, { testid: `question-${question.id}-register` }));
+      } else {
+        const open = field('Tu respuesta y su sustento', { tag: 'textarea', value: value || '', maxlength: 4000, disabled: readOnly(), testid: `question-${question.id}-answer` });
+        open.input.addEventListener('input', () => { answers[question.id] = open.input.value; setDirty(); });
+        card.append(open.node, el('p', { class: 'small' }, 'Respuesta abierta: su calidad será revisada por tu docente.'));
+      }
+      if (feedback?.text) card.append(el('p', { class: 'feedback', role: 'status' }, feedback.text));
+      return card;
+    }
+    function renderTutor() {
+      const tutor = data.tutor || {}, configured = tutor.available !== false, completed = Number(tutor.completedCount || 0), max = Number(tutor.maxTurns || 5);
+      const chat = el('div', { class: 'chat-log', 'aria-live': 'polite', 'data-testid': 'tutor-messages' }, ...(tutor.messages?.length ? tutor.messages.map(item => el('div', { class: `chat-message ${item.role}` }, el('strong', {}, item.role === 'user' ? 'Tú' : 'LectorLab'), item.content)) : [el('p', { class: 'small' }, 'El tutor te invitará a justificar tus ideas. No redactará tu interpretación final.')]));
+      for (const item of tutor.unresolved || []) chat.append(el('div', { class: 'note' }, el('strong', {}, item.state === 'pending' ? 'Idea guardada; respuesta pendiente: ' : 'Idea conservada sin respuesta confirmada: '), item.content));
+      const input = field('Tu interpretación o duda para el tutor', { tag: 'textarea', maxlength: 500, disabled: !configured || readOnly() || completed >= max || tutorPending, testid: 'tutor-input', value: lastTutorRequest?.message || '' });
+      const send = el('button', { type: 'submit', class: 'btn green', disabled: !configured || readOnly() || completed >= max || tutorPending, 'data-testid': 'tutor-send' }, tutorPending ? 'Esperando al tutor…' : 'Conversar con LectorLab');
+      const tutorNote = status();
+      const form = el('form', { on: { submit: async event => {
+        event.preventDefault(); if (tutorPending || !input.input.value.trim()) return;
+        try {
+          await flush(); tutorPending = true;
+          const text = input.input.value.trim();
+          if (!lastTutorRequest || lastTutorRequest.message !== text) lastTutorRequest = { message: text, requestId: demoQuestionId() };
+          send.disabled = true; input.input.disabled = true; send.textContent = 'Esperando al tutor…';
+          navigation.querySelectorAll('button').forEach(control => { control.disabled = true; });
+          phaseBody.querySelectorAll('[data-testid="next-step"],[data-testid="previous-step"]').forEach(control => { control.disabled = true; });
+          const response = await api(`/attempts/${id}/tutor`, { method: 'POST', body: lastTutorRequest });
+          if (response.pending || response.state === 'pending') message(tutorNote, 'Tu intervención sigue procesándose. No la dupliques; puedes consultar el estado al volver a abrir la actividad.');
+          else { lastTutorRequest = null; input.input.value = ''; }
+          data = await api(`/attempts/${id}`); attempt = data.attempt; answers = { ...attempt.answers }; tutorPending = false; renderPhase(false);
+        } catch (error) {
+          tutorPending = false;
+          if (error.status) lastTutorRequest = null;
+          message(tutorNote, `${error.message} Tu idea sigue en el cuadro; un fallo técnico no consume una intervención completada.`, true);
+          input.input.disabled = readOnly() || completed >= max; send.disabled = readOnly() || completed >= max; send.textContent = 'Reintentar conversación';
+          navigation.querySelectorAll('button').forEach(control => { control.disabled = false; });
+          phaseBody.querySelectorAll('[data-testid="next-step"],[data-testid="previous-step"]').forEach(control => { control.disabled = false; });
+          input.input.focus();
+        }
+      } } }, input.node, tutorNote, el('div', { class: 'actions' }, send));
+      return [el('p', {}, 'En la plataforma con IA configurada, el tutor utiliza el texto de la actividad y pide sustento sin resolver por ti. En este HTML puedes probar la guía fija, sin conversación de IA.'), el('p', { class: 'small', 'data-testid': 'tutor-count' }, `${completed} de ${max} intervenciones completadas.`), !configured && el('p', { class: 'note' }, 'Esta demo sin servidor no está conectada a IA. Puedes continuar con la guía de lectura sin IA y entregar tu trabajo.'), chat, configured && form,
+        el('details', { class: 'note', open: !configured }, el('summary', {}, 'Guía de lectura sin IA'), el('ol', {}, el('li', {}, '¿Qué fragmento concreto sostiene tu interpretación?'), el('li', {}, '¿Por qué esa pista apoya tu idea y no otra explicación?'), el('li', {}, '¿Qué cambió cuando apareció una evidencia nueva?')), el('p', { class: 'small' }, 'Esta guía es una actividad fija de apoyo; no es una conversación generada por IA.'))];
+    }
+    function renderFinal() {
+      const final = [el('p', {}, 'Formula tu interpretación, incorpora dos pistas y explica el vínculo. Puedes cambiar de idea: cuenta qué evidencia hizo necesaria la revisión.'),
+        draftField('posture', '1. Mi interpretación'), draftField('evidence1', '2. Evidencia 1', { maxlength: 2000 }), draftField('evidence2', '3. Evidencia 2', { maxlength: 2000 }), draftField('reasoning', '4. ¿Por qué estas evidencias sostienen mi interpretación?'), draftField('reflection', '5. ¿Qué cambió entre mi primera idea y mi interpretación actual?'), draftField('finalThought', '6. Reflexión final: ¿qué necesita una explicación para ser razonable?')];
+      if (!readOnly()) {
+        final.push(el('p', { class: 'small' }, 'La entrega conserva tus primeras respuestas objetivas. Las respuestas abiertas quedan pendientes de revisión docente; escribir más no significa razonar mejor.'), button('Entregar mi interpretación', async event => {
+          await busy(event.currentTarget, async () => {
+            try {
+              for (const key of ['posture', 'evidence1', 'evidence2', 'reasoning', 'reflection']) if (!String(draft[key] || '').trim()) throw new Error('Completa interpretación, dos evidencias, vínculo y reflexión antes de entregar.');
+              await flush(); await api(`/attempts/${id}/submit`, { method: 'POST', body: {} });
+              data = await api(`/attempts/${id}`); attempt = data.attempt; draft = { ...attempt.draft }; answers = { ...attempt.answers }; savedVersion = version; renderPhase();
+            } catch (error) { message(note, error.message, true); }
+          });
+        }, { primary: true, testid: 'submit-attempt' }));
+      } else {
+        final.unshift(el('p', { class: 'status', 'data-testid': 'submission-status' }, `Entrega de demostración registrada el ${fmt(attempt.submittedAt)}. ${attempt.status === 'reviewed' ? 'Tu docente ya dejó una devolución.' : 'Tu interpretación está pendiente de revisión docente.'}`));
+        if (attempt.objectiveScore != null) final.push(el('p', { 'data-testid': 'objective-score' }, `Preguntas objetivas: ${attempt.objectiveScore}/${attempt.maxObjective || 0}. Esta parte no califica por sí sola tu interpretación.`));
+      }
+      if (data.assessment) {
+        final.push(el('section', { class: 'review-card' }, el('h3', {}, 'Devolución de tu docente'), el('p', { 'data-testid': 'teacher-feedback' }, data.assessment.feedback), el('div', { class: 'badges' }, (data.assessment.badges || []).map(badge => el('span', { class: 'badge' }, typeof badge === 'string' ? badge : badge.label || badge.title || badge.name))), el('p', { class: 'small' }, 'Estos hitos reconocen evidencia revisada en esta actividad. No son una etiqueta permanente ni una comparación con tus compañeros.')));
+      }
+      final.push(button('Descargar mi recorrido en CSV de demo', async event => { await busy(event.currentTarget, async () => { try { await flush(); await download(`/attempts/${id}/export.xlsx`, 'LectorLab_mi_recorrido.xlsx'); } catch (error) { message(note, error.message, true); } }); }, { testid: 'download-attempt' }));
+      return final;
+    }
+    function renderPhase(focus = true) {
+
+      progress.value = step + 1;
+      navigation.replaceChildren(...phaseNames.map((name, index) => button(`${index + 1}. ${name}`, () => move(index), { class: 'step-dot', testid: `step-${index}`, 'aria-current': index === step ? 'step' : undefined, disabled: tutorPending })));
+      const body = [el('div', { class: 'eyebrow' }, `Etapa ${step + 1} de 7`), el('h2', { tabindex: '-1' }, phaseNames[step])];
+      if (step === 0) body.push(el('p', {}, 'Antes de analizar las pistas: ¿cuándo una explicación es suficiente para aceptarla?'), draftField('initial', 'Escribe tu primera idea'), el('p', { class: 'small' }, 'No buscamos una respuesta perfecta. Al final podrás revisar qué cambió.'));
+      if (step === 1) body.push(el('p', {}, activity.instructions || 'Lee el texto completo y observa qué detalles despiertan sospechas y cuáles permiten sostener una conclusión.'), el('div', { class: 'note' }, 'El texto de la izquierda queda disponible durante todo el recorrido. En móvil puedes abrirlo o cerrarlo para consultarlo. Los párrafos numerados te ayudarán a citar.'), el('p', { class: 'small' }, 'Tiempo orientativo: unos 20 minutos. No se penaliza tu ritmo de lectura.'));
+      if (step >= 2 && step <= 4) {
+        const questions = activity.questions || [], chunk = Math.max(1, Math.ceil(questions.length / 3)), start = (step - 2) * chunk;
+        const items = questions.slice(start, start + chunk);
+        body.push(...(items.length ? items.map((question, index) => renderQuestion(question, start + index)) : [el('p', {}, 'Vuelve al texto: distingue lo que aparece expresamente de lo que estás infiriendo.')]));
+        if (step === 3) body.push(draftField('hypothesis', 'Tu hipótesis: ¿qué habrías pensado antes del desenlace?'), el('p', { class: 'small' }, 'Si ya leíste el final, reconoce que esta hipótesis es una reconstrucción retrospectiva.'));
+        if (step === 4) body.push(el('p', { class: 'note' }, 'Cambiar una interpretación ante evidencia nueva no es fallar: es revisar una conclusión con mejores razones.'));
+      }
+      if (step === 5) body.push(...renderTutor());
+      if (step === 6) body.push(...renderFinal());
+      body.push(el('div', { class: 'actions' }, step > 0 && button('← Etapa anterior', () => move(step - 1), { testid: 'previous-step', disabled: tutorPending }), step < 6 && button('Siguiente etapa →', () => move(step + 1), { primary: true, testid: 'next-step', disabled: tutorPending })));
+      phaseBody.replaceChildren(...body.filter(Boolean));
+      if (focus) { phaseBody.querySelector('h2')?.focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'instant' }); }
+      updateSaveStatus();
+    }
+    show(view, ...heading(activity.title, 'Tu recorrido'), el('div', { class: 'row' }, pill(attempt.status), button('← Mis actividades', async () => { if (await beforeLeave()) await dashboard(); })), progress, navigation, saveStatus, note,
+      el('div', { class: 'reading-layout' }, readingPanel, phaseBody));
+    renderPhase(false);
+    if (disposed) disposeAttempt?.();
+  }
+  const openId = demoOpenAttemptId;
+  if (openId) await openAttempt(openId); else await dashboard();
+}
+
+function safeSource(value) {
+  try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) ? url.href : '#'; } catch { return '#'; }
+}
+
+
+function demoQuestionId() { return 'demo-' + [...crypto.getRandomValues(new Uint8Array(12))].map(x => x.toString(16).padStart(2, '0')).join(''); }
+const demoView = document.getElementById('view');
+let demoCurrentRole = 'teacher', demoSwitchBusy = false, demoOpenAttemptId = null, demoOpenStep = 0;
+async function demoSwitch(role, reset = false, presentation = false) {
+  if (demoSwitchBusy) return;
+  demoSwitchBusy = true;
+  const controls = [...document.querySelectorAll('[data-demo-role],#demo-reset,#demo-tour')];
+  controls.forEach(control => control.disabled = true);
+  try {
+    if (window.lectorlabBeforeLeave && !(await window.lectorlabBeforeLeave())) return;
+    window.lectorlabDispose?.();
+    if (reset) demoReset();
+    demoCurrentRole = role;
+    demoOpenAttemptId = presentation ? demoPrepareTour() : null;
+    demoOpenStep = presentation ? 6 : 0;
+    demoSetRole(role);
+    document.querySelectorAll('[data-demo-role]').forEach(control => control.setAttribute('aria-pressed', String(control.dataset.demoRole === role)));
+    document.getElementById('demo-persona').textContent = role === 'teacher' ? 'Docente de ejemplo · vista de demostración' : 'Explorador 01 · vista de demostración';
+    if (role === 'teacher') await renderTeacher(demoView, { name: 'Docente de ejemplo', role: 'teacher' });
+    else await renderStudent(demoView, { name: 'Explorador 01', role: 'student' });
+  } catch (error) { show(demoView, ...heading('No se pudo abrir la vista', 'Demostración'), el('p', { class: 'status error' }, error.message)); }
+  finally { demoSwitchBusy = false; controls.forEach(control => control.disabled = false); }
+}
+document.querySelectorAll('[data-demo-role]').forEach(control => control.addEventListener('click', () => demoSwitch(control.dataset.demoRole)));
+document.getElementById('demo-reset').addEventListener('click', () => { if (window.confirm('¿Reiniciar los datos ficticios de esta demostración?')) demoSwitch('teacher', true); });
+document.getElementById('demo-tour').addEventListener('click', () => demoSwitch('student', false, true));
+document.getElementById('demo-brand').addEventListener('click', event => { event.preventDefault(); demoSwitch(demoCurrentRole); });
+demoSwitch('teacher');
+
+})();</script></body></html>
