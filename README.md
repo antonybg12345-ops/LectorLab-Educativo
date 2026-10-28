@@ -1,4 +1,9 @@
-# LectorLab 2.0 — demo para presentación
+# LectorLab — versiones para presentación
+
+- [LectorLab 2.0](./): interfaces docente y estudiante, actividades y rúbrica con datos ficticios.
+- [LectorLab — primera versión](./v1/): diseño y recorrido original de «Más allá de las palabras», guía sin IA y Excel generado en el navegador.
+
+## Demo LectorLab 2.0
 
 Demostración de interfaces docente y estudiante con datos ficticios. El archivo index.html es autocontenido y funciona sin instalar Node.js.
 

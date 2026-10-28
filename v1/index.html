@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Más allá de las palabras | RED de lectura crítica</title>
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://upload.wikimedia.org; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <div class="hero-copy">
+      <div class="kicker">Recurso Educativo Digital · Comunicación</div>
+      <h1>Más allá de las palabras</h1>
+      <p>Una experiencia de lectura crítica a partir de <em>El almohadón de pluma</em>, de Horacio Quiroga. Lee, formula hipótesis, contrasta evidencias y revisa tu interpretación.</p>
+      <div class="badges">
+        <span class="badge">⏱ 20 minutos</span>
+        <span class="badge">📖 4.º de secundaria</span>
+        <span class="badge">🧠 Pensamiento crítico</span>
+      </div>
+    </div>
+    <div class="hero-art">
+      <img referrerpolicy="no-referrer" src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Bedroom_-_La_Grange_-_La_Fayette.jpg" alt="Habitación histórica que ambienta el relato">
+    </div>
+  </header>
+
+  <div class="topbar">
+    <span class="step-pill" id="stepPill">Etapa 1 de 7</span>
+    <div class="progress-outer" role="progressbar" aria-label="Progreso del recorrido" aria-valuemin="1" aria-valuemax="7" aria-valuenow="1"><div class="progress" id="progress"></div></div>
+    <span class="timer" id="timer">20:00</span>
+  </div>
+
+  <p class="note" role="note">Primera versión · práctica en el navegador: tus respuestas permanecen solo en esta pestaña y se pierden al cerrar o recargar. Descarga el Excel para conservar una copia. El indicador es formativo y no constituye una calificación verificada.</p>
+
+  <main>
+    <section class="card step" data-step="0">
+      <div class="eyebrow">Activación</div>
+      <div class="time">⏱ 1 minuto</div>
+      <div class="intro-grid">
+        <div>
+          <h2>Antes de leer: ¿cuándo una explicación es suficiente?</h2>
+          <p>Imagina que observas varios indicios y todos parecen apuntar a una explicación. ¿Deberías aceptarla de inmediato?</p>
+          <label for="initial">Escribe tu primera idea en 1–2 oraciones.</label>
+          <textarea id="initial" maxlength="320" placeholder="Creo que una explicación es suficiente cuando..."></textarea>
+          <p class="small">No buscamos una respuesta “perfecta”. La volverás a revisar al final.</p>
+        </div>
+        <div class="author-card">
+          <img referrerpolicy="no-referrer" src="https://upload.wikimedia.org/wikipedia/commons/3/39/Horacio_Quiroga.jpg" alt="Retrato de Horacio Quiroga">
+          <div class="caption"><strong>Horacio Quiroga</strong><br><span class="small" style="color:#eee">Narrador rioplatense, autor del cuento original.</span></div>
+        </div>
+      </div>
+      <div class="actions"><span></span><button class="btn primary next" id="startBtn">Comenzar lectura →</button></div>
+    </section>
+
+    <section class="card step hidden" data-step="1">
+      <div class="eyebrow">Lectura central</div>
+      <div class="time">⏱ 5 minutos</div>
+      <h2>El almohadón de pluma</h2>
+      <p class="small"><strong>Versión pedagógica adaptada</strong> a partir del cuento de Horacio Quiroga (1918), obra en dominio público. Se conserva el conflicto y el desenlace, con lenguaje actualizado y detalles de horror atenuados para el contexto escolar.</p>
+
+      <div class="story-visual">
+        <img referrerpolicy="no-referrer" src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Bedroom_-_La_Grange_-_La_Fayette.jpg" alt="Habitación antigua que acompaña visualmente la lectura">
+      </div>
+
+      <div class="reading">
+        <p>Alicia y Jordán llevaban pocos meses de casados. Ella era sensible y reservada; él, serio y poco expresivo. Aunque se querían, la relación tenía una frialdad que Alicia no terminaba de comprender. La casa donde vivían reforzaba esa sensación: grandes habitaciones blancas, paredes impecables y un silencio que parecía aumentar cualquier ruido.</p>
+        <p>Con el paso de las semanas, Alicia comenzó a sentirse débil. Al principio pensaron que se trataba de una enfermedad pasajera. Sin embargo, no mejoraba. Los médicos la examinaban sin encontrar una explicación clara. Algunos días parecía recuperarse un poco y, a la mañana siguiente, volvía a encontrarse agotada.</p>
+        <p>Jordán permanecía cerca de ella, preocupado, aunque su manera de demostrarlo seguía siendo contenida. La casa, antes simplemente silenciosa, empezó a sentirse inquietante. Alicia pasaba cada vez más tiempo en la cama y llegó un momento en que no quería que movieran su almohadón.</p>
+        <p>Su estado empeoró rápidamente. Los médicos seguían desconcertados porque los síntomas no parecían tener una causa evidente. Alicia, cada vez más débil, apenas podía hablar. Finalmente murió sin que nadie hubiera comprendido qué estaba provocando su deterioro.</p>
+        <p>Después, mientras la sirvienta ordenaba la habitación, observó unas pequeñas marcas en el almohadón. También notó algo extraño: pesaba mucho más de lo normal. Llamó a Jordán y ambos lo examinaron.</p>
+        <p>Al abrirlo descubrieron, escondido entre las plumas, un enorme parásito. Había permanecido allí durante las noches, alimentándose poco a poco de Alicia mientras dormía. Entonces comprendieron que aquello que parecía una enfermedad inexplicable había tenido todo el tiempo una causa oculta, presente en el objeto más cercano a ella.</p>
+        <p>De pronto, varios detalles anteriores —la debilidad al despertar, el empeoramiento durante la noche y su rechazo a que tocaran el almohadón— adquirieron un significado distinto. Lo que antes parecían hechos aislados formaba ahora una explicación.</p>
+      </div>
+
+      <div class="note"><strong>Clave de lectura:</strong> observa qué información conocías antes del desenlace y qué cambia cuando aparece una evidencia nueva.</div>
+      <div class="actions"><button class="btn secondary prev">← Volver</button><button class="btn primary next">Analizar pistas →</button></div>
+    </section>
+
+    <section class="card step hidden" data-step="2">
+      <div class="eyebrow">Primera capa · Comprender</div>
+      <div class="time">⏱ 3 minutos · 2 preguntas</div>
+      <h2>¿Qué sabemos realmente?</h2>
+
+      <div class="question-block">
+        <div class="qnum">Pregunta 1 de 6</div>
+        <p><strong>Antes del desenlace, ¿cuál representa mejor el problema central del relato?</strong></p>
+        <button class="choice" data-q="q1" data-v="a">A. Jordán causa deliberadamente la enfermedad de Alicia.</button>
+        <button class="choice" data-q="q1" data-v="b">B. Alicia se debilita progresivamente y nadie logra explicar con certeza la causa.</button>
+        <button class="choice" data-q="q1" data-v="c">C. La casa está embrujada y eso provoca la enfermedad.</button>
+        <div id="fb1" aria-live="polite"></div>
+      </div>
+
+      <div class="question-block">
+        <div class="qnum">Pregunta 2 de 6</div>
+        <p><strong>¿Cuál de las siguientes afirmaciones es un hecho presentado por el relato y no una interpretación del lector?</strong></p>
+        <button class="choice" data-q="q2" data-v="a">A. La frialdad emocional de Jordán provoca el deterioro de Alicia.</button>
+        <button class="choice" data-q="q2" data-v="b">B. La casa parece querer hacerle daño a Alicia.</button>
+        <button class="choice" data-q="q2" data-v="c">C. Los médicos no identifican una causa clara mientras Alicia se debilita.</button>
+        <div id="fb2" aria-live="polite"></div>
+      </div>
+
+      <div class="note"><strong>Regla del reto:</strong> cada pregunta admite un solo intento. Tu primera respuesta queda registrada para evitar responder por tanteo.</div>
+      <div class="actions"><button class="btn secondary prev">← Volver</button><button class="btn primary next" id="next2" disabled>Segunda capa →</button></div>
+    </section>
+
+    <section class="card step hidden" data-step="3">
+      <div class="eyebrow">Segunda capa · Inferir</div>
+      <div class="time">⏱ 3 minutos · 2 preguntas + hipótesis</div>
+      <h2>De las pistas a una hipótesis</h2>
+
+      <div class="question-block">
+        <div class="qnum">Pregunta 3 de 6</div>
+        <p><strong>Antes de conocer el contenido del almohadón, ¿qué conclusión era la más prudente?</strong></p>
+        <button class="choice" data-q="q3" data-v="a">A. Existía una causa todavía desconocida y las pistas disponibles no bastaban para identificarla.</button>
+        <button class="choice" data-q="q3" data-v="b">B. Jordán era responsable porque se mostraba distante.</button>
+        <button class="choice" data-q="q3" data-v="c">C. Alicia imaginaba sus síntomas.</button>
+        <div id="fb3" aria-live="polite"></div>
+      </div>
+
+      <div class="question-block">
+        <div class="qnum">Pregunta 4 de 6</div>
+        <p><strong>Después del desenlace, ¿qué detalle anterior adquiere un significado especialmente importante?</strong></p>
+        <button class="choice" data-q="q4" data-v="a">A. Las paredes de la casa son blancas.</button>
+        <button class="choice" data-q="q4" data-v="b">B. Jordán es una persona seria y reservada.</button>
+        <button class="choice" data-q="q4" data-v="c">C. Alicia empeora tras las noches y no quiere que muevan el almohadón.</button>
+        <div id="fb4" aria-live="polite"></div>
+      </div>
+
+      <label for="hypothesis">Tu hipótesis inicial</label>
+      <textarea id="hypothesis" maxlength="340" placeholder="Antes del desenlace, yo habría pensado que... porque..."></textarea>
+
+      <div class="actions"><button class="btn secondary prev">← Volver</button><button class="btn primary next" id="next3" disabled>Tercera capa →</button></div>
+    </section>
+
+    <section class="card step hidden" data-step="4">
+      <div class="eyebrow">Tercera capa · Evaluar y revisar</div>
+      <div class="time">⏱ 3 minutos · 2 preguntas</div>
+      <h2>¿Qué hacemos con la nueva evidencia?</h2>
+
+      <div class="question-block">
+        <div class="qnum">Pregunta 5 de 6</div>
+        <p><strong>Cuando el desenlace aporta una causa nueva, ¿qué acción representa mejor una lectura crítica?</strong></p>
+        <button class="choice" data-q="q5" data-v="a">A. Revisar la interpretación anterior y volver a examinar las pistas del relato.</button>
+        <button class="choice" data-q="q5" data-v="b">B. Mantener la primera explicación para ser coherente con lo pensado al inicio.</button>
+        <button class="choice" data-q="q5" data-v="c">C. Concluir que ninguna interpretación es válida porque el final sorprende.</button>
+        <div id="fb5" aria-live="polite"></div>
+      </div>
+
+      <div class="question-block">
+        <div class="qnum">Pregunta 6 de 6</div>
+        <p><strong>¿Cuál juicio muestra una lectura más crítica del cuento?</strong></p>
+        <button class="choice" data-q="q6" data-v="a">A. Si un final sorprende, entonces cualquier explicación anterior era igualmente válida.</button>
+        <button class="choice" data-q="q6" data-v="b">B. La atmósfera puede orientar nuestras sospechas, pero debemos distinguirla de la evidencia que demuestra una causa.</button>
+        <button class="choice" data-q="q6" data-v="c">C. La primera impresión del lector es más importante que la evidencia que aparece después.</button>
+        <div id="fb6" aria-live="polite"></div>
+      </div>
+
+      <div class="note"><strong>Pensamiento crítico en acción:</strong> cambiar una interpretación ante evidencia nueva no es “fallar”; es revisar una conclusión cuando aparecen mejores razones.</div>
+      <div class="actions"><button class="btn secondary prev">← Volver</button><button class="btn primary next" id="next4" disabled>Conversar con el tutor →</button></div>
+    </section>
+
+    <section class="card step hidden" data-step="5">
+      <div class="eyebrow">Cuarta capa · Tutor socrático</div>
+      <div class="time">⏱ 2–3 minutos</div>
+      <h2>Pon a prueba tu interpretación</h2>
+      <p>Esta publicación conserva el espacio socrático como una guía fija: pide evidencias, relaciones y explicaciones alternativas. No está conectada a IA.</p>
+
+      <div class="chat">
+        <div class="chat-head">🧠 LectorLab · guía socrática sin IA</div>
+        <div class="chat-log" id="chatLog" aria-live="polite">
+          <div class="msg bot">Guía fija: ¿qué detalle del cuento te parece más importante después de conocer el desenlace y por qué?</div>
+          <div class="msg bot">¿Qué fragmento concreto sostiene tu interpretación? Explica qué relación tiene con tu idea.</div>
+          <div class="msg bot">¿Qué otra explicación considerarías y qué evidencia te llevaría a revisar tu hipótesis?</div>
+        </div>
+        <form class="chat-form" id="chatForm">
+          <label class="visually-hidden" for="chatInput">Tu interpretación para el tutor</label>
+          <input type="text" id="chatInput" maxlength="240" placeholder="Conversación de IA no disponible en esta publicación" autocomplete="off" disabled>
+          <button type="submit" disabled>IA no conectada</button>
+        </form>
+      </div>
+      <p class="small" id="chatStatus" role="status"></p>
+      <p class="small">Las preguntas anteriores son una guía fija, no respuestas generadas por IA. El tutor adaptativo requiere la aplicación con servidor y una API configurada. No introduzcas datos personales. Puedes continuar directamente con la evaluación final.</p>
+      <p class="small" id="chatCount">Guía de lectura disponible. Esta página no envía mensajes a OpenAI.</p>
+
+      <div class="actions"><button class="btn secondary prev">← Volver</button><button class="btn primary next">Evaluación final →</button></div>
+    </section>
+
+    <section class="card step hidden" data-step="6">
+      <div class="eyebrow">Evaluación formativa</div>
+      <div class="time">⏱ 3 minutos</div>
+      <h2>Mi interpretación, mis evidencias</h2>
+
+      <label for="posture">1. Formula tu interpretación del cuento.</label>
+      <textarea id="posture" maxlength="420" placeholder="Interpreto que el cuento muestra..."></textarea>
+
+      <label for="ev1">2. Evidencia 1</label>
+      <input type="text" id="ev1" maxlength="220" placeholder="Una pista que respalda mi interpretación es...">
+
+      <label for="ev2">3. Evidencia 2</label>
+      <input type="text" id="ev2" maxlength="220" placeholder="Otra pista es...">
+
+      <label for="reflection">4. ¿Qué cambió entre tu primera explicación y tu interpretación final?</label>
+      <textarea id="reflection" maxlength="380" placeholder="Al inicio pensé..., pero después de analizar..., ahora considero..."></textarea>
+
+      <div class="criteria">
+        <div><strong>Interpretación</strong><p class="small">Va más allá de resumir el argumento.</p></div>
+        <div><strong>Evidencias</strong><p class="small">Usa al menos dos pistas concretas del relato.</p></div>
+        <div><strong>Revisión</strong><p class="small">Explica cómo la nueva evidencia modifica una conclusión.</p></div>
+      </div>
+      <div class="actions"><button class="btn secondary prev">← Volver</button><button class="btn primary" id="finish">Finalizar recorrido</button></div>
+    </section>
+
+    <section class="card hidden" id="result">
+      <div class="eyebrow">Cierre y mérito lector</div>
+      <h2>Tu recorrido de lectura crítica</h2>
+      <div class="score" id="score">0/9</div>
+      <p id="resultText"></p>
+
+      <div class="merit-wrap">
+        <div class="merit-visual">
+          <svg class="merit-svg" viewBox="0 0 180 180" role="img" aria-label="Insignia animada de nivel lector">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0%" stop-color="#6d3045"/>
+                <stop offset="100%" stop-color="#c8974c"/>
+              </linearGradient>
+            </defs>
+            <circle class="merit-ring" cx="90" cy="90" r="72" fill="#fff8ed" stroke="url(#g1)" stroke-width="7"/>
+            <circle cx="90" cy="90" r="58" fill="#f7efe5"/>
+            <path d="M50 70 Q70 58 89 70 L89 125 Q70 111 50 120 Z" fill="#fff" stroke="#6d3045" stroke-width="4"/>
+            <path d="M130 70 Q110 58 91 70 L91 125 Q110 111 130 120 Z" fill="#fff" stroke="#6d3045" stroke-width="4"/>
+            <path d="M90 70 L90 126" stroke="#6d3045" stroke-width="3"/>
+            <circle cx="90" cy="52" r="13" fill="#446d87"/>
+            <circle cx="90" cy="52" r="6" fill="#fff8ed"/>
+            <path d="M101 61 L116 76" stroke="#446d87" stroke-width="7" stroke-linecap="round"/>
+            <g class="merit-star" fill="#c8974c">
+              <path d="M38 47 l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z"/>
+              <path d="M140 42 l3 6 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1z"/>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <span class="level-formal" id="levelFormal">Nivel</span>
+          <div class="level-title" id="levelTitle">Tu mérito lector</div>
+          <p class="level-desc" id="levelDesc"></p>
+          <p class="small">Las bandas son orientativas: combinan seis respuestas objetivas con tres comprobaciones de completitud de la producción final. No certifican el dominio lector; las evidencias y la argumentación requieren revisión docente.</p>
+        </div>
+      </div>
+
+      <div id="tips"></div>
+
+      <h3>Vuelve a la pregunta inicial</h3>
+      <p>Después de esta experiencia, ¿qué necesita una explicación para ser aceptada como razonable?</p>
+      <label for="finalThought">Tu reflexión final</label>
+      <textarea id="finalThought" maxlength="360" placeholder="Ahora considero que una explicación debe..."></textarea>
+
+      <div class="actions">
+        <button class="btn secondary" id="restart">Reiniciar</button>
+        <button class="btn primary" id="download">Descargar respuestas en Excel</button>
+      </div>
+      <p class="small">El archivo .xlsx incluirá un resumen del desempeño, todas tus respuestas y el estado de la guía de lectura, sin conversación de IA. El archivo se genera en tu navegador. No se envían ni guardan respuestas en un servidor.</p>
+    </section>
+
+    <section class="card teacher-card">
+      <div class="eyebrow">Ficha pedagógica · para presentación docente</div>
+      <h2>Actividad, logro y evaluación</h2>
+      <div class="ped-grid">
+        <div class="ped-item">
+          <div class="tag">Actividad</div>
+          <p>Recorrido interactivo de lectura crítica de <em>El almohadón de pluma</em>: activación, lectura, distinción entre hechos e interpretaciones, inferencias, revisión de hipótesis ante nueva evidencia, guía socrática y producción final sustentada.</p>
+        </div>
+        <div class="ped-item">
+          <div class="tag">Logro de aprendizaje</div>
+          <p>Analiza críticamente un texto narrativo formulando y revisando interpretaciones a partir de evidencias textuales, distinguiendo hechos, inferencias y supuestos, y justificando una postura propia.</p>
+        </div>
+        <div class="ped-item">
+          <div class="tag">Evaluación</div>
+          <p>Formativa y procesual. Se consideran seis preguntas de primer intento, una hipótesis, la guía de preguntas socráticas y una producción final con interpretación, dos evidencias y reflexión sobre el cambio de perspectiva.</p>
+        </div>
+      </div>
+      <p class="small"><strong>Criterios:</strong> identifica información explícita; formula inferencias sustentadas; distingue evidencia de interpretación; revisa conclusiones ante nueva información; sustenta una interpretación con evidencias textuales.</p>
+    </section>
+
+    <section class="card sources">
+      <div class="eyebrow" style="color:#e0b37c">Fuentes y sustento del proyecto</div>
+      <h2>Referencias bibliográficas</h2>
+      <ol>
+        <li>Quiroga, H. (1918). <em>El almohadón de pluma</em>. Cooperativa Editorial “Buenos Aires”. Texto histórico disponible en Wikisource: <a href="https://es.wikisource.org/wiki/El_almohad%C3%B3n_de_pluma" target="_blank" rel="noopener">fuente del cuento original</a>.</li>
+        <li>Ministerio de Educación del Perú. (2016). <em>Currículo Nacional de la Educación Básica</em>. Competencia “Lee diversos tipos de textos escritos en lengua materna”: <a href="https://www.minedu.gob.pe/curriculo/pdf/curriculo-nacional-2016.pdf" target="_blank" rel="noopener">CNEB</a>.</li>
+        <li>Ministerio de Educación del Perú, Oficina de Medición de la Calidad de los Aprendizajes. (2024). <em>Guía para fortalecer la competencia lectora usando la diversidad textual en el aula</em>: <a href="https://repositorio.minedu.gob.pe/handle/20.500.12799/10765" target="_blank" rel="noopener">Repositorio MINEDU</a>.</li>
+        <li>Facione, P. A. (1990). <em>Critical Thinking: A Statement of Expert Consensus for Purposes of Educational Assessment and Instruction</em>. American Philosophical Association / California Academic Press. ERIC ED315423: <a href="https://eric.ed.gov/?id=ED315423" target="_blank" rel="noopener">registro ERIC</a>.</li>
+        <li>Cassany, D. (2006). <em>Tras las líneas: Sobre la lectura contemporánea</em>. Anagrama.</li>
+      </ol>
+
+      <h3>Créditos de imágenes</h3>
+      <div class="credit-grid">
+        <div class="credit"><strong>Horacio Quiroga</strong><br>Wikimedia Commons. Fotografía indicada como dominio público.</div>
+        <div class="credit"><strong>Bedroom – La Grange – La Fayette</strong><br>Imagen histórica de Wikimedia Commons utilizada como ambientación visual.</div>
+      </div>
+      <p class="small" style="color:#cfc9c4;margin-top:18px">La versión narrativa incluida en este RED es una adaptación pedagógica elaborada para la actividad. El texto original de Quiroga es de dominio público; se enlaza arriba para consulta académica y trazabilidad.</p>
+    </section>
+  </main>
+
+  <footer>RED · “Más allá de las palabras” · Lectura para el desarrollo del pensamiento crítico</footer>
+</div>
+
+<script src="./vendor/exceljs.min.js"></script>
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>
