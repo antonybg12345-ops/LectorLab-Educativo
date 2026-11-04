@@ -36,7 +36,7 @@ La comprobación utiliza PostgreSQL de prueba y proveedores inyectados; no llama
 
 ## Diferencia entre implementación y publicación
 
-Esta rama trabaja sobre la aplicación Node/Express con autenticación real. El sitio GitHub Pages mantiene las demos publicadas anteriormente; no se sustituye por un formulario que aparente autenticación segura desde un archivo estático. Esta integración no se ha publicado todavía.
+Esta rama trabaja sobre la aplicación Node/Express con autenticación real. Posteriormente se preparó una vista estática en `/avance/` para recorrer la bienvenida y los espacios con datos ficticios. Sus campos de credenciales están deshabilitados y sus accesos abren roles de demostración; la autenticación del servidor no se ejecuta en GitHub Pages. Las demos principal y `/v1/` se conservan. Ver [REDISENO_INTERNO.md](REDISENO_INTERNO.md).
 
 ## Requisitos que siguen pendientes
 

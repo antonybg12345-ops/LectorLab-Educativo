@@ -1,0 +1,112 @@
+{
+  "title": "El agua de la acequia · Evidencias y decisiones",
+  "readingText": "En Santa Lucía, el grupo de cuarto de secundaria encontró menos agua en la acequia que alimentaba el huerto escolar. En el chat del aula apareció una acusación: «La familia que cultiva junto al puente debe estar desviando el agua». Nadie había observado un desvío.\n\nMaría propuso recorrer la acequia antes de repetir el mensaje. A la altura del puente, el agua avanzaba con normalidad. Veinte metros después, unas ramas y una bolsa formaban un tapón. Al retirarlo, el agua volvió a correr hacia el huerto, aunque todavía llegaba en poca cantidad.\n\nEl registro del comité de riego mostraba que esa semana había llovido menos que en las dos anteriores. «Encontramos una obstrucción, pero aún debemos comparar el caudal de varios días», señaló el encargado. La familia señalada participó en la limpieza junto con el aula.\n\nMaría escribió un nuevo mensaje: «La limpieza mejoró el paso del agua. Eso apoya que el tapón era parte del problema; no demuestra que alguien lo colocara a propósito. La menor lluvia podría explicar otra parte y necesitamos más registros». El grupo acordó publicar la corrección y medir el caudal durante una semana.",
+  "instructions": "Distingue hechos, inferencias y límites de una explicación. Construye una interpretación con citas y explica por qué la evidencia permite sostenerla o revisarla.",
+  "source": {
+    "author": "Texto original de ejemplo para esta demostración",
+    "title": "Santa Lucía es una comunidad ficticia"
+  },
+  "questions": [
+    {
+      "id": "agua-hecho",
+      "type": "mcq",
+      "prompt": "¿Cuál de estas afirmaciones es un hecho observado en la lectura?",
+      "options": [
+        {
+          "id": "a",
+          "text": "La familia colocó el tapón deliberadamente."
+        },
+        {
+          "id": "b",
+          "text": "Al retirar las ramas y la bolsa, el agua volvió a correr hacia el huerto."
+        },
+        {
+          "id": "c",
+          "text": "La lluvia explica por sí sola todo el problema."
+        }
+      ],
+      "correctAnswer": "b",
+      "feedback": {
+        "correct": "Relacionaste tu selección con una observación explícita.",
+        "a": "Vuelve a distinguir la acusación de lo que el grupo observó.",
+        "c": "Revisa qué parte de la explicación sigue necesitando registros."
+      },
+      "evidence": [
+        {
+          "quote": "Al retirarlo, el agua volvió a correr hacia el huerto, aunque todavía llegaba en poca cantidad.",
+          "start": 451,
+          "end": 546,
+          "reason": "La mejora se observa directamente; no prueba intención ni una causa única."
+        }
+      ]
+    },
+    {
+      "id": "agua-completar",
+      "type": "completion",
+      "prompt": "Completa con una palabra del segundo párrafo: las ramas y la bolsa formaban un ________.",
+      "acceptedAnswers": [
+        "tapón",
+        "tapon"
+      ],
+      "evidence": [
+        {
+          "quote": "Veinte metros después, unas ramas y una bolsa formaban un tapón.",
+          "start": 386,
+          "end": 450,
+          "reason": "La información literal ayuda a identificar el indicio material antes de inferir causas."
+        }
+      ]
+    },
+    {
+      "id": "agua-relacion",
+      "type": "matching",
+      "prompt": "Relaciona cada elemento con el papel que cumple en el razonamiento.",
+      "left": [
+        {
+          "id": "mejora",
+          "text": "El agua vuelve a correr después de la limpieza"
+        },
+        {
+          "id": "lluvia",
+          "text": "La menor lluvia de esa semana"
+        }
+      ],
+      "right": [
+        {
+          "id": "observacion",
+          "text": "Observación que apoya una causa parcial"
+        },
+        {
+          "id": "hipotesis",
+          "text": "Factor adicional que requiere contrastar registros"
+        }
+      ],
+      "correctAnswer": {
+        "mejora": "observacion",
+        "lluvia": "hipotesis"
+      },
+      "evidence": [
+        {
+          "quote": "La menor lluvia podría explicar otra parte y necesitamos más registros",
+          "start": 988,
+          "end": 1058,
+          "reason": "Distingue la mejora observada de una explicación adicional todavía por contrastar."
+        }
+      ]
+    },
+    {
+      "id": "agua-inferencia",
+      "type": "inferential",
+      "prompt": "¿Por qué la corrección de María es más razonable que la acusación inicial? Cita un fragmento y explica qué permite concluir y qué sigue siendo incierto.",
+      "rubric": "Relaciona una cita pertinente con una interpretación, reconoce los límites de la evidencia y revisa la atribución de intencionalidad.",
+      "evidence": [
+        {
+          "quote": "Eso apoya que el tapón era parte del problema; no demuestra que alguien lo colocara a propósito.",
+          "start": 891,
+          "end": 987,
+          "reason": "La cita distingue una causa parcial sustentada de una intención no demostrada."
+        }
+      ]
+    }
+  ]
+}

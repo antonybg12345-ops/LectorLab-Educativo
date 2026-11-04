@@ -1,10 +1,26 @@
 import { api, download } from './api.js';
-import { el, field, button, status, message, heading, show, list, empty, pill, fmt, busy } from './ui.js';
+import { el, field, button, status, message, list, empty, pill, fmt, busy } from './ui.js';
+import { workspacePage, workspaceIcon } from './workspace.js';
 
 const phaseNames = ['Activación', 'Lectura', 'Comprender', 'Inferir', 'Evaluar', 'Tutor socrático', 'Mi interpretación'];
+const studentRubricNames = { inference: 'Inferencia sustentada', evidence: 'Evidencias textuales', link: 'Vínculo entre evidencia e interpretación', revision: 'Revisión de la hipótesis' };
 
 export async function renderStudent(view, user, { isCurrent = () => true } = {}) {
   let disposeAttempt = null;
+  function studentNav(returnToActivities, reading = false) {
+    const guide = el('div', { class: 'student-guide hidden', id: 'student-reading-guide' },
+      el('strong', {}, 'Leer · Sustentar · Revisar'),
+      el('ol', {}, el('li', {}, 'Lee el texto completo antes de concluir.'), el('li', {}, 'Selecciona citas y explica qué sostienen.'), el('li', {}, 'Contrasta tu idea y revisa lo que cambió.')),
+      el('p', { class: 'small' }, 'Esta guía es fija; no es una respuesta del tutor con IA.'));
+    const guideButton = button([workspaceIcon('check'), el('span', {}, 'Cómo leer')], event => {
+      const visible = guide.classList.contains('hidden');
+      guide.classList.toggle('hidden', !visible);
+      event.currentTarget.setAttribute('aria-expanded', String(visible));
+    }, { testid: 'student-guide-toggle', 'aria-controls': guide.id, 'aria-expanded': 'false' });
+    return el('nav', { class: 'nav', 'aria-label': 'Espacio estudiante' },
+      button([workspaceIcon('book'), el('span', {}, 'Mis actividades')], returnToActivities, { testid: 'student-nav-home', 'aria-current': reading ? undefined : 'page' }),
+      guideButton, guide);
+  }
   async function dashboard() {
     if (!isCurrent()) return;
     disposeAttempt?.(); disposeAttempt = null;
@@ -12,9 +28,13 @@ export async function renderStudent(view, user, { isCurrent = () => true } = {})
     const rows = list(await api('/assignments'), 'assignments');
     if (!isCurrent()) return;
     const entries = rows.map(assignment => {
-      const details = el('div', {}, el('h3', {}, assignment.activityTitle || 'Actividad de lectura'),
-        el('p', { class: 'small' }, assignment.groupName || ''), assignment.status && pill(assignment.status));
+      const details = el('div', { class: 'assignment-card-heading' }, workspaceIcon('book'),
+        el('div', {}, el('p', { class: 'eyebrow' }, assignment.groupName || 'Actividad de tu grupo'), el('h3', {}, assignment.activityTitle || 'Actividad de lectura')));
       const label = ['submitted', 'reviewed'].includes(assignment.status) ? 'Ver mi recorrido' : assignment.attemptId ? 'Continuar lectura' : 'Comenzar lectura';
+      const description = assignment.status === 'reviewed' ? 'Tu docente dejó una devolución. Vuelve a tu razonamiento y revisa sus orientaciones.'
+        : assignment.status === 'submitted' ? 'Tu interpretación está entregada y pendiente de revisión. Puedes consultar lo que escribiste.'
+          : assignment.attemptId ? 'Tu primera idea y tus evidencias están disponibles para continuar.'
+            : 'Lee, busca pistas y construye una interpretación con evidencias del texto.';
       const open = button(label, async event => {
         await busy(event.currentTarget, async () => {
           try {
@@ -23,12 +43,24 @@ export async function renderStudent(view, user, { isCurrent = () => true } = {})
           } catch (error) { window.alert(error.message); }
         });
       }, { primary: true, testid: `open-assignment-${assignment.id}` });
-      return el('li', {}, el('div', { class: 'row' }, details, open));
+      return el('li', { class: 'assignment-card' }, details,
+        assignment.status ? pill(assignment.status) : el('span', { class: 'pill' }, 'Por comenzar'),
+        el('p', {}, description), el('div', { class: 'actions' }, open));
     });
-    show(view, ...heading(`Tu espacio de lectura, ${user.name || user.username}.`, 'Espacio estudiante'),
-      el('p', { class: 'intro' }, 'Lee a tu ritmo, plantea una idea y vuelve al texto para sostenerla. Tus respuestas se guardan en tu cuenta.'),
-      el('section', { class: 'panel' }, el('h2', {}, 'Actividades de tu grupo'), entries.length ? el('ul', { class: 'list' }, entries) : empty('Todavía no tienes actividades asignadas. Tu docente te indicará cuándo comenzar.')),
-      el('aside', { class: 'note' }, 'Las interpretaciones se revisan con tu docente. No se premia escribir más rápido ni enviar más mensajes. Tu progreso es privado.'));
+    const stats = [
+      [rows.filter(item => !item.attemptId && !['in_progress', 'submitted', 'reviewed'].includes(item.status)).length, 'Por comenzar', 'book'],
+      [rows.filter(item => item.status === 'in_progress' || item.attemptId && !['submitted', 'reviewed'].includes(item.status)).length, 'En curso', 'assignments'],
+      [rows.filter(item => item.status === 'reviewed').length, 'Con devolución', 'check'],
+    ];
+    workspacePage(view, { role: 'student', title: 'Tu espacio de lectura', intro: `Hola, ${user.name || user.username}. Aquí puedes continuar tus actividades y consultar tus devoluciones.`, section: 'Mis actividades', nav: studentNav(dashboard) },
+      el('section', { class: 'student-hero' },
+        el('div', {}, el('p', { class: 'eyebrow' }, 'Una idea puede cambiar con una buena pista'), el('h2', {}, 'Lee, piensa y sustenta.'),
+          el('p', {}, 'Lee a tu ritmo, plantea una idea y vuelve al texto para sostenerla. Tus respuestas se guardan en tu cuenta.')),
+        el('div', { class: 'student-path', 'aria-label': 'Tu recorrido de aprendizaje' }, el('span', {}, workspaceIcon('book'), 'Lee'), el('span', {}, workspaceIcon('results'), 'Sustenta'), el('span', {}, workspaceIcon('check'), 'Revisa'))),
+      el('div', { class: 'student-summary' }, ...stats.map(([value, label, icon]) => el('div', { class: 'metric' }, workspaceIcon(icon), el('div', {}, el('strong', {}, value), el('span', {}, label))))),
+      el('section', { class: 'student-activities' }, el('div', { class: 'row' }, el('h2', {}, 'Mis actividades'), el('span', { class: 'small' }, `${rows.length} ${rows.length === 1 ? 'actividad asignada' : 'actividades asignadas'}`)),
+        entries.length ? el('ul', { class: 'assignment-cards' }, entries) : empty('Todavía no tienes actividades asignadas. Tu docente te indicará cuándo comenzar.')),
+      el('aside', { class: 'note' }, 'Tu progreso es privado. Las interpretaciones se revisan con tu docente y los hitos reconocen evidencias de tu razonamiento. No se premia escribir más rápido ni enviar más mensajes.'));
   }
 
   async function openAttempt(id) {
@@ -112,9 +144,23 @@ export async function renderStudent(view, user, { isCurrent = () => true } = {})
       if (step === 6) renderPhase(false);
       message(note, `Fragmento añadido como ${key === 'evidence1' ? 'evidencia 1' : 'evidencia 2'}. Explica por qué sostiene tu interpretación.`);
     }
+    const publicCriteria = Array.isArray(activity.evaluationRubric?.criteria) && activity.evaluationRubric.criteria.length
+      ? activity.evaluationRubric.criteria.filter(criterion => typeof criterion.name === 'string' && Number.isInteger(criterion.max) && criterion.max > 0)
+      : Object.entries(studentRubricNames).map(([id, name]) => ({ id, name, max: 3 }));
+    const publicRubric = el('details', { class: 'student-rubric', 'data-testid': 'student-activity-rubric' },
+      el('summary', {}, 'Criterios de revisión · consultar antes de responder'),
+      el('p', { class: 'small' }, 'Conoce qué revisará tu docente en tu interpretación. Los puntajes de esta rúbrica se muestran separados de las alternativas.'),
+      el('ul', { class: 'list' }, ...publicCriteria.map(criterion => {
+        const descriptors = criterion.descriptors && typeof criterion.descriptors === 'object' ? Object.entries(criterion.descriptors).filter(([, text]) => typeof text === 'string') : [];
+        return el('li', {}, el('div', { class: 'row' }, el('strong', {}, criterion.name), el('span', { class: 'pill' }, `Máximo: ${criterion.max}`)),
+          descriptors.length ? el('dl', {}, ...descriptors.map(([points, text]) => el('div', {}, el('dt', {}, `${points} puntos`), el('dd', {}, text)))) : null);
+      })),
+      el('p', { class: 'rubric-total' }, `Puntaje máximo de la rúbrica: ${publicCriteria.reduce((total, criterion) => total + criterion.max, 0)}`),
+      el('p', { class: 'small' }, 'Se revisan tus evidencias y el vínculo con tu interpretación; la extensión del escrito no determina su calidad.'));
     const readingPanel = el('aside', { class: 'reading-panel' }, el('details', { open: true }, el('summary', {}, 'Texto de esta actividad · consultar y citar'), el('h2', {}, activity.title), readingText,
       !readOnly() && el('div', { class: 'actions' }, button('Citar selección como evidencia 1', () => citeSelected('evidence1'), { class: 'btn small' }), button('Citar selección como evidencia 2', () => citeSelected('evidence2'), { class: 'btn small' }))),
       el('p', { class: 'small' }, 'La cita ayuda a volver al texto. Su pertinencia y tu explicación se revisan con el docente.'),
+      publicRubric,
       el('div', { class: 'sources' }, 'Lectura de la versión asignada. ', activity.source?.author && `${activity.source.author}. `, activity.source?.title || '', activity.source?.url && el('a', { href: safeSource(activity.source.url), target: '_blank', rel: 'noopener noreferrer' }, 'Consultar fuente'),
         String(activity.title).includes('Más allá') && el('p', {}, 'Adaptación pedagógica de El almohadón de pluma, de Horacio Quiroga. Competencia: lee diversos tipos de textos escritos en lengua materna.')));
     function renderQuestion(question, index) {
@@ -201,10 +247,24 @@ export async function renderStudent(view, user, { isCurrent = () => true } = {})
         }, { primary: true, testid: 'submit-attempt' }));
       } else {
         final.unshift(el('p', { class: 'status', 'data-testid': 'submission-status' }, `Entrega guardada el ${fmt(attempt.submittedAt)}. ${attempt.status === 'reviewed' ? 'Tu docente ya dejó una devolución.' : 'Tu interpretación está pendiente de revisión docente.'}`));
-        if (attempt.objectiveScore != null) final.push(el('p', { 'data-testid': 'objective-score' }, `Preguntas objetivas: ${attempt.objectiveScore}/${attempt.maxObjective || 0}. Esta parte no califica por sí sola tu interpretación.`));
+        if (attempt.alternatives?.total > 0 && Number.isFinite(attempt.alternatives.percentage)) final.push(el('p', { class: 'status', 'data-testid': 'alternatives-score' },
+          `Alternativas: ${attempt.alternatives.correct}/${attempt.alternatives.total} · ${new Intl.NumberFormat('es-PE', { maximumFractionDigits: 1 }).format(attempt.alternatives.percentage)} %. Corrección automática, separada de tu rúbrica.`));
+        if (attempt.objectiveScore != null) final.push(el('p', { class: 'small', 'data-testid': 'objective-score' }, `Total de preguntas objetivas: ${attempt.objectiveScore}/${attempt.maxObjective || 0}. Incluye alternativas, relación y completado cuando corresponden; no califica por sí solo tu interpretación.`));
       }
       if (data.assessment) {
-        final.push(el('section', { class: 'review-card' }, el('h3', {}, 'Devolución de tu docente'), el('p', { 'data-testid': 'teacher-feedback' }, data.assessment.feedback), el('div', { class: 'badges' }, (data.assessment.badges || []).map(badge => el('span', { class: 'badge' }, typeof badge === 'string' ? badge : badge.label || badge.title || badge.name))), el('p', { class: 'small' }, 'Estos hitos reconocen evidencia revisada en esta actividad. No son una etiqueta permanente ni una comparación con tus compañeros.')));
+        // Only the assessment returned for this student is shown. A private
+        // draft or a provisional AI proposal is not a student assessment.
+        const scores = Array.isArray(data.assessment.criteria) && data.assessment.criteria.length
+          ? data.assessment.criteria.filter(criterion => typeof criterion.name === 'string' && Number.isInteger(criterion.max) && criterion.max > 0 && Number.isInteger(data.assessment.criterionScores?.[criterion.id]) && data.assessment.criterionScores[criterion.id] >= 0 && data.assessment.criterionScores[criterion.id] <= criterion.max)
+            .map(criterion => ({ name: criterion.name, max: criterion.max, score: data.assessment.criterionScores[criterion.id] }))
+          : Object.entries(studentRubricNames).filter(([key]) => Number.isInteger(data.assessment.rubric?.[key]) && data.assessment.rubric[key] >= 0 && data.assessment.rubric[key] <= 3)
+            .map(([key, name]) => ({ name, max: 3, score: data.assessment.rubric[key] }));
+        const rubric = scores.length ? el('section', { class: 'student-rubric', 'aria-label': 'Puntajes de la rúbrica docente' },
+          el('h4', {}, 'Tu rúbrica revisada'), el('dl', {}, ...scores.map(criterion => el('div', { class: 'row' }, el('dt', {}, criterion.name), el('dd', {}, `${criterion.score} / ${criterion.max}`)))),
+          el('p', { class: 'rubric-total', 'data-testid': 'student-rubric-total' }, `Total de la rúbrica: ${scores.reduce((total, criterion) => total + criterion.score, 0)} / ${scores.reduce((total, criterion) => total + criterion.max, 0)}`)) : null;
+        final.push(el('section', { class: 'review-card' }, el('h3', {}, 'Devolución de tu docente'),
+          el('p', { class: 'small' }, 'Evaluación revisada por tu docente.'), rubric,
+          el('p', { 'data-testid': 'teacher-feedback' }, data.assessment.feedback), el('div', { class: 'badges' }, (data.assessment.badges || []).map(badge => el('span', { class: 'badge' }, typeof badge === 'string' ? badge : badge.label || badge.title || badge.name))), el('p', { class: 'small' }, 'Estos hitos reconocen evidencia revisada en esta actividad. No son una etiqueta permanente ni una comparación con tus compañeros.')));
       }
       final.push(button('Descargar mi recorrido en Excel', async event => { await busy(event.currentTarget, async () => { try { await flush(); await download(`/attempts/${id}/export.xlsx`, 'LectorLab_mi_recorrido.xlsx'); } catch (error) { message(note, error.message, true); } }); }, { testid: 'download-attempt' }));
       return final;
@@ -231,7 +291,9 @@ export async function renderStudent(view, user, { isCurrent = () => true } = {})
       if (focus) { phaseBody.querySelector('h2')?.focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'instant' }); }
       updateSaveStatus();
     }
-    show(view, ...heading(activity.title, 'Tu recorrido'), el('div', { class: 'row' }, pill(attempt.status), button('← Mis actividades', async () => { if (await beforeLeave()) await dashboard(); })), progress, navigation, saveStatus, note,
+    const returnToActivities = async () => { if (await beforeLeave()) await dashboard(); };
+    workspacePage(view, { role: 'student', title: activity.title, intro: 'Tu recorrido de lectura: interpreta, contrasta y vuelve al texto.', section: 'Mi lectura', nav: studentNav(returnToActivities, true), actions: button('← Mis actividades', returnToActivities, { testid: 'student-back-activities' }) },
+      el('div', { class: 'row' }, pill(attempt.status), saveStatus), progress, navigation, note,
       el('div', { class: 'reading-layout' }, readingPanel, phaseBody));
     renderPhase(false);
     if (disposed) disposeAttempt?.();

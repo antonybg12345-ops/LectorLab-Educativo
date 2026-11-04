@@ -7,6 +7,7 @@ npm-debug.log*
 playwright-report/
 test-results/
 coverage/
+dist/
 *.xlsx
 *.log
 .data/

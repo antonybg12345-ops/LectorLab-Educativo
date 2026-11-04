@@ -1,6 +1,6 @@
 # Decisiones acordadas para LectorLab 2.0
 
-La primera integración de bienvenida y accesos está descrita en [REDISENO_ENTRADA.md](../REDISENO_ENTRADA.md). Las decisiones siguientes fijan el alcance posterior; no constituyen funciones ya implementadas.
+La bienvenida y los accesos están descritos en [REDISENO_ENTRADA.md](../REDISENO_ENTRADA.md); la integración posterior de los espacios internos, en [REDISENO_INTERNO.md](../REDISENO_INTERNO.md). La tabla final distingue lo implementado de los requisitos pendientes.
 
 ## Identidad y entrada
 
@@ -24,10 +24,10 @@ IA no adapta, resume ni reescribe la lectura. Conservar archivo original privado
 |---|---|
 | Bienvenida y accesos nuevos | Implementados en rama de trabajo, verificados en navegador |
 | Sesiones y permisos reales | Se reutiliza el backend existente |
-| Panel/editor con el nuevo diseño | Bocetos y comportamiento acordados; pendiente |
-| Porcentaje separado de alternativas | Diseño acordado; backend conserva todavía el total objetivo mixto |
-| Rúbrica generada por IA y evaluación provisional | Especificadas; pendientes de implementación |
+| Panel/editor con el nuevo diseño | Implementados: navegación lateral, resumen con acciones, preparación en cuatro pasos y revisión en dos columnas |
+| Porcentaje separado de alternativas | Calculado por el servidor sobre MCQ y mostrado por separado; el total objetivo mixto se conserva. Los formatos XLSX y Sheets mantienen por ahora sus columnas anteriores |
+| Rúbrica generada por IA y evaluación provisional | Pendientes de integración real. La demo permite explorar criterios editables, una propuesta preescrita, borrador privado y validación con datos ficticios en memoria |
 | Original inmutable y carga50MB | Especificados; límite real actual2MB |
-| Publicación de esta integración | No desplegada; Pages conserva sus demos anteriores |
+| Publicación de esta integración | Demo estática en `/avance/`; aplicación con servidor conservada por separado en la rama de trabajo |
 
 Detalles: [Preparación de actividad](PREPARACION_ACTIVIDAD.md), [Evaluación IA](EVALUACION_IA_RUBRICA.md), [Lectura original y carga](LECTURA_ORIGINAL_Y_CARGA.md).

@@ -46,6 +46,18 @@ export function correctAnswer(question, answer) {
   if (question.type === 'completion') return question.acceptedAnswers.some(valid => normalizeAnswer(valid) === normalizeAnswer(answer));
   return question.left.every(left => answer[left.id] === question.correctAnswer[left.id]);
 }
+// Only persisted MCQ keys and answers contribute. Matching/completion keep their
+// existing objective score, while open interpretations retain their own rubric.
+export function summarizeAlternatives(questions, answers) {
+  const alternatives = Array.isArray(questions) ? questions.filter(question => question?.type === 'mcq') : [];
+  const savedAnswers = isRecord(answers) ? answers : {};
+  const correct = alternatives.filter(question => typeof question.id === 'string'
+    && typeof question.correctAnswer === 'string'
+    && Array.isArray(question.options) && question.options.some(option => option?.id === question.correctAnswer)
+    && Object.hasOwn(savedAnswers, question.id) && correctAnswer(question, savedAnswers[question.id])).length;
+  const total = alternatives.length;
+  return { correct, total, percentage: total ? Math.round(correct * 1000 / total) / 10 : null };
+}
 function answerFeedback(row) {
   const feedback = {};
   for (const question of row.content.questions || []) {
@@ -73,7 +85,9 @@ export async function getAttempt(db, user, id) {
   return {
     attempt: { id: row.id, assignmentId: row.assignment_id, studentId: row.student_id, status: row.status,
       draft: row.draft || {}, answers: row.answers || {}, revision: row.revision, objectiveScore: row.objective_score,
-      maxObjective: row.max_objective, submittedAt: row.submitted_at, createdAt: row.created_at },
+      maxObjective: row.max_objective,
+      alternatives: ['submitted', 'reviewed'].includes(row.status) ? summarizeAlternatives(row.content.questions, row.answers) : null,
+      submittedAt: row.submitted_at, createdAt: row.created_at },
     activity: readingActivity(row, user.role === 'teacher'),
     tutor: { completedCount: turns.filter(turn => turn.state === 'completed').length, maxTurns: 5,
       messages, unresolved: turns.filter(turn => turn.state !== 'completed').map(turn => ({ state: turn.state, content: turn.student_text })),

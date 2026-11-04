@@ -71,6 +71,11 @@ test('docente y estudiante completan publicación revisada, trabajo guardado, tu
     const copied = await responseTo(page, 'POST', `/activities/${activity.id}/clone`, () => page.getByTestId('clone-activity').click());
     activity = copied.activity;
   }
+  await expect(page.locator('.workspace-sidebar')).toBeVisible();
+  await expect(page.getByTestId('publish-activity')).toHaveCount(0);
+  await page.getByTestId('editor-step-3').click();
+  await expect(page.locator('#view')).toContainText('Puntaje máximo: 12');
+  await page.getByTestId('editor-step-4').click();
   await expect(page.getByTestId('publish-activity')).toBeVisible();
   await page.getByTestId('publish-reviewed').check();
   await responseTo(page, 'POST', `/activities/${activity.id}/publish`, () => page.getByTestId('publish-activity').click());
@@ -186,14 +191,20 @@ test('un TXT y las propuestas de tres tipos permanecen borradores hasta la revis
   await page.getByTestId('document-reviewed').check();
   const created = await responseTo(page, 'POST', '/activity', () => page.getByTestId('document-create-activity').click());
   const id = created.activity.id;
+  await expect(page.getByTestId('edit-activity-reading')).toHaveValue(text);
+  await expect(page.getByTestId('edit-activity-reading')).toHaveAttribute('readonly', '');
+  await page.getByTestId('editor-step-2').click();
   await page.getByTestId('generation-reviewed').check();
   const generated = await responseTo(page, 'POST', `/activities/${id}/generate`, () => page.getByTestId('generate-questions').click());
   expect(generated.activity.status).toBe('draft');
+  expect(generated.activity.readingText).toBe(text);
   expect(generated.activity.questions.map(question => question.type)).toEqual(['inferential', 'matching', 'completion']);
   await expect(page.getByTestId('question-review-list')).toContainText('Inferencial abierta');
   await expect(page.getByTestId('question-review-list')).toContainText('Relación de elementos');
   await expect(page.getByTestId('question-review-list')).toContainText('Completado');
   await expect(page.getByTestId('question-review-list')).toContainText(text.split('\n')[0]);
+  await expect(page.getByTestId('publish-activity')).toHaveCount(0);
+  await page.getByTestId('editor-step-4').click();
   await page.getByTestId('publish-activity').click();
   await expect(page.locator('body')).toContainText('marca la confirmación');
   const stillDraft = await (await page.request.get(`/api/v1/activities/${id}`)).json();

@@ -36,6 +36,9 @@ async function start() {
     setCsrf(session.csrfToken);
     currentUser = session.user || null;
     document.body.classList.toggle('entry-mode', !currentUser);
+    document.body.classList.toggle('workspace-mode', Boolean(currentUser));
+    if (currentUser) document.body.dataset.role = currentUser.role;
+    else delete document.body.dataset.role;
     if (!currentUser) {
       let path = location.pathname;
       if (path === '/docente' || path === '/estudiante') {
