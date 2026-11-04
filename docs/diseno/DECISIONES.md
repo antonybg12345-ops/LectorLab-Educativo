@@ -1,0 +1,33 @@
+# Decisiones acordadas para LectorLab 2.0
+
+La primera integración de bienvenida y accesos está descrita en [REDISENO_ENTRADA.md](../REDISENO_ENTRADA.md). Las decisiones siguientes fijan el alcance posterior; no constituyen funciones ya implementadas.
+
+## Identidad y entrada
+
+Bienvenida vino, crema y dorado, escena de estudiantes ficticios leyendo, accesos equivalentes «Soy docente» y «Soy estudiante». Retirar la fila de tres beneficios y conservar «Leer · Sustentar · Revisar». Cada usuario tiene su cuenta; estudiantes con usuario y contraseña entregados por docente. El servidor determina rol y permisos.
+
+## Espacio docente y preparación
+
+Resumen de grupos, actividades y entregas; navegación lateral persistente. Lectura → Preguntas → Rúbrica → Revisar y publicar. IA propone preguntas y rúbrica; docente revisa, modifica y aprueba antes de publicar. Conservar la actividad original disponible y no reemplazar ajustes silenciosamente al generar nuevas propuestas.
+
+## Evaluación
+
+Alternativas automáticas con aciertos y porcentaje específico, independientes de la rúbrica abierta. IA valora abiertas con la rúbrica aprobada; el docente modifica puntajes y devolución y valida. Propuesta IA provisional y privada hasta validación. Mostrar puntajes por criterio y total; no convertir a20 o AD/A/B/C. Conservar propuesta original e historial de ajustes.
+
+## Lectura original y tamaño
+
+IA no adapta, resume ni reescribe la lectura. Conservar archivo original privado e inmutable y separar el texto extraído; avisar errores de extracción y ofrecer comparación. Nuevo límite solicitado:50MB por archivo. Procesamiento extenso por secciones explícitas, sin recorte silencioso y sin prometer OCR inexistente.
+
+## Estado de implementación
+
+| Área | Estado |
+|---|---|
+| Bienvenida y accesos nuevos | Implementados en rama de trabajo, verificados en navegador |
+| Sesiones y permisos reales | Se reutiliza el backend existente |
+| Panel/editor con el nuevo diseño | Bocetos y comportamiento acordados; pendiente |
+| Porcentaje separado de alternativas | Diseño acordado; backend conserva todavía el total objetivo mixto |
+| Rúbrica generada por IA y evaluación provisional | Especificadas; pendientes de implementación |
+| Original inmutable y carga50MB | Especificados; límite real actual2MB |
+| Publicación de esta integración | No desplegada; Pages conserva sus demos anteriores |
+
+Detalles: [Preparación de actividad](PREPARACION_ACTIVIDAD.md), [Evaluación IA](EVALUACION_IA_RUBRICA.md), [Lectura original y carga](LECTURA_ORIGINAL_Y_CARGA.md).

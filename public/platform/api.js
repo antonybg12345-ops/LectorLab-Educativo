@@ -1,6 +1,6 @@
 let csrfToken = '';
 export function setCsrf(value) { csrfToken = value || ''; }
-export async function api(path, { method = 'GET', body, timeout = 45_000 } = {}) {
+export async function api(path, { method = 'GET', body, timeout = 45_000, storeCsrf = true } = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
   try {
@@ -16,7 +16,7 @@ export async function api(path, { method = 'GET', body, timeout = 45_000 } = {})
       const error = new Error(data.error || data.message || (response.status === 401 ? 'La sesión terminó. Entra de nuevo para continuar.' : 'No se pudo completar la solicitud.'));
       error.status = response.status; throw error;
     }
-    if (data.csrfToken) setCsrf(data.csrfToken);
+    if (storeCsrf && data.csrfToken) setCsrf(data.csrfToken);
     return data;
   } catch (error) {
     if (error.name === 'AbortError') throw new Error('La solicitud está tardando demasiado. Tu escrito sigue aquí; comprueba el estado antes de reenviar.');

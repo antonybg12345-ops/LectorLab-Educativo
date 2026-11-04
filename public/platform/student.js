@@ -3,12 +3,14 @@ import { el, field, button, status, message, heading, show, list, empty, pill, f
 
 const phaseNames = ['Activación', 'Lectura', 'Comprender', 'Inferir', 'Evaluar', 'Tutor socrático', 'Mi interpretación'];
 
-export async function renderStudent(view, user) {
+export async function renderStudent(view, user, { isCurrent = () => true } = {}) {
   let disposeAttempt = null;
   async function dashboard() {
+    if (!isCurrent()) return;
     disposeAttempt?.(); disposeAttempt = null;
     history.replaceState(null, '', '/estudiante');
     const rows = list(await api('/assignments'), 'assignments');
+    if (!isCurrent()) return;
     const entries = rows.map(assignment => {
       const details = el('div', {}, el('h3', {}, assignment.activityTitle || 'Actividad de lectura'),
         el('p', { class: 'small' }, assignment.groupName || ''), assignment.status && pill(assignment.status));
@@ -30,9 +32,11 @@ export async function renderStudent(view, user) {
   }
 
   async function openAttempt(id) {
+    if (!isCurrent()) return;
     if (!id) throw new Error('No se pudo identificar el recorrido. Vuelve a tus actividades e inténtalo otra vez.');
     disposeAttempt?.();
     let data = await api(`/attempts/${id}`);
+    if (!isCurrent()) return;
     let { attempt, activity } = data;
     let draft = { ...attempt.draft }, answers = { ...attempt.answers };
     let step = Math.max(0, Math.min(6, Number(new URLSearchParams(location.search).get('paso')) || 0));
@@ -49,13 +53,15 @@ export async function renderStudent(view, user) {
     }
     const beforeUnload = event => { if (activeSaves || savedVersion < version) { event.preventDefault(); event.returnValue = ''; } };
     window.addEventListener('beforeunload', beforeUnload);
-    disposeAttempt = () => { disposed = true; clearTimeout(saveTimer); window.removeEventListener('beforeunload', beforeUnload); if (window.lectorlabBeforeLeave === beforeLeave) delete window.lectorlabBeforeLeave; if (window.lectorlabDispose === disposeAttempt) delete window.lectorlabDispose; };
+    const currentLocation = () => `/estudiante?attempt=${encodeURIComponent(id)}&paso=${step}`;
+    disposeAttempt = () => { disposed = true; clearTimeout(saveTimer); window.removeEventListener('beforeunload', beforeUnload); if (window.lectorlabBeforeLeave === beforeLeave) delete window.lectorlabBeforeLeave; if (window.lectorlabDispose === disposeAttempt) delete window.lectorlabDispose; if (window.lectorlabCurrentLocation === currentLocation) delete window.lectorlabCurrentLocation; };
     async function beforeLeave() {
       if (tutorPending) { message(note, 'Espera a que termine la solicitud del tutor antes de salir de la actividad.', true); return false; }
       try { await flush(); return true; } catch { return window.confirm('Hay cambios que no pudieron guardarse. ¿Salir y descartar esos cambios de esta pestaña?'); }
     }
     window.lectorlabBeforeLeave = beforeLeave;
     window.lectorlabDispose = disposeAttempt;
+    window.lectorlabCurrentLocation = currentLocation;
     function setDirty() { version++; updateSaveStatus(); clearTimeout(saveTimer); saveTimer = setTimeout(() => { flush().catch(() => {}); }, 500); }
     function applyResponse(result) {
       const updated = result.attempt || result;
@@ -204,7 +210,8 @@ export async function renderStudent(view, user) {
       return final;
     }
     function renderPhase(focus = true) {
-      history.replaceState(null, '', `/estudiante?attempt=${encodeURIComponent(id)}&paso=${step}`);
+      if (!isCurrent() || disposed) return;
+      history.replaceState(null, '', currentLocation());
       progress.value = step + 1;
       navigation.replaceChildren(...phaseNames.map((name, index) => button(`${index + 1}. ${name}`, () => move(index), { class: 'step-dot', testid: `step-${index}`, 'aria-current': index === step ? 'step' : undefined, disabled: tutorPending })));
       const body = [el('div', { class: 'eyebrow' }, `Etapa ${step + 1} de 7`), el('h2', { tabindex: '-1' }, phaseNames[step])];

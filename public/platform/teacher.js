@@ -4,9 +4,10 @@ import { el, field, button, status, message, heading, show, list, empty, pill, f
 const rubricNames = { inference: 'Inferencia sustentada', evidence: 'Pertinencia de la evidencia', link: 'Vínculo entre cita e interpretación', revision: 'Revisión de la hipótesis' };
 const typeNames = { mcq: 'Alternativas', inferential: 'Inferencial abierta', matching: 'Relación de elementos', completion: 'Completado' };
 
-export async function renderTeacher(view, user) {
+export async function renderTeacher(view, user, { isCurrent = () => true } = {}) {
   let section = 'Inicio';
   function page(title, intro, ...content) {
+    if (!isCurrent()) return;
     const nav = el('nav', { class: 'nav', 'aria-label': 'Espacio docente' },
       ...[['Inicio', dashboard, 'nav-home'], ['Grupos', groups, 'nav-groups'], ['Actividades', activities, 'nav-activities'], ['Asignaciones', assignments, 'nav-assignments'], ['Resultados', results, 'nav-results'], ['Google Sheets', sheets, 'nav-sheets']]
         .map(([name, fn, testid]) => button(name, () => run(fn), { testid, 'aria-current': section === name ? 'page' : undefined })));

@@ -10,11 +10,11 @@ const test = base.extend({
     expect(errors, 'La experiencia no debe emitir errores JavaScript').toEqual([]);
   },
 });
-const teacher = { username: 'docente-e2e', password: 'Docente_E2E_2026!', name: 'Docente de prueba' };
+const teacher = { username: 'docente-e2e', password: 'Docente_E2E_2026!', name: 'Docente de prueba', role: 'teacher' };
 const choices = { q1: 'b', q2: 'c', q3: 'a', q4: 'c', q5: 'a', q6: 'b' };
 
 async function authenticate(page, account, setup = false) {
-  await page.goto('/');
+  await page.goto(account.role === 'student' ? '/ingresar/estudiante' : '/ingresar/docente');
   await page.getByTestId('auth-username').fill(account.username);
   if (setup) await page.getByTestId('auth-name').fill(account.name);
   await page.getByTestId('auth-password').fill(account.password);
@@ -51,7 +51,7 @@ test('docente y estudiante completan publicación revisada, trabajo guardado, tu
   const session = await (await page.request.get('/api/v1/auth/session')).json();
   await authenticate(page, teacher, session.setupRequired);
   const suffix = info.project.name.replace(/[^a-z0-9]/g, '-');
-  const student = { username: `lector-${suffix}`, password: 'Estudiante_E2E_2026!', name: `Lector ${suffix}` };
+  const student = { username: `lector-${suffix}`, password: 'Estudiante_E2E_2026!', name: `Lector ${suffix}`, role: 'student' };
 
   await page.getByTestId('nav-groups').click();
   await page.getByTestId('group-name').fill(`Cuarto ${suffix}`);
@@ -79,7 +79,7 @@ test('docente y estudiante completan publicación revisada, trabajo guardado, tu
   await page.getByTestId('assignment-activity').selectOption(activity.id);
   const { assignment } = await responseTo(page, 'POST', '/assignments', () => page.getByTestId('create-assignment').click());
   await page.getByTestId('logout').click();
-  await expect(page.getByTestId('auth-username')).toBeVisible();
+  await expect(page.getByTestId('entry-teacher')).toBeVisible();
 
   await authenticate(page, student);
   expect((await page.request.get('/api/v1/groups')).status()).toBe(403);
@@ -108,7 +108,29 @@ test('docente y estudiante completan publicación revisada, trabajo guardado, tu
   await expect(page.getByTestId('step-5')).toBeVisible();
   for (let n = 1; n <= 5; n++) {
     await page.getByTestId('tutor-input').fill(`La pista ${n} necesita un vínculo lógico con la interpretación.`);
-    await responseTo(page, 'POST', '/tutor', () => page.getByTestId('tutor-send').click());
+    if (n === 1) {
+      let release, reached;
+      const gate = new Promise(resolve => { release = resolve; });
+      const requested = new Promise(resolve => { reached = resolve; });
+      const pattern = '**/api/v1/attempts/*/tutor';
+      await page.route(pattern, async route => {
+        const response = await route.fetch(); reached();
+        await gate; await route.fulfill({ response });
+      });
+      try {
+        await responseTo(page, 'POST', '/tutor', async () => {
+          await page.getByTestId('tutor-send').click(); await requested;
+          const activeUrl = page.url();
+          // A real same-document Back navigation must keep the pending attempt,
+          // including its identifier and step, when the leave guard refuses it.
+          await page.evaluate(url => { history.pushState(null, '', '/estudiante'); history.pushState(null, '', url); }, activeUrl);
+          await page.goBack();
+          await expect(page).toHaveURL(activeUrl);
+          await expect(page.getByTestId('tutor-send')).toBeDisabled();
+          release();
+        });
+      } finally { release(); await page.unroute(pattern); }
+    } else await responseTo(page, 'POST', '/tutor', () => page.getByTestId('tutor-send').click());
   }
   await expect(page.getByTestId('tutor-send')).toBeDisabled();
   await page.getByTestId('next-step').click();
@@ -137,7 +159,7 @@ test('docente y estudiante completan publicación revisada, trabajo guardado, tu
   expect(values.join('\n')).toContain(interpretation);
   expect(values.join('\n')).not.toContain(student.password);
   await page.getByTestId('logout').click();
-  await expect(page.getByTestId('auth-username')).toBeVisible();
+  await expect(page.getByTestId('entry-teacher')).toBeVisible();
 
   await authenticate(page, teacher);
   await page.getByTestId('nav-results').click();

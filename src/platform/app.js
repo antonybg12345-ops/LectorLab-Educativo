@@ -39,7 +39,11 @@ export async function createPlatformApp({ db, tutor = null, generator = null, al
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Ruta no disponible. Usa el acceso de docente o estudiante.' }));
   app.use('/platform', express.static(platformDirectory, { index: false, dotfiles: 'deny' }));
   app.use(express.static(platformDirectory, { index: false, dotfiles: 'deny' }));
-  for (const route of ['/', '/docente', '/estudiante']) app.get(route, (_req, res) => res.sendFile('index.html', { root: platformDirectory }));
+  // Public entry routes also serve the shell on direct navigation/reload. The
+  // session API and authenticated API boundary still determine access and role.
+  for (const route of ['/', '/docente', '/estudiante', '/ingresar/docente', '/ingresar/estudiante', '/como-funciona', '/acerca-de']) {
+    app.get(route, (_req, res) => res.sendFile('index.html', { root: platformDirectory }));
+  }
   app.use((_req, res) => res.status(404).send('Página no encontrada.'));
   app.use((error, _req, res, _next) => {
     if (error.type === 'entity.too.large' || error.code === 'LIMIT_FILE_SIZE') return res.status(413).json({ error: 'La solicitud supera el tamaño permitido.' });

@@ -1,52 +1,92 @@
 import { api, setCsrf } from './api.js';
-import { el, field, button, status, message, heading, show, busy } from './ui.js';
+import { el, button, status, message, heading, show, busy } from './ui.js';
 import { renderTeacher } from './teacher.js';
 import { renderStudent } from './student.js';
+import { renderEntryHeader, renderWelcome, renderAccess, renderEntryInfo } from './entry.js';
 
 const view = document.getElementById('view');
 const account = document.getElementById('account');
+let renderVersion = 0, currentUser = null, studentReturnSearch = '';
+
+function rememberStudentRoute() {
+  if (!['/estudiante', '/ingresar/estudiante'].includes(location.pathname)) return;
+  const input = new URLSearchParams(location.search), output = new URLSearchParams();
+  const attempt = input.get('attempt');
+  if (attempt && attempt.length <= 100) {
+    output.set('attempt', attempt);
+    if (/^[0-6]$/.test(input.get('paso') || '')) output.set('paso', input.get('paso'));
+  }
+  studentReturnSearch = output.size ? `?${output}` : '';
+}
+
+async function navigate(path) {
+  if (window.lectorlabBeforeLeave && !(await window.lectorlabBeforeLeave())) return;
+  window.lectorlabDispose?.();
+  if (!path.startsWith('/ingresar/estudiante')) studentReturnSearch = '';
+  history.pushState(null, '', path); await start();
+}
 
 async function start() {
+  const version = ++renderVersion;
+  rememberStudentRoute();
   try {
-    const session = await api('/auth/session');
+    // Late responses must not replace a newer session token or entry screen.
+    const session = await api('/auth/session', { storeCsrf: false });
+    if (version !== renderVersion) return;
     setCsrf(session.csrfToken);
-    if (!session.user) return renderAuth(session.setupRequired);
-    const user = session.user;
+    currentUser = session.user || null;
+    document.body.classList.toggle('entry-mode', !currentUser);
+    if (!currentUser) {
+      let path = location.pathname;
+      if (path === '/docente' || path === '/estudiante') {
+        path = path === '/docente' ? '/ingresar/docente' : '/ingresar/estudiante';
+        history.replaceState(null, '', path + (path.endsWith('/estudiante') ? studentReturnSearch : ''));
+      }
+      renderEntryHeader(account, navigate, path);
+      if (path === '/como-funciona' || path === '/acerca-de') return renderEntryInfo(view, path, navigate);
+      if (path === '/ingresar/docente' || path === '/ingresar/estudiante') {
+        const role = path.endsWith('/docente') ? 'teacher' : 'student';
+        return renderAccess(view, { role, setup: role === 'teacher' && session.setupRequired === true, navigate,
+          authenticate: async (credentials, setup) => {
+            await api(`/auth/${setup ? 'setup' : 'login'}`, { method: 'POST', body: credentials });
+            await start();
+          } });
+      }
+      return renderWelcome(view, navigate);
+    }
+    const user = currentUser;
+    const target = user.role === 'teacher' ? '/docente' : `/estudiante${studentReturnSearch}`;
+    if (location.pathname + location.search !== target) history.replaceState(null, '', target);
     account.replaceChildren(el('div', { class: 'account' }, el('span', {}, user.name || user.username, ' · ', user.role === 'teacher' ? 'Docente' : 'Estudiante'), button('Salir', async event => {
       await busy(event.currentTarget, async () => {
         try {
           if (window.lectorlabBeforeLeave && !(await window.lectorlabBeforeLeave())) return;
           await api('/auth/logout', { method: 'POST', body: {} });
-          window.lectorlabDispose?.();
-          setCsrf(''); history.replaceState(null, '', '/'); await start();
+          window.lectorlabDispose?.(); currentUser = null; studentReturnSearch = ''; setCsrf('');
+          history.replaceState(null, '', '/'); await start();
         } catch (error) { window.alert(error.message); }
       });
     }, { testid: 'logout', class: 'btn small' })));
-    if (user.role === 'teacher') await renderTeacher(view, user);
-    else await renderStudent(view, user);
+    const isCurrent = () => version === renderVersion && currentUser?.id === user.id;
+    if (user.role === 'teacher') await renderTeacher(view, user, { isCurrent });
+    else await renderStudent(view, user, { isCurrent });
   } catch (error) {
+    if (version !== renderVersion) return;
     const note = status(); message(note, error.message, true);
     show(view, ...heading('No se pudo abrir tu espacio', 'LectorLab'), note, button('Intentar de nuevo', start));
   }
 }
 
-function renderAuth(setup) {
-  account.replaceChildren();
-  const username = field('Usuario de acceso', { required: true, autocomplete: 'username', maxlength: 64, testid: 'auth-username' });
-  const name = field('Nombre de uso o alias docente', { required: setup, autocomplete: 'nickname', maxlength: 100, testid: 'auth-name' });
-  const password = field('Contraseña', { type: 'password', required: true, minlength: setup ? 10 : undefined, maxlength: 128, autocomplete: setup ? 'new-password' : 'current-password', testid: 'auth-password' });
-  const note = status();
-  const submit = el('button', { class: 'btn primary', type: 'submit', 'data-testid': 'auth-submit' }, setup ? 'Crear acceso docente' : 'Entrar');
-  const form = el('form', { on: { submit: async event => {
-    event.preventDefault();
-    await busy(submit, async () => {
-      try {
-        await api(`/auth/${setup ? 'setup' : 'login'}`, { method: 'POST', body: { username: username.input.value.trim(), password: password.input.value, ...(setup ? { name: name.input.value.trim() } : {}) } });
-        password.input.value = ''; await start();
-      } catch (error) { message(note, error.message, true); }
-    });
-  } } }, username.node, setup && name.node, password.node, setup && el('p', { class: 'small' }, 'Usa al menos 10 caracteres. No hay contraseñas compartidas ni una cuenta predeterminada.'), note, el('div', { class: 'actions' }, submit));
-  show(view, el('section', { class: 'auth' }, ...heading(setup ? 'Tu primer espacio docente' : 'Volvamos al texto.', 'LectorLab 2.0'), el('p', { class: 'intro' }, setup ? 'Crea el primer acceso para organizar grupos, revisar actividades y acompañar a tus estudiantes.' : 'Entra con el usuario y la contraseña de tu cuenta. Los estudiantes reciben sus accesos del docente.'), el('div', { class: 'panel' }, form), el('p', { class: 'small' }, 'Primera versión para pruebas con datos ficticios. No incluyas información personal de estudiantes durante la evaluación.')));
-}
+document.querySelector('.brand').addEventListener('click', event => {
+  if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault(); navigate('/');
+});
+window.addEventListener('popstate', async () => {
+  const previousLocation = window.lectorlabCurrentLocation?.() || (currentUser?.role === 'teacher' ? '/docente' : '/estudiante');
+  if (window.lectorlabBeforeLeave && !(await window.lectorlabBeforeLeave())) {
+    history.pushState(null, '', previousLocation); return;
+  }
+  window.lectorlabDispose?.(); await start();
+});
 
 start();
