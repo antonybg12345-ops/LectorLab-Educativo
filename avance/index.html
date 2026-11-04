@@ -6,12 +6,13 @@
   <meta name="color-scheme" content="light">
   <meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>LectorLab 2.0 · Avance de la interfaz</title>
-  <link rel="stylesheet" href="./styles.css">
-  <link rel="stylesheet" href="./entry.css">
-<link rel="stylesheet" href="./preview.css">
+  <link rel="stylesheet" href="./styles.css?v=2">
+  <link rel="stylesheet" href="./entry.css?v=2">
+<link rel="stylesheet" href="./preview.css?v=2">
+  <link rel="stylesheet" href="./workspace.css?v=2">
 </head>
 <body>
-<aside class="preview-notice" aria-label="Alcance de la demostración"><strong>Vista de demostración · Sin cuentas reales</strong><p>Puedes recorrer la entrada nueva y los espacios actuales con datos ficticios. Sin contraseñas, IA, carga de archivos ni guardado central. Al recargar se reinician los datos.</p></aside>
+<aside class="preview-notice" aria-label="Alcance de la demostración"><strong>Avance 2 · Panel y editor actualizados</strong><p>Demostración con datos ficticios: bienvenida, espacios docente y estudiante, preparación por pasos y validación de ejemplo. Sin cuentas reales ni IA conectada. Al recargar se reinician los cambios.</p></aside>
   <a class="skip" href="#view">Ir al contenido</a>
   <header class="site-header">
     <a class="brand" href="#/" aria-label="LectorLab, inicio"><span class="brand-mark" aria-hidden="true"><svg width="42" height="44" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M24 12C18 8 10 7 4 10v29c7-3 14-2 20 2 6-4 13-5 20-2V10c-6-3-14-2-20 2ZM24 12v29"/></svg></span><span>LectorLab <span class="brand-version">2.0</span><small>Comunicación · Secundaria</small></span></a>
@@ -49,7 +50,13 @@ async function api(path, options = {}) {
     return { user: structuredClone(previewUser) };
   }
   if (path.startsWith('/auth/')) throw new Error('No hay registro o autenticación reales en esta demostración.');
-  return demoRequest(path, options);
+  const result = await demoRequest(path, options);
+  const lifecycle = path.match(/^\/activities\/([^/]+)\/(publish|clone)$/);
+  if (options.method === 'POST' && lifecycle) {
+    if (lifecycle[2] === 'publish') designPreview.publishRubric(lifecycle[1]);
+    else designPreview.cloneRubric(lifecycle[1], result.activity.id);
+  }
+  return result;
 }
 
 let sequence = 0;
@@ -83,6 +90,55 @@ function list(data, name) { if (Array.isArray(data)) return data; return data?.[
 function fmt(value) { if (!value) return '—'; const date = new Date(value); return Number.isNaN(date.getTime()) ? '—' : new Intl.DateTimeFormat('es-PE', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Lima' }).format(date); }
 function pill(value) { return el('span', { class: `pill ${value}` }, ({ draft: 'Borrador', published: 'Publicada', submitted: 'Por revisar', in_progress: 'En curso', reviewed: 'Revisada' })[value] || value); }
 async function busy(node, fn) { const previous = node.disabled; node.disabled = true; try { return await fn(); } finally { node.disabled = previous; } }
+
+
+/** Shared visual frame. It does not establish a role or change API permissions. */
+function workspacePage(view, { title, intro, role = 'teacher', nav, section, actions }, ...content) {
+  const student = role === 'student';
+  const roleLabel = student ? 'Espacio estudiante' : 'Espacio docente';
+  const sidebar = el('aside', { class: 'workspace-sidebar', 'aria-label': roleLabel },
+    el('p', { class: 'workspace-role' }, workspaceIcon(student ? 'book' : 'teacher'), roleLabel),
+    nav,
+    el('div', { class: 'workspace-sidebar-note' },
+      workspaceIcon('book'),
+      el('strong', {}, 'Leer. Sustentar. Revisar.'),
+      el('p', {}, student ? 'Tu interpretación crece cuando vuelves al texto.' : 'Acompaña ideas que se sostienen con evidencias.')));
+  const main = el('div', { class: 'workspace-main' },
+    el('header', { class: 'workspace-heading' },
+      el('div', { class: 'workspace-heading-copy' },
+        el('p', { class: 'workspace-location' }, roleLabel, section ? ` / ${section}` : ''),
+        el('h1', { tabindex: '-1' }, title),
+        intro && el('p', { class: 'intro' }, intro)),
+      actions && el('div', { class: 'workspace-heading-actions' }, actions)),
+    el('div', { class: 'workspace-page-content' }, content));
+  const shell = el('div', { class: 'workspace-shell', 'data-workspace-role': role }, sidebar, main);
+  show(view, shell);
+  return shell;
+}
+
+/** Small local line icons; interface labels remain real, accessible text. */
+function workspaceIcon(name) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  for (const [key, value] of Object.entries({ viewBox: '0 0 32 32', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false', class: 'workspace-icon' })) svg.setAttribute(key, value);
+  const shapes = {
+    home: ['M3 14 16 3l13 11', 'M6 12v17h7v-9h6v9h7V12'],
+    groups: ['M16 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z', 'M6 29v-4a10 10 0 0 1 20 0v4Z', 'M5 8a4 4 0 0 0 0 8M27 8a4 4 0 0 1 0 8M3 20a8 8 0 0 0-2 6v3h5M29 20a8 8 0 0 1 2 6v3h-5'],
+    book: ['M16 7C11 3 5 3 2 5v23c5-2 9-1 14 2 5-3 9-4 14-2V5c-3-2-9-2-14 2Z', 'M16 7v23'],
+    assignments: ['M7 3h15l5 5v8M7 3H4v26h14M22 3v6h6', 'M9 11h8M9 17h6M19 25l8-8 4 4-8 8h-4Z'],
+    results: ['M4 29V17h5v12M13 29V10h5v19M22 29V3h5v26M2 29h28'],
+    sheets: ['M5 3h22v26H5Z', 'M5 10h22M5 17h22M5 23h22M12 10v19M20 10v19'],
+    check: ['M27 8 12 24l-7-7'],
+    arrow: ['M5 16h22M20 9l7 7-7 7'],
+    plus: ['M16 5v22M5 16h22'],
+    teacher: ['M4 6h24v17H4Z', 'M16 2v4M10 30l6-7 6 7M9 12h14M9 17h9'],
+  };
+  for (const d of shapes[name] || shapes.book) {
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', d); svg.append(path);
+  }
+  return svg;
+}
 
 /*
  * Adaptador EXCLUSIVO para la presentación HTML sin instalación.
@@ -191,6 +247,7 @@ function demoAssignmentRow(assignment) {
 function demoPublicActivity(activity) {
   const result = demoCopy(activity);
   result.questions = result.questions.map(({ id, type, prompt, options, left, right }) => ({ id, type, prompt, ...(options ? { options } : {}), ...(left ? { left, right } : {}) }));
+  if (typeof designPreview !== 'undefined') result.evaluationRubric = designPreview.getRubric(activity.id);
   return result;
 }
 
@@ -210,6 +267,9 @@ function demoScore(attempt) {
   const objective = activity.questions.filter(question => question.type !== 'inferential');
   attempt.maxObjective = objective.length;
   attempt.objectiveScore = objective.filter(question => demoIsCorrect(question, attempt.answers[question.id])).length;
+  const alternatives = activity.questions.filter(question => question.type === 'mcq');
+  const correct = alternatives.filter(question => demoIsCorrect(question, attempt.answers[question.id])).length;
+  attempt.alternatives = { correct, total: alternatives.length, percentage: alternatives.length ? Math.round(correct / alternatives.length * 1000) / 10 : null };
 }
 
 function demoAttemptData(id) {
@@ -223,6 +283,7 @@ function demoAttemptData(id) {
     feedback[question.id] = { correct, text: 'Selección registrada en esta pestaña. Vuelve al texto para explicar tu razonamiento; el registro de esta demo no es una calificación académica.' };
   }
   const visibleAttempt = demoCopy(attempt);
+  if (attempt.status === 'in_progress') visibleAttempt.alternatives = null;
   if (attempt.status === 'in_progress' && demoRole === 'student') delete visibleAttempt.objectiveScore;
   return {
     attempt: visibleAttempt,
@@ -350,7 +411,7 @@ async function demoRequest(path, { method = 'GET', body } = {}) {
     return { results: demoState.attempts.map(attempt => {
       const assignment = demoFind(demoState.assignments, attempt.assignmentId, 'Asignación');
       const row = demoAssignmentRow(assignment);
-      return { id: attempt.id, attemptId: attempt.id, studentName: attempt.studentName, activityTitle: row.activityTitle, groupName: row.groupName, status: attempt.status, objectiveScore: attempt.status === 'in_progress' ? null : attempt.objectiveScore, maxObjective: attempt.maxObjective };
+      return { id: attempt.id, attemptId: attempt.id, studentName: attempt.studentName, activityTitle: row.activityTitle, groupName: row.groupName, status: attempt.status, objectiveScore: attempt.status === 'in_progress' ? null : attempt.objectiveScore, maxObjective: attempt.maxObjective, alternatives: attempt.status === 'in_progress' ? null : demoCopy(attempt.alternatives), assessment: demoCopy(demoState.assessments[attempt.id] || null) };
     }) };
   }
   if ((match = path.match(/^\/attempts\/([^/]+)(?:\/(submit|review))?$/))) {
@@ -384,6 +445,22 @@ async function demoRequest(path, { method = 'GET', body } = {}) {
       demoTeacherOnly();
       if (attempt.status === 'in_progress') demoFail('Espera la entrega antes de valorar.');
       if (!input.feedback?.trim()) demoFail('Escribe una orientación para continuar aprendiendo.');
+      if (input.criterionScores && typeof designPreview !== 'undefined') {
+        const snapshot = designPreview.getRubric(attempt.activityId);
+        const criteria = snapshot.criteria;
+        const validIds = new Set(criteria.map(criterion => criterion.id));
+        if (Object.keys(input.criterionScores).some(id => !validIds.has(id))) demoFail('La valoración debe utilizar los criterios de esta versión publicada.');
+        for (const criterion of criteria) {
+          const value = input.criterionScores[criterion.id];
+          if (!Number.isInteger(value) || value < 0 || value > criterion.max) demoFail(`Valora «${criterion.name}» entre 0 y ${criterion.max}.`);
+        }
+        const total = criteria.reduce((sum, criterion) => sum + input.criterionScores[criterion.id], 0);
+        const totalMax = criteria.reduce((sum, criterion) => sum + criterion.max, 0);
+        const compatible = criteria.length === 4 && criteria.every(criterion => ['inference', 'evidence', 'link', 'revision'].includes(criterion.id) && criterion.max === 3);
+        demoState.assessments[attempt.id] = { criteria: demoCopy(criteria), criterionScores: demoCopy(input.criterionScores), total, totalMax,
+          rubric: compatible ? demoCopy(input.criterionScores) : {}, feedback: input.feedback.trim(), badges: [], reviewedAt: demoNow() };
+        attempt.status = 'reviewed'; return demoAttemptData(attempt.id);
+      }
       for (const key of ['inference', 'evidence', 'link', 'revision']) if (!Number.isInteger(input.rubric?.[key]) || input.rubric[key] < 0 || input.rubric[key] > 3) demoFail('Valora cada criterio entre 0 y 3.');
       const badgeNames = { inference: 'Inferencia sustentada', evidence: 'Evidencia pertinente', link: 'Vínculo explicado', revision: 'Revisión de hipótesis' };
       const badges = Object.entries(input.rubric).filter(([, value]) => value >= 2).map(([key]) => badgeNames[key]);
@@ -418,10 +495,17 @@ async function download(path, filename = 'LectorLab_demo.csv') {
     const prefix = [attempt.studentName, activity.title, attempt.status];
     for (const [key, value] of Object.entries(attempt.draft)) rows.push([...prefix, key, value]);
     for (const question of activity.questions) rows.push([...prefix, question.prompt, attempt.answers[question.id] ?? 'Sin respuesta']);
+    if (attempt.status !== 'in_progress' && attempt.alternatives) {
+      rows.push([...prefix, 'Alternativas: aciertos', `${attempt.alternatives.correct}/${attempt.alternatives.total}`]);
+      rows.push([...prefix, 'Alternativas: porcentaje', attempt.alternatives.percentage == null ? 'Sin preguntas de alternativas' : `${attempt.alternatives.percentage} %`]);
+    }
     const assessment = demoState.assessments[attempt.id];
     if (assessment) {
       rows.push([...prefix, 'Devolución docente', assessment.feedback]);
-      for (const [criterion, value] of Object.entries(assessment.rubric)) rows.push([...prefix, `Rúbrica: ${criterion}`, value]);
+      if (assessment.criteria?.length) {
+        for (const criterion of assessment.criteria) rows.push([...prefix, `Rúbrica: ${criterion.name}`, `${assessment.criterionScores[criterion.id]}/${criterion.max}`]);
+        rows.push([...prefix, 'Total de rúbrica validada', `${assessment.total}/${assessment.totalMax}`]);
+      } else for (const [criterion, value] of Object.entries(assessment.rubric)) rows.push([...prefix, `Rúbrica: ${criterion}`, value]);
     }
   }
   const blob = new Blob(['\uFEFF' + rows.map(row => row.map(demoCsvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
@@ -431,6 +515,240 @@ async function download(path, filename = 'LectorLab_demo.csv') {
 }
 
 demoReset();
+
+/*
+ * Prototipo exclusivo de GitHub Pages. No llama a un modelo y no crea notas
+ * académicas: permite explorar el diseño con ejemplos y datos de esta pestaña.
+ * Las propuestas ilustrativas y los borradores privados se guardan separados
+ * de la evaluación de ejemplo que el docente decide validar.
+ */
+const designPreview = (() => {
+  const rubricStates = new Map();
+  const privateReviews = new Map();
+  const copy = value => structuredClone(value);
+  const initialCriteria = () => [
+    { id: 'inference', name: 'Inferencia sustentada', max: 3, descriptors: [
+      'La interpretación todavía no se apoya en el texto.',
+      'Plantea una idea con un apoyo parcial o poco explicado.',
+      'Construye una inferencia pertinente y explica qué indicios la sostienen.',
+      'Sustenta la inferencia y contrasta alternativas o reconoce sus límites.',
+    ] },
+    { id: 'evidence', name: 'Evidencias textuales', max: 3, descriptors: [
+      'No incorpora evidencias textuales.',
+      'Las pistas son poco pertinentes o difíciles de localizar.',
+      'Incorpora evidencias pertinentes, parcialmente precisas.',
+      'Selecciona citas pertinentes, precisas y comprobables en la lectura.',
+    ] },
+    { id: 'link', name: 'Vínculo entre evidencia e interpretación', max: 3, descriptors: [
+      'No explica la relación entre la cita y su interpretación.',
+      'Menciona una relación, pero necesita desarrollarla.',
+      'Explica una relación pertinente entre los indicios y su conclusión.',
+      'Explica cómo se complementan las evidencias y qué permiten concluir.',
+    ] },
+    { id: 'revision', name: 'Revisión de la hipótesis', max: 3, descriptors: [
+      'Todavía no examina su idea inicial.',
+      'Reconoce un cambio, pero no precisa qué lo hizo necesario.',
+      'Relaciona el cambio de interpretación con una evidencia concreta.',
+      'Revisa su hipótesis, explica la evidencia y reconoce lo que sigue incierto.',
+    ] },
+  ];
+
+  function stateFor(activityId) {
+    if (!rubricStates.has(activityId)) rubricStates.set(activityId, {
+      criteria: initialCriteria(), source: 'example', published: false,
+    });
+    return rubricStates.get(activityId);
+  }
+  function getRubric(activityId) {
+    const state = stateFor(activityId);
+    return { ...copy(state), totalMax: state.criteria.reduce((sum, criterion) => sum + criterion.max, 0) };
+  }
+  function cloneRubric(fromId, toId) {
+    const state = copy(stateFor(fromId));
+    state.published = false;
+    rubricStates.set(toId, state);
+    return getRubric(toId);
+  }
+  function publishRubric(activityId) {
+    stateFor(activityId).published = true;
+    return getRubric(activityId);
+  }
+
+  function renderRubric({ activity, locked, onChange = () => {} }) {
+    const state = stateFor(activity.id);
+    if (locked) state.published = true;
+    const root = el('section', { class: 'rubric-design', 'data-testid': 'demo-rubric-design' });
+    const cards = el('div', { class: 'rubric-criteria' });
+    const total = el('strong', { class: 'rubric-total', 'data-testid': 'demo-rubric-total' });
+    const count = el('p', { class: 'small' });
+    const source = el('span', { class: 'pill' });
+    const note = status();
+    const readOnly = () => locked || state.published;
+    function refreshSummary() {
+      total.textContent = `Puntaje máximo: ${getRubric(activity.id).totalMax}`;
+      count.textContent = `${state.criteria.length} criterios · Puntajes por criterio y total`;
+      source.textContent = state.source === 'teacher-edited' ? 'Ejemplo ajustado por docente' : 'Ejemplo de propuesta';
+    }
+    function changed() {
+      state.source = 'teacher-edited'; refreshSummary(); onChange();
+      message(note, 'Cambios de la rúbrica conservados en esta pestaña. La publicación requiere tu revisión final.');
+    }
+    function drawCards() {
+      cards.replaceChildren(...state.criteria.map((criterion, index) => {
+        const label = el('strong', {}, `${index + 1}. ${criterion.name}`);
+        const maximum = el('span', { class: 'pill' }, `Máximo: ${criterion.max}`);
+        const name = field('Nombre del criterio', { value: criterion.name, maxlength: 120, disabled: readOnly(), testid: `demo-rubric-name-${criterion.id}` });
+        name.input.addEventListener('input', () => {
+          criterion.name = name.input.value; label.textContent = `${index + 1}. ${criterion.name || 'Criterio sin nombre'}`; changed();
+        });
+        const max = field('Puntaje máximo', { type: 'number', min: 1, max: 10, step: 1, value: criterion.max, disabled: readOnly(), testid: `demo-rubric-max-${criterion.id}` });
+        const levels = el('div', { class: 'rubric-levels' });
+        function drawLevels() {
+          levels.replaceChildren(...criterion.descriptors.map((descriptor, point) => {
+            const control = field(`Descriptor de ${point} puntos`, { tag: 'textarea', rows: 2, maxlength: 1000, value: descriptor, disabled: readOnly(), testid: `demo-rubric-descriptor-${criterion.id}-${point}` });
+            control.input.addEventListener('input', () => { criterion.descriptors[point] = control.input.value; changed(); });
+            return el('div', { class: 'rubric-level' }, el('span', { class: 'pill', 'aria-hidden': 'true' }, point), control.node);
+          }));
+        }
+        max.input.addEventListener('input', () => {
+          const value = Number(max.input.value);
+          if (!max.input.value || !Number.isInteger(value) || value < 1 || value > 10) {
+            max.input.setCustomValidity('Elige un máximo entero de 1 a 10.');
+            message(note, 'El máximo debe ser un número entero de 1 a 10. Conservamos el último valor válido.', true); return;
+          }
+          max.input.setCustomValidity('');
+          const previous = criterion.descriptors;
+          criterion.max = value;
+          criterion.descriptors = Array.from({ length: value + 1 }, (_, point) => previous[point] || `Describe qué evidencia de razonamiento corresponde a ${point} puntos.`);
+          maximum.textContent = `Máximo: ${criterion.max}`; drawLevels(); changed();
+        });
+        max.input.addEventListener('change', () => {
+          if (!max.input.checkValidity()) { max.input.value = criterion.max; max.input.setCustomValidity(''); }
+        });
+        drawLevels();
+        return el('details', { class: 'rubric-criterion', open: index === 1 },
+          el('summary', { class: 'rubric-criterion-title' }, label, maximum),
+          el('div', { class: 'rubric-criterion-body' }, name.node, max.node,
+            el('h3', {}, 'Descriptores de logro'), levels,
+            !readOnly() && button('Quitar criterio', () => {
+              if (state.criteria.length <= 1) { message(note, 'Conserva al menos un criterio.', true); return; }
+              if (!window.confirm(`¿Quitar «${criterion.name}» de esta rúbrica de ejemplo?`)) return;
+              state.criteria = state.criteria.filter(item => item.id !== criterion.id); drawCards(); changed();
+            }, { testid: `demo-rubric-remove-${criterion.id}`, class: 'btn small danger' })));
+      }));
+      refreshSummary();
+    }
+    const add = button('+ Agregar criterio', () => {
+      if (state.criteria.length >= 10) { message(note, 'En esta demostración puedes explorar hasta 10 criterios.', true); return; }
+      state.criteria.push({ id: `criterion-${crypto.randomUUID()}`, name: 'Nuevo criterio', max: 3, descriptors: ['Describe el nivel inicial.', 'Describe un avance parcial.', 'Describe una relación sustentada.', 'Describe un sustento profundo.'] });
+      drawCards(); changed();
+      cards.lastElementChild.open = true;
+      cards.lastElementChild.querySelector('input')?.focus();
+    }, { testid: 'demo-rubric-add', disabled: readOnly() });
+    const restore = button('Restaurar ejemplo de rúbrica', () => {
+      if (!window.confirm('¿Reemplazar los ajustes de esta rúbrica por el ejemplo inicial? Esta acción solo afecta a esta pestaña.')) return;
+      state.criteria = initialCriteria(); state.source = 'example'; drawCards(); onChange();
+      message(note, 'Ejemplo inicial restaurado. No se hizo una llamada a IA.');
+    }, { testid: 'demo-rubric-restore', disabled: readOnly() });
+    root.append(el('h2', {}, 'Rúbrica de la actividad'),
+      el('p', {}, 'Revisa los criterios, sus descriptores y los puntajes antes de publicar.'),
+      el('p', { class: 'note' }, 'Ejemplo de propuesta · Sin IA conectada. Puedes ensayar la edición docente; los cambios se conservan solo en esta pestaña.'),
+      el('div', { class: 'rubric-design-grid grid' }, el('div', {}, cards, el('div', { class: 'actions' }, add)),
+        el('aside', { class: 'panel rubric-summary' }, el('h3', {}, 'Resumen de la rúbrica'), count, total,
+          el('p', {}, source), readOnly() && el('p', { class: 'small' }, 'Esta versión está publicada. Crea otra versión para cambiar sus criterios.'),
+          el('div', { class: 'actions' }, restore),
+          el('p', { class: 'small' }, 'La futura IA propondrá la rúbrica; tú podrás modificarla y aprobarla. Aquí no se generan propuestas nuevas.'))),
+      note,
+      el('details', { class: 'small' }, el('summary', {}, 'Lectura original y archivos: acuerdos pendientes'),
+        el('p', {}, 'La lectura no debe ser reescrita por la IA. Conservar el archivo original y admitir 50 MB son requisitos acordados; esta demo no recibe archivos ni implementa su almacenamiento.')));
+    drawCards(); return root;
+  }
+
+  function renderReview({ data, attempt, onValidated = () => {} }) {
+    const assessment = data.assessment;
+    const criteria = copy(assessment?.criteria || getRubric(data.activity.id).criteria);
+    const canonical = ['inference', 'evidence', 'link', 'revision'];
+    const fixed = criteria.length === 4 && canonical.every(id => criteria.some(item => item.id === id && item.max === 3));
+    const example = attempt.id === 'demo-example' && fixed;
+    const proposed = example ? { inference: 2, evidence: 3, link: 2, revision: 1 } : null;
+    const saved = privateReviews.get(attempt.id);
+    const current = saved?.criterionScores || assessment?.criterionScores || assessment?.rubric || proposed || {};
+    const totalMax = criteria.reduce((sum, criterion) => sum + criterion.max, 0);
+    const panel = el('section', { class: 'panel review-proposal', 'data-testid': 'demo-review-panel' });
+    const total = el('strong', { class: 'review-total', 'data-testid': 'demo-review-total' });
+    const reviewStatus = el('p', { class: 'pill review-status', 'data-testid': 'demo-review-status' },
+      assessment ? 'Evaluación de ejemplo validada' : saved ? 'Borrador privado · Pendiente de validación' : 'Pendiente de validación');
+    const note = status();
+    const controls = [];
+    const justifications = {
+      inference: 'Ejemplo: plantea una interpretación pertinente; puede precisar qué explicaciones alternativas descarta.',
+      evidence: 'Ejemplo: las dos citas se pueden comprobar en la lectura de esta actividad.',
+      link: 'Ejemplo: relaciona indicios y conclusión; el vínculo aún puede desarrollarse.',
+      revision: 'Ejemplo: reconoce un cambio de idea, pero necesita precisar qué pista lo hizo necesario.',
+    };
+    function readScores() { return Object.fromEntries(controls.map(control => [control.id, Number(control.input.value)])); }
+    function refreshTotal() {
+      total.textContent = `${Object.values(readScores()).reduce((sum, value) => sum + value, 0)}/${totalMax}`;
+    }
+    function changed() {
+      reviewStatus.textContent = 'Cambios sin guardar · Pendiente de validación';
+      message(note, 'Los ajustes todavía no son una evaluación validada.'); refreshTotal();
+    }
+    const rows = criteria.map(criterion => {
+      const score = field(`Puntaje docente: ${criterion.name}`, { tag: 'select', testid: `demo-review-score-${criterion.id}`, disabled: attempt.status === 'in_progress' });
+      const value = Number.isInteger(current[criterion.id]) && current[criterion.id] >= 0 && current[criterion.id] <= criterion.max ? current[criterion.id] : 0;
+      score.input.append(...Array.from({ length: criterion.max + 1 }, (_, point) => el('option', { value: point, selected: value === point }, `${point}/${criterion.max}`)));
+      score.input.addEventListener('change', changed);
+      controls.push({ id: criterion.id, input: score.input });
+      return el('tr', {},
+        el('td', {}, el('strong', {}, criterion.name), example && el('p', { class: 'small' }, justifications[criterion.id])),
+        el('td', {}, proposed ? `${proposed[criterion.id]}/${criterion.max}` : '—'),
+        el('td', {}, score.node));
+    });
+    const feedback = field('Devolución docente', { tag: 'textarea', rows: 4, maxlength: 4000, value: saved?.feedback ?? assessment?.feedback ?? '', required: true, testid: 'demo-review-feedback', disabled: attempt.status === 'in_progress', placeholder: 'Explica una fortaleza y un paso concreto para mejorar el razonamiento.' });
+    feedback.input.addEventListener('input', changed);
+    const saveDraft = button('Guardar borrador privado', () => {
+      privateReviews.set(attempt.id, { criterionScores: readScores(), feedback: feedback.input.value });
+      reviewStatus.textContent = 'Borrador privado · Pendiente de validación';
+      message(note, 'Borrador conservado en esta pestaña. No se publicó al estudiante ni se modificó la evaluación validada.');
+    }, { testid: 'demo-save-review-draft', disabled: attempt.status === 'in_progress' });
+    const validate = button('Validar evaluación de ejemplo', async event => {
+      await busy(event.currentTarget, async () => {
+        try {
+          const criterionScores = readScores();
+          const text = feedback.input.value.trim();
+          if (!text) throw new Error('Escribe una devolución antes de validar la evaluación.');
+          for (const criterion of criteria) if (!Number.isInteger(criterionScores[criterion.id]) || criterionScores[criterion.id] < 0 || criterionScores[criterion.id] > criterion.max) throw new Error('Comprueba los puntajes de cada criterio.');
+          await api(`/attempts/${attempt.id}/review`, { method: 'POST', body: {
+            criteria: copy(criteria), criterionScores, ...(fixed ? { rubric: copy(criterionScores) } : {}), feedback: text,
+          } });
+          privateReviews.delete(attempt.id);
+          reviewStatus.textContent = 'Evaluación de ejemplo validada';
+          message(note, 'Evaluación de ejemplo validada en esta pestaña.');
+          await onValidated();
+        } catch (error) { message(note, error.message, true); }
+      });
+    }, { testid: 'demo-validate-review', primary: true, disabled: attempt.status === 'in_progress' });
+    const quotes = example ? ['evidence1', 'evidence2'].map(key => attempt.draft?.[key]).filter(quote => quote && data.activity.readingText.includes(quote)) : [];
+    panel.append(...[el('div', { class: 'dashboard-panel-heading row' }, el('h2', {}, 'Rúbrica y validación docente'), reviewStatus),
+      el('p', { class: 'note' }, example
+        ? 'Propuesta ilustrativa, preparada para esta producción de ejemplo. No fue generada por IA. Tú puedes ajustar cada puntaje y validar la devolución.'
+        : 'Sin propuesta de IA. Valora esta producción de demostración con los criterios de su actividad.'),
+      el('div', { class: 'table-wrap rubric-review-table' }, el('table', {},
+        el('thead', {}, el('tr', {}, el('th', { scope: 'col' }, 'Criterio'), el('th', { scope: 'col' }, 'Ejemplo de propuesta'), el('th', { scope: 'col' }, 'Docente'))), el('tbody', {}, rows))),
+      el('div', { class: 'review-summary row' }, el('span', {}, 'Total de la rúbrica'), total),
+      example && el('p', { class: 'small', 'data-testid': 'demo-proposed-total' }, 'Propuesta ilustrativa original: 8/12 · Provisional'),
+      quotes.length > 0 && el('details', { class: 'small' }, el('summary', {}, 'Citas comprobables que acompañan el ejemplo'), quotes.map(quote => el('blockquote', {}, quote))),
+      feedback.node, note, attempt.status === 'in_progress' && el('p', { class: 'note' }, 'Espera a que se entregue el recorrido para valorar.'),
+      el('div', { class: 'actions' }, saveDraft, validate),
+      el('p', { class: 'small' }, 'Guardar borrador conserva una revisión privada. El estudiante solo recibe la evaluación de ejemplo después de validarla. No se combina este total con los aciertos de alternativas.'),
+      assessment?.reviewedAt && el('p', { class: 'small' }, `Validación de ejemplo: ${fmt(assessment.reviewedAt)}`)
+      ].filter(child => child !== false && child !== null && child !== undefined));
+    refreshTotal(); return panel;
+  }
+
+  return { renderRubric, renderReview, getRubric, cloneRubric, publishRubric };
+})();
 
 
 function entryLink(label, href, navigate, attrs = {}) {
@@ -549,19 +867,30 @@ document.querySelector('.skip').addEventListener('click', event => { event.preve
 
 
 
+
 const rubricNames = { inference: 'Inferencia sustentada', evidence: 'Pertinencia de la evidencia', link: 'Vínculo entre cita e interpretación', revision: 'Revisión de la hipótesis' };
 const typeNames = { mcq: 'Alternativas', inferential: 'Inferencial abierta', matching: 'Relación de elementos', completion: 'Completado' };
+function alternativesLabel(alternatives) {
+  if (!alternatives) return 'Alternativas: pendiente de entrega';
+  if (!alternatives.total) return 'Sin preguntas de alternativas';
+  const percentage = alternatives.percentage == null ? '' : ` · ${new Intl.NumberFormat('es-PE', { maximumFractionDigits: 1 }).format(alternatives.percentage)} %`;
+  return `Alternativas: ${alternatives.correct}/${alternatives.total}${percentage}`;
+}
 
-async function renderTeacher(view, user, { isCurrent = () => true } = {}) {
+async function renderTeacher(view, user, { isCurrent = () => true, designPreview = null } = {}) {
   let section = 'Inicio';
+  let editorBeforeLeave = null, editorDispose = null;
   function page(title, intro, ...content) {
     if (!isCurrent()) return;
     const nav = el('nav', { class: 'nav', 'aria-label': 'Espacio docente' },
-      ...[['Inicio', dashboard, 'nav-home'], ['Grupos', groups, 'nav-groups'], ['Actividades', activities, 'nav-activities'], ['Asignaciones', assignments, 'nav-assignments'], ['Resultados', results, 'nav-results'], ['Google Sheets', sheets, 'nav-sheets']]
-        .map(([name, fn, testid]) => button(name, () => run(fn), { testid, 'aria-current': section === name ? 'page' : undefined })));
-    show(view, ...heading(title, 'Espacio docente'), intro && el('p', { class: 'intro' }, intro), nav, content);
+      ...[['Inicio', dashboard, 'nav-home', 'home'], ['Grupos', groups, 'nav-groups', 'groups'], ['Actividades', activities, 'nav-activities', 'book'], ['Asignaciones', assignments, 'nav-assignments', 'assignments'], ['Resultados', results, 'nav-results', 'results'], ['Google Sheets', sheets, 'nav-sheets', 'sheets']]
+        .map(([name, fn, testid, icon]) => button([workspaceIcon(icon), el('span', {}, name === 'Grupos' ? 'Mis grupos' : name)], () => run(fn), { testid, 'aria-current': section === name ? 'page' : undefined })));
+    workspacePage(view, { title, intro, role: 'teacher', nav, section,
+      actions: section === 'Inicio' ? button([workspaceIcon('plus'), 'Preparar actividad'], () => run(activities), { primary: true, testid: 'dashboard-prepare' }) : null }, ...content);
   }
   async function run(fn) {
+    if (editorBeforeLeave && !(await editorBeforeLeave())) return;
+    editorDispose?.();
     try { await fn(); } catch (error) {
       const note = status(); message(note, error.message, true);
       page('No se pudo completar la operación', '', note, button('Volver al inicio', () => run(dashboard)));
@@ -575,10 +904,20 @@ async function renderTeacher(view, user, { isCurrent = () => true } = {}) {
     section = 'Inicio';
     const [groupData, activityData, resultData] = await Promise.all([api('/groups'), api('/activities'), api('/results')]);
     const groupRows = list(groupData, 'groups'), activityRows = list(activityData, 'activities'), resultRows = list(resultData, 'results');
-    page(`Bienvenido, ${user.name || user.username}.`, 'Un espacio para que la lectura se convierta en una interpretación propia, sostenida con evidencias.',
-      el('div', { class: 'metrics' }, ...[[groupRows.length, 'grupos'], [activityRows.length, 'actividades'], [resultRows.filter(row => row.status === 'submitted').length, 'producciones por revisar']].map(([value, title]) => el('div', { class: 'metric' }, el('strong', {}, value), title))),
-      el('section', { class: 'panel' }, el('h2', {}, 'Tu primer recorrido'), el('ol', {}, el('li', {}, 'Crea un grupo y accesos individuales con alias.'), el('li', {}, 'Prepara una lectura y revisa cada pregunta, su clave y su evidencia.'), el('li', {}, 'Publica la versión revisada y asígnala al grupo.'), el('li', {}, 'Revisa las interpretaciones y devuelve una orientación concreta.')), el('div', { class: 'actions' }, button('Organizar grupos', () => run(groups), { primary: true }), button('Preparar actividades', () => run(activities)))),
-      el('aside', { class: 'note' }, 'Esta primera versión se prueba con datos ficticios. No utiliza detectores de IA ni emite acusaciones de fraude. La valoración de las respuestas abiertas corresponde al docente.'));
+    const pending = resultRows.filter(row => row.status === 'submitted');
+    const panelHeading = (title, action, handler) => el('div', { class: 'dashboard-panel-heading row' }, el('h2', {}, title), button(action, () => run(handler), { class: 'btn small' }));
+    const metrics = el('div', { class: 'dashboard-metrics', 'aria-label': 'Resumen de tu trabajo' },
+      ...[[groupRows.length, 'Mis grupos', 'groups', groups], [activityRows.length, 'Actividades', 'book', activities], [pending.length, 'Entregas por revisar', 'check', results]].map(([value, label, icon, handler]) =>
+        button([el('span', { class: 'dashboard-metric-icon' }, workspaceIcon(icon)), el('span', {}, el('strong', { class: 'dashboard-metric-value' }, value), el('span', { class: 'dashboard-metric-label' }, label))], () => run(handler), { class: 'dashboard-metric' })));
+    const pendingTable = pending.length ? el('div', { class: 'table-wrap' }, el('table', {},
+      el('thead', {}, el('tr', {}, ...['Estudiante', 'Actividad', 'Grupo', 'Acción'].map(text => el('th', { scope: 'col' }, text)))),
+      el('tbody', {}, pending.slice(0, 4).map(row => el('tr', {}, el('td', {}, row.studentName || 'Estudiante'), el('td', {}, row.activityTitle || 'Actividad', el('div', { class: 'small' }, alternativesLabel(row.alternatives))), el('td', {}, row.groupName || '—'), el('td', {}, button('Revisar', () => run(() => resultDetail(row.attemptId || row.id)), { primary: true, class: 'btn primary small', testid: `dashboard-result-${row.attemptId || row.id}` }))))))) : empty('No tienes entregas pendientes. Cuando tu grupo entregue, podrás revisar aquí sus interpretaciones.');
+    const activityList = activityRows.length ? el('ul', { class: 'list dashboard-list' }, activityRows.slice(0, 4).map(activity => el('li', {}, el('div', { class: 'row' }, el('div', {}, el('h3', {}, activity.title), pill(activity.status), el('span', { class: 'small' }, ` · v${activity.version || 1}`)), button(activity.status === 'published' ? 'Ver versión' : 'Continuar borrador', () => run(async () => { const data = await api(`/activities/${activity.id}`); await activityEditor(data.activity || data); }), { class: 'btn small', testid: `dashboard-activity-${activity.id}` }))))) : empty('Prepara tu primera actividad con una lectura y preguntas sustentadas en evidencias.');
+    const groupList = groupRows.length ? el('ul', { class: 'list dashboard-list' }, groupRows.slice(0, 4).map(group => el('li', {}, el('div', { class: 'row' }, el('div', {}, el('h3', {}, group.name), el('span', { class: 'small' }, group.grade || 'Comunicación')), button('Abrir grupo →', () => run(() => groupDetail(group)), { class: 'btn small', testid: `dashboard-group-${group.id}` }))))) : empty('Crea un grupo y entrega un acceso individual a cada estudiante.');
+    page('Tu panel docente', `Hola, ${user.name || user.username}. Organiza tus actividades y acompaña el proceso de lectura.`, metrics,
+      el('section', { class: 'panel dashboard-pending' }, panelHeading('Entregas por revisar', 'Ver todas →', results), pendingTable),
+      el('div', { class: 'dashboard-grid grid' }, el('section', { class: 'panel' }, panelHeading('Mis actividades', 'Ver todas →', activities), activityList), el('section', { class: 'panel' }, panelHeading('Mis grupos', 'Ver todos →', groups), groupList)),
+      el('p', { class: 'small' }, 'Acompaña las ideas con evidencias. El progreso es privado y no se utilizan acusaciones automáticas de fraude.'));
   }
 
   async function groups() {
@@ -649,15 +988,36 @@ async function renderTeacher(view, user, { isCurrent = () => true } = {}) {
     page('Revisar la extracción', 'Los errores del documento no deben convertirse en preguntas incorrectas. Esta revisión crea un texto de actividad nuevo.', el('section', { class: 'panel' }, form));
   }
 
-  async function activityEditor(activity) {
+  async function activityEditor(activity, { initialStep = 0 } = {}) {
+    if (!isCurrent()) return;
+    editorDispose?.();
     section = 'Actividades';
     const locked = activity.status === 'published';
+    let editorStep = Math.max(0, Math.min(3, initialStep)), revision = 0, savedRevision = 0, operationPending = false;
     let questions = structuredClone(activity.questions || activity.content?.questions || []);
     const title = field('Título de la actividad', { required: true, maxlength: 160, value: activity.title, disabled: locked, testid: 'edit-activity-title' });
-    const reading = field('Texto específico de esta actividad', { tag: 'textarea', class: 'long', value: activity.readingText || activity.reading_text, required: true, maxlength: 80000, disabled: locked, testid: 'edit-activity-reading' });
+    const imported = Boolean(activity.source?.documentId);
+    const reading = field('Texto específico de esta actividad', { tag: 'textarea', class: 'long', value: activity.readingText || activity.reading_text, required: true, maxlength: 80000, disabled: locked, readonly: imported, testid: 'edit-activity-reading' });
     const instructions = field('Propósito e instrucciones', { tag: 'textarea', value: activity.instructions || '', maxlength: 4000, disabled: locked });
     const note = status(), reviewed = el('input', { type: 'checkbox', id: 'publish-reviewed', disabled: locked, 'data-testid': 'publish-reviewed' });
-    for (const input of [title.input, reading.input, instructions.input]) input.addEventListener('input', () => { reviewed.checked = false; });
+    const saveState = el('p', { class: 'save-status', role: 'status', 'data-testid': 'editor-save-status' }, locked ? 'Versión publicada' : 'Borrador guardado');
+    function markDirty() { revision++; reviewed.checked = false; saveState.textContent = 'Cambios sin guardar'; }
+    for (const input of [title.input, reading.input, instructions.input]) input.addEventListener('input', markDirty);
+    const beforeLeave = async () => {
+      if (operationPending) { message(note, 'Espera a que termine la operación antes de salir.', true); return false; }
+      return savedRevision >= revision || window.confirm('Hay cambios sin guardar en esta actividad. ¿Salir y descartarlos?');
+    };
+    const beforeUnload = event => { if (operationPending || savedRevision < revision) { event.preventDefault(); event.returnValue = ''; } };
+    const disposeEditor = () => {
+      window.removeEventListener('beforeunload', beforeUnload);
+      if (window.lectorlabBeforeLeave === beforeLeave) delete window.lectorlabBeforeLeave;
+      if (window.lectorlabDispose === disposeEditor) delete window.lectorlabDispose;
+      if (editorBeforeLeave === beforeLeave) editorBeforeLeave = null;
+      if (editorDispose === disposeEditor) editorDispose = null;
+    };
+    editorBeforeLeave = beforeLeave; editorDispose = disposeEditor;
+    window.lectorlabBeforeLeave = beforeLeave; window.lectorlabDispose = disposeEditor;
+    window.addEventListener('beforeunload', beforeUnload);
     const cards = el('div', { 'data-testid': 'question-review-list' });
     function renderCards() {
       cards.replaceChildren(...(questions.length ? questions.map((question, index) => {
@@ -667,25 +1027,42 @@ async function renderTeacher(view, user, { isCurrent = () => true } = {}) {
           question.left?.length && el('p', { class: 'small' }, 'Elementos: ', question.left.map(item => item.text).join(' · '), ' ↔ ', (question.right || []).map(item => item.text).join(' · ')),
           el('dl', {}, el('dt', {}, 'Clave o criterio privado'), el('dd', {}, typeof question.correctAnswer === 'object' ? JSON.stringify(question.correctAnswer) : question.correctAnswer || question.rubric || (question.acceptedAnswers || []).join(' / ') || 'Revisión docente de la argumentación')),
           evidence.length ? evidence.map(item => el('div', {}, el('blockquote', {}, item.quote), el('p', { class: 'small' }, item.reason || 'Falta explicar el vínculo de esta evidencia.'))) : el('p', { class: 'status error' }, 'Sin evidencia: completa una cita y su justificación antes de publicar.'),
-          !locked && el('div', { class: 'question-actions' }, button('Quitar pregunta', () => { questions.splice(index, 1); reviewed.checked = false; renderCards(); }, { class: 'btn small danger' })));
+          !locked && el('div', { class: 'question-actions' }, button('Quitar pregunta', () => { questions.splice(index, 1); markDirty(); renderCards(); }, { class: 'btn small danger' })));
       }) : [empty('Este borrador aún no tiene preguntas. Añade una o solicita propuestas a la IA configurada.')]));
     }
     renderCards();
     async function save() {
-      const data = await api(`/activities/${activity.id}`, { method: 'PATCH', body: { title: title.input.value.trim(), readingText: reading.input.value.normalize('NFC'), instructions: instructions.input.value.trim(), questions } });
-      activity = data.activity || data;
-      return activity;
+      const savingRevision = revision;
+      saveState.textContent = 'Guardando…';
+      try {
+        const data = await api(`/activities/${activity.id}`, { method: 'PATCH', body: { title: title.input.value.trim(), readingText: reading.input.value.normalize('NFC'), instructions: instructions.input.value.trim(), questions } });
+        activity = data.activity || data; savedRevision = savingRevision;
+        saveState.textContent = savedRevision < revision ? 'Cambios sin guardar' : 'Borrador guardado';
+        return activity;
+      } catch (error) { saveState.textContent = 'No se pudo guardar. Tus cambios siguen aquí.'; throw error; }
     }
-    const actions = el('div', { class: 'actions' });
+    const topActions = el('div', { class: 'actions editor-top-actions' }), publishActions = el('div', { class: 'actions' });
     if (!locked) {
-      actions.append(button('Guardar borrador', event => action(note, event.currentTarget, async () => { await save(); message(note, 'Borrador guardado. Todavía no es visible para estudiantes.'); }), { testid: 'save-activity' }), button('Publicar versión revisada', event => action(note, event.currentTarget, async () => {
+      topActions.append(button('Guardar borrador', event => action(note, event.currentTarget, async () => { await save(); message(note, 'Borrador guardado. Todavía no es visible para estudiantes.'); }), { testid: 'save-activity' }));
+      publishActions.append(button('Publicar versión revisada', event => action(note, event.currentTarget, async () => {
         if (!reviewed.checked) throw new Error('Revisa las preguntas y marca la confirmación antes de publicar.');
-        await save(); const data = await api(`/activities/${activity.id}/publish`, { method: 'POST', body: { reviewed: true } }); await activityEditor(data.activity || data);
+        operationPending = true;
+        const controls = [...view.querySelectorAll('input,textarea,select,button')].map(node => [node, node.disabled]);
+        controls.forEach(([node]) => { node.disabled = true; });
+        try {
+          await save(); const data = await api(`/activities/${activity.id}/publish`, { method: 'POST', body: { reviewed: true } });
+          operationPending = false; await activityEditor(data.activity || data);
+        } finally { operationPending = false; controls.forEach(([node, disabled]) => { node.disabled = disabled; }); }
       }), { primary: true, testid: 'publish-activity' }));
     } else {
-      actions.append(button('Crear nueva versión para editar', event => action(note, event.currentTarget, async () => { const data = await api(`/activities/${activity.id}/clone`, { method: 'POST', body: {} }); await activityEditor(data.activity || data); }), { primary: true, testid: 'clone-activity' }));
+      topActions.append(button('Crear nueva versión para editar', event => action(note, event.currentTarget, async () => { const data = await api(`/activities/${activity.id}/clone`, { method: 'POST', body: {} }); await activityEditor(data.activity || data); }), { primary: true, testid: 'clone-activity' }));
     }
-    const content = [el('section', { class: 'panel' }, el('div', { class: 'row' }, pill(activity.status), el('span', { class: 'small' }, `Versión ${activity.version || 1}`)), title.node, reading.node, instructions.node), el('section', { class: 'panel' }, el('h2', {}, 'Revisión de preguntas y evidencias'), el('p', { class: 'small' }, 'Comprueba el enunciado, la clave o rúbrica, la cita exacta y por qué sostiene la inferencia. La plataforma con servidor reserva las claves al docente. Este archivo de demostración contiene claves de ejemplo inspeccionables.'), cards)];
+    const readingPanel = el('section', { class: 'panel' }, el('h2', {}, 'La lectura de tu actividad'), title.node, instructions.node,
+      el('p', { class: 'note' }, 'La IA de preguntas utiliza esta lectura: no la resume ni la reescribe. Revisa las citas sobre el texto específico de esta versión.'), reading.node,
+      imported && !locked && button('Habilitar corrección manual del texto extraído', () => {
+        if (window.confirm('Esta acción permite corregir manualmente el texto extraído de la actividad. No conserva un archivo original inmutable: esa función sigue pendiente. ¿Habilitar la edición?')) reading.input.readOnly = false;
+      }, { class: 'btn small', testid: 'edit-extracted-reading' }));
+    const questionContent = [el('section', { class: 'panel' }, el('h2', {}, 'Preguntas y evidencias'), el('p', { class: 'small' }, 'Comprueba el enunciado, la clave o rúbrica, la cita exacta y por qué sostiene la inferencia. La plataforma con servidor reserva las claves al docente. Este archivo de demostración contiene claves de ejemplo inspeccionables.'), cards)];
     if (!locked) {
       const prompt = field('Pregunta inferencial', { required: true, maxlength: 1200, tag: 'textarea', testid: 'manual-question' });
       const quote = field('Cita literal que sustenta la pregunta', { required: true, maxlength: 2000, tag: 'textarea', testid: 'manual-evidence' });
@@ -696,21 +1073,46 @@ async function renderTeacher(view, user, { isCurrent = () => true } = {}) {
         if (!selected || startUtf16 < 0) return message(addNote, 'La cita debe existir literalmente en el texto de esta versión.', true);
         const start = [...text.slice(0, startUtf16)].length;
         questions.push({ id: previewId(), type: 'inferential', prompt: prompt.input.value.trim(), rubric: 'Sustenta una interpretación con evidencia pertinente y explica el vínculo lógico.', evidence: [{ quote: selected, start, end: start + [...selected].length, reason: reason.input.value.trim() }] });
-        reviewed.checked = false; renderCards(); prompt.input.value = ''; quote.input.value = ''; reason.input.value = ''; message(addNote, 'Pregunta añadida. Guarda el borrador para conservarla.');
+        markDirty(); renderCards(); prompt.input.value = ''; quote.input.value = ''; reason.input.value = ''; message(addNote, 'Pregunta añadida. Guarda el borrador para conservarla.');
       } } }, prompt.node, quote.node, reason.node, addNote, add);
       const generatedReview = el('input', { type: 'checkbox', id: 'generation-reviewed', 'data-testid': 'generation-reviewed' });
       const generateNote = status();
       const generate = button('Proponer 3 preguntas con IA', event => action(generateNote, event.currentTarget, async () => {
         if (!generatedReview.checked) throw new Error('Confirma que revisaste el texto antes de generar preguntas.');
-        await save(); const data = await api(`/activities/${activity.id}/generate`, { method: 'POST', body: { count: 3, types: ['inferential', 'matching', 'completion'], textReviewed: true } }); await activityEditor(data.activity || data);
+        if (questions.length && !window.confirm('La nueva propuesta sustituirá las preguntas de este borrador. Para conservarlas, cancela y crea otra versión. ¿Continuar?')) return;
+        await save();
+        operationPending = true;
+        const controls = [...view.querySelectorAll('input,textarea,select,button')].map(node => [node, node.disabled]);
+        controls.forEach(([node]) => { node.disabled = true; });
+        try {
+          const data = await api(`/activities/${activity.id}/generate`, { method: 'POST', body: { count: 3, types: ['inferential', 'matching', 'completion'], textReviewed: true } });
+          operationPending = false; await activityEditor(data.activity || data, { initialStep: 1 });
+        } finally { operationPending = false; controls.forEach(([node, disabled]) => { node.disabled = disabled; }); }
       }), { testid: 'generate-questions', disabled: true });
-      content.push(el('div', { class: 'grid' }, el('section', { class: 'panel' }, el('h2', {}, 'Añadir una pregunta propia'), addForm), el('section', { class: 'panel' }, el('h2', {}, 'Propuestas de IA'), el('p', { class: 'small' }, 'Genera borradores de inferencia, relación y completado. Requiere proveedor configurado en el servidor; esta vista no genera preguntas.'), el('label', { class: 'check', for: generatedReview.id }, generatedReview, 'Revisé el texto y su permiso de uso.'), generateNote, generate)));
+      questionContent.push(el('div', { class: 'grid' }, el('section', { class: 'panel' }, el('h2', {}, 'Añadir una pregunta propia'), addForm), el('section', { class: 'panel' }, el('h2', {}, 'Propuestas de IA'), el('p', { class: 'small' }, 'Genera borradores de inferencia, relación y completado. Requiere proveedor configurado en el servidor; esta vista no genera preguntas.'), el('label', { class: 'check', for: generatedReview.id }, generatedReview, 'Revisé el texto y su permiso de uso.'), generateNote, generate)));
       const advanced = field('Preguntas en JSON (edición avanzada)', { tag: 'textarea', class: 'long code', value: JSON.stringify(questions, null, 2) });
-      content.push(el('details', { class: 'panel' }, el('summary', {}, 'Edición avanzada de tipos, opciones y claves'), el('p', { class: 'small' }, 'Para relación usa left/right y correctAnswer como mapa; para completado usa acceptedAnswers. Todos los tipos requieren evidencia literal y justificación. No edites una versión ya publicada.'), advanced.node, button('Aplicar JSON al borrador', () => { try { const parsed = JSON.parse(advanced.input.value); if (!Array.isArray(parsed)) throw new Error('Se requiere una lista de preguntas.'); questions = parsed; reviewed.checked = false; renderCards(); message(note, 'Cambios aplicados localmente; guarda el borrador.'); } catch (error) { message(note, error.message, true); } })));
+      questionContent.push(el('details', { class: 'panel' }, el('summary', {}, 'Edición avanzada de tipos, opciones y claves'), el('p', { class: 'small' }, 'Para relación usa left/right y correctAnswer como mapa; para completado usa acceptedAnswers. Todos los tipos requieren evidencia literal y justificación. No edites una versión ya publicada.'), advanced.node, button('Aplicar JSON al borrador', () => { try { const parsed = JSON.parse(advanced.input.value); if (!Array.isArray(parsed)) throw new Error('Se requiere una lista de preguntas.'); questions = parsed; markDirty(); renderCards(); message(note, 'Cambios aplicados localmente; guarda el borrador.'); } catch (error) { message(note, error.message, true); } })));
     }
-    page(locked ? 'Versión publicada' : 'Preparar y revisar actividad', locked ? 'Esta versión es inmutable. Una edición nueva conserva los intentos y resultados anteriores.' : 'Primero revisa el texto; después, cada pregunta. Publicar requiere una decisión docente explícita.',
-      button('← Biblioteca', () => run(activities)), content,
-      el('section', { class: 'panel' }, !locked && el('label', { class: 'check', for: reviewed.id }, reviewed, 'Revisé texto, preguntas, claves, evidencias, pertinencia y dificultad. Apruebo esta versión para asignarla.'), note, actions));
+    const rubricPanel = designPreview?.renderRubric?.({ activity, locked, onChange: markDirty }) || el('section', { class: 'panel' }, el('h2', {}, 'Rúbrica de esta versión'),
+      el('p', {}, 'La revisión actual utiliza estos cuatro criterios, con puntajes de 0 a 3. El total máximo es 12 puntos.'),
+      ...Object.entries(rubricNames).map(([key, label]) => el('details', { class: 'review-card', open: key === 'evidence' }, el('summary', {}, label, el('span', { class: 'pill' }, 'Máximo: 3')), el('p', { class: 'small' }, '0 · Por desarrollar; 1 · En exploración; 2 · Sustentado; 3 · Profundizado. Se valora el razonamiento y la evidencia, no la extensión.'))),
+      el('div', { class: 'rubric-summary' }, el('strong', {}, '4 criterios · Puntaje máximo: 12'), el('p', { class: 'small' }, 'La propuesta de rúbricas con IA y la edición de criterios por actividad requieren la siguiente integración. No se modifican aquí las reglas con las que el servidor evalúa.'), button('Proponer rúbrica con IA · Pendiente', () => {}, { disabled: true })));
+    const summary = el('section', { class: 'panel editor-summary' });
+    const confirmation = el('section', { class: 'panel' }, el('h2', {}, 'Tu revisión antes de publicar'),
+      !locked && el('label', { class: 'check', for: reviewed.id }, reviewed, 'Revisé texto, preguntas, claves, evidencias, pertinencia, dificultad y rúbrica. Apruebo esta versión para asignarla.'),
+      locked && el('p', { class: 'note' }, 'Esta versión ya fue publicada. Para cambiarla, crea una nueva versión: las entregas anteriores se conservan.'), publishActions);
+    const stageBody = el('div', { class: 'editor-step-body' }), stepNav = el('nav', { class: 'editor-steps', 'aria-label': 'Preparar actividad en cuatro pasos' }), footer = el('div', { class: 'editor-footer actions' });
+    const names = ['Lectura', 'Preguntas', 'Rúbrica', 'Revisar y publicar'];
+    function renderStep() {
+      if (!isCurrent()) return;
+      stepNav.replaceChildren(...names.map((name, index) => button([el('span', { class: 'editor-step-number' }, index + 1), name], () => { editorStep = index; renderStep(); }, { class: 'editor-step', testid: `editor-step-${index + 1}`, 'aria-current': index === editorStep ? 'step' : undefined })));
+      if (editorStep === 3) summary.replaceChildren(el('h2', {}, title.input.value || 'Actividad sin título'), el('p', {}, `${questions.length} preguntas · Versión ${activity.version || 1}`), el('details', {}, el('summary', {}, 'Consultar lectura completa'), el('div', { class: 'preview-text' }, reading.input.value)), el('p', { class: 'small' }, 'Las preguntas y sus claves se revisan en el paso 2; la rúbrica, en el paso 3. Publicar conserva esta versión para tus estudiantes.'));
+      stageBody.replaceChildren(...(editorStep === 0 ? [readingPanel] : editorStep === 1 ? questionContent : editorStep === 2 ? [rubricPanel] : [summary, confirmation]));
+      footer.replaceChildren(...[editorStep > 0 && button(`← ${names[editorStep - 1]}`, () => { editorStep--; renderStep(); }, { testid: 'editor-previous' }), editorStep < 3 && button(editorStep === 2 ? 'Continuar a revisión →' : `Continuar a ${names[editorStep + 1].toLocaleLowerCase('es')} →`, () => { editorStep++; renderStep(); }, { primary: true, testid: 'editor-next' })].filter(Boolean));
+      page(locked ? 'Versión publicada' : 'Preparar actividad', `${activity.title} · ${locked ? 'Publicada' : 'Borrador'} · v${activity.version || 1}`,
+        el('div', { class: 'row editor-toolbar' }, button('← Volver a actividades', () => run(activities)), topActions), stepNav, saveState, note, stageBody, footer);
+    }
+    renderStep();
   }
 
   async function assignments() {
@@ -730,13 +1132,15 @@ async function renderTeacher(view, user, { isCurrent = () => true } = {}) {
   async function results() {
     section = 'Resultados';
     const rows = list(await api('/results'), 'results');
-    page('Leer el razonamiento de tus estudiantes', 'Los aciertos objetivos son una parte del registro. Las interpretaciones, evidencias y revisiones necesitan tu valoración.',
-      el('section', { class: 'panel' }, rows.length ? el('div', { class: 'table-wrap' }, el('table', {}, el('thead', {}, el('tr', {}, ...['Estudiante', 'Actividad y grupo', 'Estado', 'Parte objetiva', 'Acción'].map(text => el('th', { scope: 'col' }, text)))), el('tbody', {}, rows.map(row => el('tr', {}, el('td', {}, row.studentName || 'Estudiante'), el('td', {}, row.activityTitle, el('div', { class: 'small' }, row.groupName)), el('td', {}, pill(row.status)), el('td', {}, row.objectiveScore == null ? 'Sin entrega' : `${row.objectiveScore}/${row.maxObjective || 0}`), el('td', {}, button('Ver y retroalimentar', () => run(() => resultDetail(row.attemptId || row.id)), { testid: `open-result-${row.attemptId || row.id}`, class: 'btn small' }))))))) : empty('Las producciones aparecerán cuando los estudiantes comiencen sus actividades.')));
+    page('Resultados y devoluciones', 'Las alternativas se corrigen con la clave revisada. La interpretación se valora por criterio, con evidencias del razonamiento.',
+      el('section', { class: 'panel' }, rows.length ? el('div', { class: 'table-wrap' }, el('table', {}, el('thead', {}, el('tr', {}, ...['Estudiante', 'Actividad y grupo', 'Estado', 'Alternativas y otras objetivas', 'Acción'].map(text => el('th', { scope: 'col' }, text)))), el('tbody', {}, rows.map(row => el('tr', {}, el('td', {}, row.studentName || 'Estudiante'), el('td', {}, row.activityTitle, el('div', { class: 'small' }, row.groupName)), el('td', {}, pill(row.status)), el('td', {}, alternativesLabel(row.alternatives), el('div', { class: 'small' }, row.objectiveScore == null ? 'Sin entrega' : `Todas las objetivas: ${row.objectiveScore}/${row.maxObjective || 0}`)), el('td', {}, button('Ver y retroalimentar', () => run(() => resultDetail(row.attemptId || row.id)), { testid: `open-result-${row.attemptId || row.id}`, class: 'btn small' }))))))) : empty('Las producciones aparecerán cuando los estudiantes comiencen sus actividades.'),
+        el('p', { class: 'small' }, 'El porcentaje de alternativas no incluye relación ni completado. Todas las objetivas reúne esos tres tipos. La rúbrica abierta se muestra por separado, sin mezclar escalas.')));
   }
 
   async function resultDetail(id) {
     section = 'Resultados';
     const data = await api(`/attempts/${id}`), { attempt, activity, assessment } = data;
+    if (!isCurrent()) return;
     const draft = attempt.draft || {}, note = status();
     const rubric = Object.entries(rubricNames).map(([key, label]) => {
       const control = field(label, { tag: 'select', testid: `rubric-${key}` });
@@ -744,15 +1148,24 @@ async function renderTeacher(view, user, { isCurrent = () => true } = {}) {
       return { key, ...control };
     });
     const feedback = field('Orientación para seguir aprendiendo', { tag: 'textarea', required: true, maxlength: 4000, value: assessment?.feedback || '', testid: 'review-feedback', placeholder: 'Señala una fortaleza y un paso concreto para mejorar el vínculo entre cita e interpretación.' });
-    const save = el('button', { type: 'submit', class: 'btn primary', 'data-testid': 'save-review', disabled: attempt.status === 'in_progress' }, 'Guardar devolución docente');
-    const reviewForm = el('form', { on: { submit: async event => { event.preventDefault(); await action(note, save, async () => { await api(`/attempts/${id}/review`, { method: 'POST', body: { rubric: Object.fromEntries(rubric.map(item => [item.key, Number(item.input.value)])), feedback: feedback.input.value.trim() } }); await resultDetail(id); }); } } }, el('div', { class: 'rubric-grid' }, rubric.map(item => item.node)), el('p', { class: 'small' }, '0: aún no hay sustento; 1: pista o idea parcial; 2: relación pertinente y explicada; 3: sustento consistente con alternativas o revisión profunda. No evalúes por extensión o velocidad.'), feedback.node, note, el('div', { class: 'actions' }, save));
-    const evidencePanel = el('section', { class: 'panel' }, el('h2', {}, 'Producción y proceso'), ...[['initial', 'Idea inicial'], ['hypothesis', 'Hipótesis'], ['posture', 'Interpretación'], ['evidence1', 'Evidencia 1'], ['evidence2', 'Evidencia 2'], ['reasoning', 'Vínculo entre citas e interpretación'], ['reflection', 'Qué cambió'], ['finalThought', 'Reflexión final']].map(([key, label]) => el('div', { class: 'review-card' }, el('h3', {}, label), el('p', {}, draft[key] || 'Sin registro'))),
-      el('h3', {}, 'Respuestas a las preguntas'), ...(activity.questions || []).map(question => el('div', { class: 'review-card' }, el('strong', {}, question.prompt), el('p', {}, typeof attempt.answers?.[question.id] === 'object' ? JSON.stringify(attempt.answers[question.id]) : attempt.answers?.[question.id] || 'Sin respuesta'))),
-      el('h3', {}, 'Diálogo socrático'), ...(data.tutor?.messages?.length ? data.tutor.messages.map(item => el('div', { class: `chat-message ${item.role}` }, el('strong', {}, item.role === 'user' ? 'Estudiante' : 'LectorLab'), item.content)) : [empty('No se registró diálogo con IA.')]),
+    const total = el('p', { class: 'rubric-total', 'data-testid': 'rubric-total' });
+    const updateTotal = () => { total.textContent = `Puntaje de la rúbrica: ${rubric.reduce((sum, item) => sum + Number(item.input.value), 0)}/12`; };
+    rubric.forEach(item => item.input.addEventListener('change', updateTotal)); updateTotal();
+    const save = el('button', { type: 'submit', class: 'btn primary', 'data-testid': 'save-review', disabled: attempt.status === 'in_progress' }, 'Validar y compartir devolución');
+    const reviewForm = el('form', { on: { submit: async event => { event.preventDefault(); await action(note, save, async () => { await api(`/attempts/${id}/review`, { method: 'POST', body: { rubric: Object.fromEntries(rubric.map(item => [item.key, Number(item.input.value)])), feedback: feedback.input.value.trim() } }); await resultDetail(id); }); } } },
+      el('div', { class: 'table-wrap' }, el('table', {}, el('thead', {}, el('tr', {}, el('th', { scope: 'col' }, 'Criterio'), el('th', { scope: 'col' }, 'Puntaje docente'))), el('tbody', {}, rubric.map(item => el('tr', {}, el('th', { scope: 'row' }, rubricNames[item.key]), el('td', {}, item.node)))))), total,
+      el('p', { class: 'small' }, '0: aún no hay sustento; 1: pista o idea parcial; 2: relación pertinente y explicada; 3: sustento consistente con alternativas o revisión profunda. No evalúes por extensión o velocidad.'), feedback.node, note, el('div', { class: 'actions' }, save), el('p', { class: 'small' }, 'Al validar, esta devolución y los puntajes quedan disponibles para el estudiante. La evaluación automática de abiertas con IA sigue pendiente de integración.'));
+    const evidencePanel = el('section', { class: 'panel' }, el('h2', {}, 'Producción del estudiante'), ...[['posture', 'Interpretación'], ['evidence1', 'Evidencia 1'], ['evidence2', 'Evidencia 2'], ['reasoning', 'Vínculo entre citas e interpretación'], ['reflection', 'Qué cambió']].map(([key, label]) => el('div', { class: 'review-card mainproduction-card' }, el('h3', {}, label), key.startsWith('evidence') ? el('blockquote', {}, draft[key] || 'Sin registro') : el('p', {}, draft[key] || 'Sin registro'))),
+      el('details', { class: 'review-process-details' }, el('summary', {}, 'Ver proceso de revisión'), ...[['initial', 'Idea inicial'], ['hypothesis', 'Hipótesis'], ['finalThought', 'Reflexión final']].map(([key, label]) => el('div', { class: 'review-card' }, el('h3', {}, label), el('p', {}, draft[key] || 'Sin registro')))),
+      el('details', { class: 'review-process-details' }, el('summary', {}, 'Ver respuestas a las preguntas'), ...(activity.questions || []).map(question => el('div', { class: 'review-card' }, el('strong', {}, question.prompt), el('p', {}, typeof attempt.answers?.[question.id] === 'object' ? JSON.stringify(attempt.answers[question.id]) : attempt.answers?.[question.id] || 'Sin respuesta')))),
+      el('details', { class: 'review-process-details' }, el('summary', {}, 'Ver diálogo socrático'), ...(data.tutor?.messages?.length ? data.tutor.messages.map(item => el('div', { class: `chat-message ${item.role}` }, el('strong', {}, item.role === 'user' ? 'Estudiante' : 'LectorLab'), item.content)) : [empty('No se registró diálogo con IA.')])),
       el('details', {}, el('summary', {}, 'Consultar lectura de esta versión'), el('div', { class: 'preview-text' }, activity.readingText)));
-    page(activity.title, `Estado: ${attempt.status === 'in_progress' ? 'En curso' : attempt.status === 'reviewed' ? 'Revisado' : 'Entregado'} · Entrega: ${fmt(attempt.submittedAt)}`,
+    const manualReviewPanel = el('section', { class: 'panel' }, el('div', { class: 'row' }, el('h2', {}, 'Evaluación docente'), pill(attempt.status)), attempt.status === 'in_progress' && el('p', { class: 'note' }, 'La actividad sigue en curso. Espera la entrega para valorar.'), reviewForm, el('p', { class: 'small' }, 'Una respuesta que necesita aclaración invita a conversar. Esta plataforma no decide fraude ni aplica sanciones automáticas.'));
+    const reviewPanel = designPreview?.renderReview?.({ data, attempt, onValidated: () => run(() => resultDetail(id)) }) || manualReviewPanel;
+    page('Evaluación de la entrega', `${attempt.studentName || 'Estudiante'} · ${activity.title} · ${attempt.status === 'in_progress' ? 'En curso' : attempt.status === 'reviewed' ? 'Revisado' : 'Entregado'} · ${fmt(attempt.submittedAt)}`,
       el('div', { class: 'actions' }, button('← Resultados', () => run(results)), button('Descargar CSV de ejemplo individual', event => action(note, event.currentTarget, () => download(`/attempts/${id}/export.xlsx`, 'LectorLab_individual.xlsx')))),
-      el('div', { class: 'grid' }, evidencePanel, el('section', { class: 'panel' }, el('h2', {}, 'Devolución docente'), attempt.status === 'in_progress' && el('p', { class: 'note' }, 'La actividad sigue en curso. Espera la entrega para valorar.'), reviewForm, el('p', { class: 'small' }, 'Una respuesta que necesita aclaración invita a conversar. Esta plataforma no decide fraude ni aplica sanciones automáticas.'))));
+      el('div', { class: 'panel row review-score-summary' }, el('strong', { 'data-testid': 'review-alternatives' }, alternativesLabel(attempt.alternatives)), el('span', { class: 'small' }, attempt.objectiveScore == null ? 'La corrección objetiva estará disponible al entregar.' : `Todas las objetivas: ${attempt.objectiveScore}/${attempt.maxObjective || 0}. Incluye alternativas, relación y completado.`), el('span', { class: 'pill' }, attempt.status === 'reviewed' ? 'Devolución revisada' : 'Pendiente de revisión')),
+      el('div', { class: 'review-layout grid' }, evidencePanel, reviewPanel));
   }
 
   async function sheets() {
@@ -770,10 +1183,26 @@ async function renderTeacher(view, user, { isCurrent = () => true } = {}) {
 
 
 
+
 const phaseNames = ['Activación', 'Lectura', 'Comprender', 'Inferir', 'Evaluar', 'Tutor socrático', 'Mi interpretación'];
+const studentRubricNames = { inference: 'Inferencia sustentada', evidence: 'Evidencias textuales', link: 'Vínculo entre evidencia e interpretación', revision: 'Revisión de la hipótesis' };
 
 async function renderStudent(view, user, { isCurrent = () => true } = {}) {
   let disposeAttempt = null;
+  function studentNav(returnToActivities, reading = false) {
+    const guide = el('div', { class: 'student-guide hidden', id: 'student-reading-guide' },
+      el('strong', {}, 'Leer · Sustentar · Revisar'),
+      el('ol', {}, el('li', {}, 'Lee el texto completo antes de concluir.'), el('li', {}, 'Selecciona citas y explica qué sostienen.'), el('li', {}, 'Contrasta tu idea y revisa lo que cambió.')),
+      el('p', { class: 'small' }, 'Esta guía es fija; no es una respuesta del tutor con IA.'));
+    const guideButton = button([workspaceIcon('check'), el('span', {}, 'Cómo leer')], event => {
+      const visible = guide.classList.contains('hidden');
+      guide.classList.toggle('hidden', !visible);
+      event.currentTarget.setAttribute('aria-expanded', String(visible));
+    }, { testid: 'student-guide-toggle', 'aria-controls': guide.id, 'aria-expanded': 'false' });
+    return el('nav', { class: 'nav', 'aria-label': 'Espacio estudiante' },
+      button([workspaceIcon('book'), el('span', {}, 'Mis actividades')], returnToActivities, { testid: 'student-nav-home', 'aria-current': reading ? undefined : 'page' }),
+      guideButton, guide);
+  }
   async function dashboard() {
     if (!isCurrent()) return;
     disposeAttempt?.(); disposeAttempt = null;
@@ -781,9 +1210,13 @@ async function renderStudent(view, user, { isCurrent = () => true } = {}) {
     const rows = list(await api('/assignments'), 'assignments');
     if (!isCurrent()) return;
     const entries = rows.map(assignment => {
-      const details = el('div', {}, el('h3', {}, assignment.activityTitle || 'Actividad de lectura'),
-        el('p', { class: 'small' }, assignment.groupName || ''), assignment.status && pill(assignment.status));
+      const details = el('div', { class: 'assignment-card-heading' }, workspaceIcon('book'),
+        el('div', {}, el('p', { class: 'eyebrow' }, assignment.groupName || 'Actividad de tu grupo'), el('h3', {}, assignment.activityTitle || 'Actividad de lectura')));
       const label = ['submitted', 'reviewed'].includes(assignment.status) ? 'Ver mi recorrido' : assignment.attemptId ? 'Continuar lectura' : 'Comenzar lectura';
+      const description = assignment.status === 'reviewed' ? 'Tu docente dejó una devolución. Vuelve a tu razonamiento y revisa sus orientaciones.'
+        : assignment.status === 'submitted' ? 'Tu interpretación está entregada y pendiente de revisión. Puedes consultar lo que escribiste.'
+          : assignment.attemptId ? 'Tu primera idea y tus evidencias están disponibles para continuar.'
+            : 'Lee, busca pistas y construye una interpretación con evidencias del texto.';
       const open = button(label, async event => {
         await busy(event.currentTarget, async () => {
           try {
@@ -792,12 +1225,24 @@ async function renderStudent(view, user, { isCurrent = () => true } = {}) {
           } catch (error) { window.alert(error.message); }
         });
       }, { primary: true, testid: `open-assignment-${assignment.id}` });
-      return el('li', {}, el('div', { class: 'row' }, details, open));
+      return el('li', { class: 'assignment-card' }, details,
+        assignment.status ? pill(assignment.status) : el('span', { class: 'pill' }, 'Por comenzar'),
+        el('p', {}, description), el('div', { class: 'actions' }, open));
     });
-    show(view, ...heading(`Tu espacio de lectura, ${user.name || user.username}.`, 'Espacio estudiante'),
-      el('p', { class: 'intro' }, 'Lee a tu ritmo, plantea una idea y vuelve al texto para sostenerla. Las respuestas de ejemplo se conservan solo en la memoria de esta pestaña y se reinician al recargar.'),
-      el('section', { class: 'panel' }, el('h2', {}, 'Actividades de tu grupo'), entries.length ? el('ul', { class: 'list' }, entries) : empty('Todavía no tienes actividades asignadas. Tu docente te indicará cuándo comenzar.')),
-      el('aside', { class: 'note' }, 'Las interpretaciones se revisan con tu docente. No se premia escribir más rápido ni enviar más mensajes. Tu progreso es privado.'));
+    const stats = [
+      [rows.filter(item => !item.attemptId && !['in_progress', 'submitted', 'reviewed'].includes(item.status)).length, 'Por comenzar', 'book'],
+      [rows.filter(item => item.status === 'in_progress' || item.attemptId && !['submitted', 'reviewed'].includes(item.status)).length, 'En curso', 'assignments'],
+      [rows.filter(item => item.status === 'reviewed').length, 'Con devolución', 'check'],
+    ];
+    workspacePage(view, { role: 'student', title: 'Tu espacio de lectura', intro: `Hola, ${user.name || user.username}. Aquí puedes continuar tus actividades y consultar tus devoluciones.`, section: 'Mis actividades', nav: studentNav(dashboard) },
+      el('section', { class: 'student-hero' },
+        el('div', {}, el('p', { class: 'eyebrow' }, 'Una idea puede cambiar con una buena pista'), el('h2', {}, 'Lee, piensa y sustenta.'),
+          el('p', {}, 'Lee a tu ritmo, plantea una idea y vuelve al texto para sostenerla. Las respuestas de ejemplo se conservan solo en la memoria de esta pestaña y se reinician al recargar.')),
+        el('div', { class: 'student-path', 'aria-label': 'Tu recorrido de aprendizaje' }, el('span', {}, workspaceIcon('book'), 'Lee'), el('span', {}, workspaceIcon('results'), 'Sustenta'), el('span', {}, workspaceIcon('check'), 'Revisa'))),
+      el('div', { class: 'student-summary' }, ...stats.map(([value, label, icon]) => el('div', { class: 'metric' }, workspaceIcon(icon), el('div', {}, el('strong', {}, value), el('span', {}, label))))),
+      el('section', { class: 'student-activities' }, el('div', { class: 'row' }, el('h2', {}, 'Mis actividades'), el('span', { class: 'small' }, `${rows.length} ${rows.length === 1 ? 'actividad asignada' : 'actividades asignadas'}`)),
+        entries.length ? el('ul', { class: 'assignment-cards' }, entries) : empty('Todavía no tienes actividades asignadas. Tu docente te indicará cuándo comenzar.')),
+      el('aside', { class: 'note' }, 'Tu progreso es privado. Las interpretaciones se revisan con tu docente y los hitos reconocen evidencias de tu razonamiento. No se premia escribir más rápido ni enviar más mensajes.'));
   }
 
   async function openAttempt(id) {
@@ -881,9 +1326,23 @@ async function renderStudent(view, user, { isCurrent = () => true } = {}) {
       if (step === 6) renderPhase(false);
       message(note, `Fragmento añadido como ${key === 'evidence1' ? 'evidencia 1' : 'evidencia 2'}. Explica por qué sostiene tu interpretación.`);
     }
+    const publicCriteria = Array.isArray(activity.evaluationRubric?.criteria) && activity.evaluationRubric.criteria.length
+      ? activity.evaluationRubric.criteria.filter(criterion => typeof criterion.name === 'string' && Number.isInteger(criterion.max) && criterion.max > 0)
+      : Object.entries(studentRubricNames).map(([id, name]) => ({ id, name, max: 3 }));
+    const publicRubric = el('details', { class: 'student-rubric', 'data-testid': 'student-activity-rubric' },
+      el('summary', {}, 'Criterios de revisión · consultar antes de responder'),
+      el('p', { class: 'small' }, 'Conoce qué revisará tu docente en tu interpretación. Los puntajes de esta rúbrica se muestran separados de las alternativas.'),
+      el('ul', { class: 'list' }, ...publicCriteria.map(criterion => {
+        const descriptors = criterion.descriptors && typeof criterion.descriptors === 'object' ? Object.entries(criterion.descriptors).filter(([, text]) => typeof text === 'string') : [];
+        return el('li', {}, el('div', { class: 'row' }, el('strong', {}, criterion.name), el('span', { class: 'pill' }, `Máximo: ${criterion.max}`)),
+          descriptors.length ? el('dl', {}, ...descriptors.map(([points, text]) => el('div', {}, el('dt', {}, `${points} puntos`), el('dd', {}, text)))) : null);
+      })),
+      el('p', { class: 'rubric-total' }, `Puntaje máximo de la rúbrica: ${publicCriteria.reduce((total, criterion) => total + criterion.max, 0)}`),
+      el('p', { class: 'small' }, 'Se revisan tus evidencias y el vínculo con tu interpretación; la extensión del escrito no determina su calidad.'));
     const readingPanel = el('aside', { class: 'reading-panel' }, el('details', { open: true }, el('summary', {}, 'Texto de esta actividad · consultar y citar'), el('h2', {}, activity.title), readingText,
       !readOnly() && el('div', { class: 'actions' }, button('Citar selección como evidencia 1', () => citeSelected('evidence1'), { class: 'btn small' }), button('Citar selección como evidencia 2', () => citeSelected('evidence2'), { class: 'btn small' }))),
       el('p', { class: 'small' }, 'La cita ayuda a volver al texto. Su pertinencia y tu explicación se revisan con el docente.'),
+      publicRubric,
       el('div', { class: 'sources' }, 'Lectura de la versión asignada. ', activity.source?.author && `${activity.source.author}. `, activity.source?.title || '', activity.source?.url && el('a', { href: safeSource(activity.source.url), target: '_blank', rel: 'noopener noreferrer' }, 'Consultar fuente'),
         String(activity.title).includes('Más allá') && el('p', {}, 'Adaptación pedagógica de El almohadón de pluma, de Horacio Quiroga. Competencia: lee diversos tipos de textos escritos en lengua materna.')));
     function renderQuestion(question, index) {
@@ -970,10 +1429,24 @@ async function renderStudent(view, user, { isCurrent = () => true } = {}) {
         }, { primary: true, testid: 'submit-attempt' }));
       } else {
         final.unshift(el('p', { class: 'status', 'data-testid': 'submission-status' }, `Entrega de ejemplo registrada el ${fmt(attempt.submittedAt)}. ${attempt.status === 'reviewed' ? 'Tu docente ya dejó una devolución.' : 'Tu interpretación está pendiente de revisión docente.'}`));
-        if (attempt.objectiveScore != null) final.push(el('p', { 'data-testid': 'objective-score' }, `Preguntas objetivas: ${attempt.objectiveScore}/${attempt.maxObjective || 0}. Esta parte no califica por sí sola tu interpretación.`));
+        if (attempt.alternatives?.total > 0 && Number.isFinite(attempt.alternatives.percentage)) final.push(el('p', { class: 'status', 'data-testid': 'alternatives-score' },
+          `Alternativas: ${attempt.alternatives.correct}/${attempt.alternatives.total} · ${new Intl.NumberFormat('es-PE', { maximumFractionDigits: 1 }).format(attempt.alternatives.percentage)} %. Corrección automática, separada de tu rúbrica.`));
+        if (attempt.objectiveScore != null) final.push(el('p', { class: 'small', 'data-testid': 'objective-score' }, `Total de preguntas objetivas: ${attempt.objectiveScore}/${attempt.maxObjective || 0}. Incluye alternativas, relación y completado cuando corresponden; no califica por sí solo tu interpretación.`));
       }
       if (data.assessment) {
-        final.push(el('section', { class: 'review-card' }, el('h3', {}, 'Devolución de tu docente'), el('p', { 'data-testid': 'teacher-feedback' }, data.assessment.feedback), el('div', { class: 'badges' }, (data.assessment.badges || []).map(badge => el('span', { class: 'badge' }, typeof badge === 'string' ? badge : badge.label || badge.title || badge.name))), el('p', { class: 'small' }, 'Estos hitos reconocen evidencia revisada en esta actividad. No son una etiqueta permanente ni una comparación con tus compañeros.')));
+        // Only the assessment returned for this student is shown. A private
+        // draft or a provisional AI proposal is not a student assessment.
+        const scores = Array.isArray(data.assessment.criteria) && data.assessment.criteria.length
+          ? data.assessment.criteria.filter(criterion => typeof criterion.name === 'string' && Number.isInteger(criterion.max) && criterion.max > 0 && Number.isInteger(data.assessment.criterionScores?.[criterion.id]) && data.assessment.criterionScores[criterion.id] >= 0 && data.assessment.criterionScores[criterion.id] <= criterion.max)
+            .map(criterion => ({ name: criterion.name, max: criterion.max, score: data.assessment.criterionScores[criterion.id] }))
+          : Object.entries(studentRubricNames).filter(([key]) => Number.isInteger(data.assessment.rubric?.[key]) && data.assessment.rubric[key] >= 0 && data.assessment.rubric[key] <= 3)
+            .map(([key, name]) => ({ name, max: 3, score: data.assessment.rubric[key] }));
+        const rubric = scores.length ? el('section', { class: 'student-rubric', 'aria-label': 'Puntajes de la rúbrica docente' },
+          el('h4', {}, 'Tu rúbrica revisada'), el('dl', {}, ...scores.map(criterion => el('div', { class: 'row' }, el('dt', {}, criterion.name), el('dd', {}, `${criterion.score} / ${criterion.max}`)))),
+          el('p', { class: 'rubric-total', 'data-testid': 'student-rubric-total' }, `Total de la rúbrica: ${scores.reduce((total, criterion) => total + criterion.score, 0)} / ${scores.reduce((total, criterion) => total + criterion.max, 0)}`)) : null;
+        final.push(el('section', { class: 'review-card' }, el('h3', {}, 'Devolución de tu docente'),
+          el('p', { class: 'small' }, 'Evaluación revisada por tu docente.'), rubric,
+          el('p', { 'data-testid': 'teacher-feedback' }, data.assessment.feedback), el('div', { class: 'badges' }, (data.assessment.badges || []).map(badge => el('span', { class: 'badge' }, typeof badge === 'string' ? badge : badge.label || badge.title || badge.name))), el('p', { class: 'small' }, 'Estos hitos reconocen evidencia revisada en esta actividad. No son una etiqueta permanente ni una comparación con tus compañeros.')));
       }
       final.push(button('Descargar mi recorrido en CSV de ejemplo', async event => { await busy(event.currentTarget, async () => { try { await flush(); await download(`/attempts/${id}/export.xlsx`, 'LectorLab_mi_recorrido.xlsx'); } catch (error) { message(note, error.message, true); } }); }, { testid: 'download-attempt' }));
       return final;
@@ -1000,7 +1473,9 @@ async function renderStudent(view, user, { isCurrent = () => true } = {}) {
       if (focus) { phaseBody.querySelector('h2')?.focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'instant' }); }
       updateSaveStatus();
     }
-    show(view, ...heading(activity.title, 'Tu recorrido'), el('div', { class: 'row' }, pill(attempt.status), button('← Mis actividades', async () => { if (await beforeLeave()) await dashboard(); })), progress, navigation, saveStatus, note,
+    const returnToActivities = async () => { if (await beforeLeave()) await dashboard(); };
+    workspacePage(view, { role: 'student', title: activity.title, intro: 'Tu recorrido de lectura: interpreta, contrasta y vuelve al texto.', section: 'Mi lectura', nav: studentNav(returnToActivities, true), actions: button('← Mis actividades', returnToActivities, { testid: 'student-back-activities' }) },
+      el('div', { class: 'row' }, pill(attempt.status), saveStatus), progress, navigation, note,
       el('div', { class: 'reading-layout' }, readingPanel, phaseBody));
     renderPhase(false);
     if (disposed) disposeAttempt?.();
@@ -1050,6 +1525,9 @@ async function start() {
     setCsrf(session.csrfToken);
     currentUser = session.user || null;
     document.body.classList.toggle('entry-mode', !currentUser);
+    document.body.classList.toggle('workspace-mode', Boolean(currentUser));
+    if (currentUser) document.body.dataset.role = currentUser.role;
+    else delete document.body.dataset.role;
     if (!currentUser) {
       let path = previewLocation.pathname;
       if (path === '/docente' || path === '/estudiante') {
@@ -1082,7 +1560,7 @@ async function start() {
       });
     }, { testid: 'logout', class: 'btn small' })));
     const isCurrent = () => version === renderVersion && currentUser?.id === user.id;
-    if (user.role === 'teacher') await renderTeacher(view, user, { isCurrent });
+    if (user.role === 'teacher') await renderTeacher(view, user, { isCurrent, designPreview });
     else await renderStudent(view, user, { isCurrent });
   } catch (error) {
     if (version !== renderVersion) return;
